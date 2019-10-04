@@ -1,0 +1,492 @@
+msgid "SEARCH"
+msgstr "Caută"
+
+msgid "HELP_MENU_LABEL"
+msgstr "_Ajutor"
+
+msgid "FILE_MENU_LABEL"
+msgstr "_Fișier"
+
+msgid "EDIT_MENU_LABEL"
+msgstr "_Editare"
+
+msgid "PREFERENCES"
+msgstr "Preferințe"
+
+msgid "GENERAL_OPTIONS"
+msgstr "Opțiuni generale"
+
+msgid "SEARCH_PLUGINS"
+msgstr "Plugin-uri de căutare"
+
+msgid "HELP_SHOW_VERSION"
+msgstr "Arată numărul versiunii și închide"
+
+msgid "TORRENT_FILES"
+msgstr "Fișierele torrent"
+
+msgid "SAVE_IN_FOLDER"
+msgstr "Salvează în folder"
+
+msgid "USE_STANDARD_APP"
+msgstr "Folosește aplicația standard"
+
+msgid "USE_CUSTOM_APP"
+msgstr "Folosește aplicația poprie"
+
+msgid "SELECT_FOLDER"
+msgstr "Selectează folder"
+
+msgid "SEARCH_RESULTS"
+msgstr "Rezultatele căutării"
+
+msgid "DOWNLOADING_FILE"
+msgstr "Descarc fișierul..."
+
+msgid "DOWNLOAD_FAILED"
+msgstr "Descărcarea a eșuat!"
+
+msgid "FILE_NOT_FOUND_ON_SERVER"
+msgstr "Fișierul nu a fost găsit pe server."
+
+msgid "RUN_SEARCH_ON_STARTUP"
+msgstr "Rulează căutarea la pornire"
+
+msgid "SEARCH_RESULTS_INIT"
+msgstr "Rezultatele căutării - Inițializez..."
+
+msgid "GETTING_LINK"
+msgstr "Preiau link-ul..."
+
+msgid "DOWNLOADING"
+msgstr "Descarc..."
+
+msgid "SEARCH_RESULTS_NO_RESULTS"
+msgstr "Rezultatele căutării - Niciun rezultat"
+
+msgid "INITIALISING"
+msgstr "Inițializez..."
+
+msgid "NO_RESULTS"
+msgstr "Niciun rezultat"
+
+msgid "NB_RESULTS"
+msgstr "%d rezultat(e)"
+
+msgid "SEARCH_FINISHED"
+msgstr "Căutare completă"
+
+msgid "SEARCH_RUNNING"
+msgstr "Caut..."
+
+msgid "NAME"
+msgstr "Nume"
+
+msgid "DATE"
+msgstr "Data"
+
+msgid "SIZE"
+msgstr "Mărime"
+
+msgid "SEEDERS"
+msgstr "Donatori"
+
+msgid "LEECHERS"
+msgstr "Parteneri"
+
+msgid "PLUGIN"
+msgstr "Plugin"
+
+msgid "NO_TITLE"
+msgstr "Fără titlu"
+
+msgid "DOWNLOAD_NO_COMMAND"
+msgstr "Nu s-a putut găsi un program pentru a rula acest fișier.\nVă rugăm verificați setările din fereastra de preferințe."
+
+msgid "DOWNLOAD_COMMAND_NOT_FOUND"
+msgstr "Programul ales pentru a deschide acest tip de fișier nu s-a putut găsi.\nVă rugăm verificați setările din fereastra de preferințe."
+
+msgid "ADD_PLUGIN_DIR"
+msgstr "Adaugă un folder de plugin"
+
+msgid "PLUGIN_NAME"
+msgstr "Nume plugin"
+
+msgid "ENABLED"
+msgstr "Activat"
+
+msgid "ERROR"
+msgstr "Eroare"
+
+msgid "NO_PLUGINS_ENABLED"
+msgstr "Niciun plugin activat!"
+
+msgid "CHECK_CONFIG"
+msgstr "Vă rugăm accesați fereastra de preferințe pentru a vă verifica configurația."
+
+msgid "SEARCH_OPTIONS"
+msgstr "Opțiuni de căutare"
+
+msgid "HIDE_ZERO_SEEDERS"
+msgstr "Ascunde torrentele fără donatori"
+
+msgid "CLEAR_HISTORY"
+msgstr "_Șterge istoria de căutări"
+
+msgid "HISTORY_CLEARED"
+msgstr "Istoria a fost ștearsă."
+
+msgid "INFORMATION"
+msgstr "Informații"
+
+msgid "MIN_SIZE"
+msgstr "Mărimea minimă"
+
+msgid "MAX_SIZE"
+msgstr "Mărimea maximă"
+
+msgid "ONLY_EXACT_PHRASE"
+msgstr "Afișează doar torrenții cu aceleași cuvinte-cheie în denumire."
+
+msgid "ONLY_ALL_WORDS"
+msgstr "Afișează doar torrenții cu toate cuvintele-cheie în denumire."
+
+msgid "NEW_VERSION_AVAILABLE"
+msgstr "Versiunea nouă este disponibilă."
+
+msgid "DONT_SHOW_MESG_AGAIN"
+msgstr "Nu mai afișa acest mesaj din nou."
+
+msgid "LAST_VERSION_MESG"
+msgstr "Versiunea %s al Torrent Search este disponibilă."
+
+msgid "NEW_VERSION_MESG"
+msgstr "O nouă versiune al Torrent Search este disponibilă."
+
+msgid "GO_TO_DOWNLOAD_LINK"
+msgstr "Poți urma această pagină pentru a descărca fișierul:"
+
+msgid "HELP_ADD_PLUGIN"
+msgstr "Adaugă un plugin dintr-o cale proprie"
+
+msgid "PLUGIN_FILE_NOT_FOUND"
+msgstr "ATENȚIE:plugins:Eroare de încărcare\n%s: Fișierul nu a fost găsit!"
+
+msgid "PLUGIN_FILE_NOT_FILE"
+msgstr "ATENȚIE:plugins:Eroare de încărcare\n%s: Acesta nu este un fișier!"
+
+msgid "PLUGIN_FILE_NOT_READABLE"
+msgstr "ATENȚIE:plugins:Eroare de încărcare\n%s: Fișierul nu poate fi citit!"
+
+msgid "CHECKING_PLUGIN_UPDATES"
+msgstr "Verific update-urile pentru plugin..."
+
+msgid "CHECKING_PLUGINS_VERSIONS"
+msgstr "Verific versiunile de plugin"
+
+msgid "DOWNLOADING_PLUGINS_UPDATES"
+msgstr "Descarc update-urile de plugin"
+
+msgid "DONE"
+msgstr "Terminat."
+
+msgid "FAILED"
+msgstr "Eșuat."
+
+msgid "GETTING_PLUGINS_LIST"
+msgstr "Preiau lista de plugin-uri"
+
+msgid "NEW_PLUGINS_UPDATES_INSTALLED"
+msgstr "Noile update-uri pentru plugin-uri au fost instalate."
+
+msgid "APP_WILL_BE_RESTARTED"
+msgstr "Aplicația va fi acum repornită."
+
+msgid "SYNTAX_ERROR"
+msgstr "Eroare de sintaxă."
+
+msgid "NAME_DOES_NOT_CONTAIN"
+msgstr "Numele nu conține"
+
+msgid "WAITING"
+msgstr "În așteptare..."
+
+msgid "FINISHED"
+msgstr "Finalizat."
+
+msgid "TITLE"
+msgstr "Titlu."
+
+msgid "STATUS"
+msgstr "Stare."
+
+msgid "DOWNLOADS"
+msgstr "Descărcări."
+
+msgid "SAVE_FOLDER_NO_EXIST"
+msgstr "Calea selectată pentru a salva torrenții nu există!"
+
+msgid "SAVE_FOLDER_NOT_FOLDER"
+msgstr "Calea selectată pentru a salva torrenții nu este un folder!"
+
+msgid "SAVE_FOLDER_NOT_WRITABLE"
+msgstr "Calea selectată pentru a salva torrenții nu este disponibilă pentru scriere!"
+
+msgid "TORRENT_APP_NOT_FOUND"
+msgstr "Aplicația selectată pentru a deschide fișierele torrent nu a putut fi găsită!"
+
+msgid "INCORRECT_CONFIG"
+msgstr "Unii parametri ai configurației sunt incorecți (probabil au fost modificate manual?)."
+
+msgid "HELP_NO_PLUGIN_CHECK"
+msgstr "Nu verifica update-urile de plugin"
+
+msgid "CHECK_PLUGINS_UPDATES"
+msgstr "Verifică update-urile de plugin la pornire"
+
+msgid "PLUGINS_UPDATES"
+msgstr "Update-uri plugin"
+
+msgid "CHECK_NOW"
+msgstr "Verifică acum"
+
+msgid "SHOW_THIS_HELP_AND_EXIT"
+msgstr "Afișează acest mesaj de ajutor și închide"
+
+msgid "BASIC_OPTIONS"
+msgstr "Opțiuni de bază"
+
+msgid "ADVANCED_OPTIONS"
+msgstr "Opțiuni avansate (pentru programatori)"
+
+msgid "PATH_TO_SHARE"
+msgstr "Cale către partajare folder (implicit: /usr/share)"
+
+msgid "NAME_CONTAINS"
+msgstr "Numele conține"
+
+msgid "FILTER_DUPLICATES"
+msgstr "Filtrează dubluri"
+
+msgid "ENABLE"
+msgstr "Activează"
+
+msgid "RETRY_MENU_ITEM"
+msgstr "_Reîncercare"
+
+msgid "DOWNLOAD_MENU_ITEM"
+msgstr "_Descarcă"
+
+msgid "CAN_DOWNLOAD_LAST_VERSION"
+msgstr "Acum puteți descărca ultima versiune de Torrent Search."
+
+msgid "DOWNLOAD_NOW"
+msgstr "_Descarcă acum"
+
+msgid "PLEASE_WAIT"
+msgstr "Vă rugăm așteptați..."
+
+msgid "LOOKING_UP_AVAILABLE_FILES"
+msgstr "Caut fișiere disponibile..."
+
+msgid "FOUND_NB_FILES"
+msgstr "Am găsit %d fișier(e)"
+
+msgid "SELECT_FILE_TO_DOWNLOAD"
+msgstr "Selectează fișier pentru a descărca"
+
+msgid "DOWNLOAD"
+msgstr "_Descarcă"
+
+msgid "PLEASE_SELECT_DOWNLOAD_FILE"
+msgstr "Vă rugăm selectați fișerul pentru a descărca:"
+
+msgid "DEBIAN_PACKAGE"
+msgstr "Pachet Debian"
+
+msgid "TARGZ_ARCHIVE"
+msgstr "Arhivă tar.gz"
+
+msgid "SELECT_DESTINATION"
+msgstr "Selectează destinație"
+
+msgid "DOWNLOADING_FILENAME"
+msgstr "Descarc \"%s\"..."
+
+msgid "DOWNLOAD_SUCCESSFUL"
+msgstr "Descărcare reușită!"
+
+msgid "NO_DOWNLOAD_FILES"
+msgstr "Aplicația nu a putut găsi fișiere pentru a descărca!"
+
+msgid "RETRY_ALL_FAILED"
+msgstr "Reîncearcă toate descărcările eșuate"
+
+msgid "CANCEL_ALL_FAILED"
+msgstr "Revocă toate descărcările eșuate"
+
+msgid "CANCEL_ALL"
+msgstr "Revocă toate descărcările care sunt revocabile"
+
+msgid "LAST_UPDATE"
+msgstr "Ultima updatare"
+
+msgid "AUTHOR"
+msgstr "Autor"
+
+msgid "UNKNOWN"
+msgstr "Necunoscut"
+
+msgid "DONT_SHOW_UNTIL_NEXT_VERSION"
+msgstr "Nu mai afișa acest mesaj până la următoarea versiune"
+
+msgid "AUTH_REQUIRED_FOR_NEW_PLUGINS"
+msgstr "Autentificare necesară pentru noi plugin-uri"
+
+msgid "SOME_NEW_PLUGINS_REQUIRE_AUTH"
+msgstr "Unele noi plugin-uri necesită autentificare pentru a fi utilizate."
+
+msgid "SELECT_ONES_TO_ENABLE"
+msgstr "Selectați pe cele pe care le doriți activate:"
+
+msgid "WINDOWS_INSTALLER"
+msgstr "Instalator Windows"
+
+msgid "DISABLE"
+msgstr "Dezactivat"
+
+msgid "AUTHENTICATION"
+msgstr "Autentificare"
+
+msgid "USERNAME"
+msgstr "Nume utilizator"
+
+msgid "PASSWORD"
+msgstr "Parolă"
+
+msgid "REMEMBER_AUTH"
+msgstr "Reține autentificarea"
+
+msgid "AUTH_FAILED_FOR_PLUGIN"
+msgstr "Autentificare eșuată pentru plugin-ul \"%s\"!"
+
+msgid "AUTH_REQUIRED_FOR_PLUGIN"
+msgstr "Autentificarea este necesară pentru plugin-ul \"%s\"."
+
+msgid "ABOUT_DIALOG_COMMENTS"
+msgstr "Căutați torrenți pe diferite site-uri"
+
+msgid "AFTER"
+msgstr "După"
+
+msgid "BEFORE"
+msgstr "Înainte"
+
+msgid "CATEGORY_VIDEO"
+msgstr "Video"
+
+msgid "CATEGORY_MOVIE"
+msgstr "Film"
+
+msgid "CATEGORY_MUSIC"
+msgstr "Muzicã"
+
+msgid "CATEGORY_SOFTWARE"
+msgstr "Software"
+
+msgid "CATEGORY_GAME"
+msgstr "Joc"
+
+msgid "CATEGORY_OTHER"
+msgstr "Altele"
+
+msgid "CATEGORY"
+msgstr "Categorie"
+
+msgid "CATEGORY_XXX"
+msgstr "XXX"
+
+msgid "CATEGORY_SPORTS"
+msgstr "Sporturi"
+
+msgid "CATEGORY_MANGA"
+msgstr "Manga"
+
+msgid "CATEGORY_TV"
+msgstr "TV"
+
+msgid "CATEGORY_DOCUMENTARY"
+msgstr "Documentare"
+
+msgid "CATEGORY_PC"
+msgstr "PC"
+
+msgid "CATEGORY_PS2"
+msgstr "PS2"
+
+msgid "CATEGORY_PSP"
+msgstr "PSP"
+
+msgid "CATEGORY_XBOX"
+msgstr "XBOX"
+
+msgid "CATEGORY_XBOX360"
+msgstr "XBOX-360"
+
+msgid "CATEGORY_PDA"
+msgstr "PDA"
+
+msgid "ANY"
+msgstr "Oricare"
+
+msgid "CATEGORY_AUDIO"
+msgstr "Audio"
+
+msgid "CATEGORY_MAC"
+msgstr "Mac"
+
+msgid "CATEGORY_WII"
+msgstr "WII"
+
+msgid "REPORT_BUG"
+msgstr "_Raporteazã un bug"
+
+msgid "CONTACT"
+msgstr "Contact"
+
+msgid "REQUEST_FEATURE"
+msgstr "Solicitã o caracteristicã"
+
+msgid "LANGUAGE"
+msgstr "Limbã"
+
+msgid "STOP_SEARCH_WHEN_NB_RESULTS_REACHES"
+msgstr "Stop search when number of results reaches"
+
+msgid "COMMENTS"
+msgstr "Comments"
+
+msgid "RATE"
+msgstr "Rate"
+
+msgid "TORRENT_DETAILS"
+msgstr "Torrent details"
+
+msgid "GENERAL_INFORMATIONS"
+msgstr "General informations"
+
+msgid "INCLUDED_FILES"
+msgstr "Included files"
+
+msgid "FILENAME"
+msgstr "Filename"
+
+msgid "POSTED_BY"
+msgstr "Posted by %s"
+
+msgid "LOADING_TORRENT_DETAILS"
+msgstr "Loading torrent details..."
+
+msgid "NB_RESULTS_SHOWN"
+msgstr "%d result(s) shown"
+

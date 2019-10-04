@@ -1,0 +1,516 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: torrent-search\n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Daan Sprenkels <dsprenkels@gmail.com>\n"
+"Language-Team: Daan Sprenkels <dsprenkels@gmail.com>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "SEARCH"
+msgstr "Zoek"
+
+msgid "HELP_MENU_LABEL"
+msgstr "_Hulp"
+
+msgid "FILE_MENU_LABEL"
+msgstr "_Bestand"
+
+msgid "EDIT_MENU_LABEL"
+msgstr "Be_werken"
+
+msgid "PREFERENCES"
+msgstr "Voorkeuren"
+
+msgid "GENERAL_OPTIONS"
+msgstr "Algemene opties"
+
+msgid "SEARCH_PLUGINS"
+msgstr "Plugins"
+
+msgid "HELP_SHOW_VERSION"
+msgstr "Laat versie zien en sluit af"
+
+msgid "TORRENT_FILES"
+msgstr ".torrent bestanden"
+
+msgid "SAVE_IN_FOLDER"
+msgstr "Opslaan in map"
+
+msgid "USE_STANDARD_APP"
+msgstr "Gebruik standaard applicatie"
+
+msgid "USE_CUSTOM_APP"
+msgstr "Gebruik aangepaste applicatie"
+
+msgid "SELECT_FOLDER"
+msgstr "Selecteer map"
+
+msgid "SEARCH_RESULTS"
+msgstr "Zoekresultaten"
+
+msgid "DOWNLOADING_FILE"
+msgstr "Downloaden..."
+
+msgid "DOWNLOAD_FAILED"
+msgstr "Download mislukt!"
+
+msgid "FILE_NOT_FOUND_ON_SERVER"
+msgstr "Bestand niet gevonden op de server."
+
+msgid "RUN_SEARCH_ON_STARTUP"
+msgstr "Doe zoekopdracht bij opstarten"
+
+msgid "SEARCH_RESULTS_INIT"
+msgstr "Zoekresultaten - Laden..."
+
+msgid "GETTING_LINK"
+msgstr "Verkrijgen van link..."
+
+msgid "DOWNLOADING"
+msgstr "Downloaden..."
+
+msgid "SEARCH_RESULTS_NO_RESULTS"
+msgstr "Zoekresultaten - Geen resultaten"
+
+msgid "INITIALISING"
+msgstr "Initialiseren..."
+
+msgid "NO_RESULTS"
+msgstr "Geen resultaten"
+
+msgid "NB_RESULTS"
+msgstr "%d resultaten"
+
+msgid "SEARCH_FINISHED"
+msgstr "Zoekopdracht klaar"
+
+msgid "SEARCH_RUNNING"
+msgstr "Zoeken..."
+
+msgid "NAME"
+msgstr "Naam"
+
+msgid "DATE"
+msgstr "Datum"
+
+msgid "SIZE"
+msgstr "Grootte"
+
+msgid "SEEDERS"
+msgstr "Seeders"
+
+msgid "LEECHERS"
+msgstr "Leechers"
+
+msgid "PLUGIN"
+msgstr "Plugin"
+
+msgid "NO_TITLE"
+msgstr "Geen titel"
+
+msgid "DOWNLOAD_NO_COMMAND"
+msgstr ""
+"Kon geen programma vinden om dit bestand mee uit te voeren.\n"
+"Controleer je instellingen in het \"Voorkeuren\"-scherm."
+
+msgid "DOWNLOAD_COMMAND_NOT_FOUND"
+msgstr ""
+"Het programma dat gekozen is om dit bestand mee te openen kon niet gevonden worden.\n"
+" Controleer je instellingen in het \"Voorkeuren\"-scherm."
+
+msgid "ADD_PLUGIN_DIR"
+msgstr "Voeg een plugin-map toe."
+
+msgid "PLUGIN_NAME"
+msgstr "Plugin naam"
+
+msgid "ENABLED"
+msgstr "Ingeschakeld"
+
+msgid "ERROR"
+msgstr "Error"
+
+msgid "NO_PLUGINS_ENABLED"
+msgstr "Geen plugins ingeschakeld!"
+
+msgid "CHECK_CONFIG"
+msgstr "Ga naar het \"Voorkeuren\"-schermpje om je instellingen te controleren."
+
+msgid "SEARCH_OPTIONS"
+msgstr "Zoek opties"
+
+msgid "HIDE_ZERO_SEEDERS"
+msgstr "Verberg torrents zonder seeders"
+
+msgid "CLEAR_HISTORY"
+msgstr "Zoekgeschiedenis w_issen"
+
+msgid "HISTORY_CLEARED"
+msgstr "Zoekgeschiedenis gewist."
+
+msgid "INFORMATION"
+msgstr "Informatie"
+
+msgid "MIN_SIZE"
+msgstr "Minimale grootte:"
+
+msgid "MAX_SIZE"
+msgstr "Maximale grootte:"
+
+msgid "ONLY_EXACT_PHRASE"
+msgstr "Laat alleen torrents zien waar de woorden exact in hun naam staan"
+
+msgid "ONLY_ALL_WORDS"
+msgstr "Laat alleen torrents zien waar alle woorden in staan"
+
+msgid "NEW_VERSION_AVAILABLE"
+msgstr "Nieuwe versie beschikbaar"
+
+msgid "DONT_SHOW_MESG_AGAIN"
+msgstr "Niet nog een keer laten zien"
+
+msgid "LAST_VERSION_MESG"
+msgstr "Versie %s van Torrent Search is uit."
+
+msgid "NEW_VERSION_MESG"
+msgstr "Je kunt een nieuwe versie van Torrent Search downloaden."
+
+msgid "GO_TO_DOWNLOAD_LINK"
+msgstr "Ga naar de volgende pagina om het te downloaden:"
+
+msgid "HELP_ADD_PLUGIN"
+msgstr "Plugin toevoegen van een aangepast pad"
+
+msgid "PLUGIN_FILE_NOT_FOUND"
+msgstr ""
+"WAARSCHUWING:plugins:Error bij laden\n"
+"%s: Bestand niet gevonden!"
+
+msgid "PLUGIN_FILE_NOT_FILE"
+msgstr ""
+"WARNING:plugins:Error bij laden\n"
+"%s: Dit is geen bestand!"
+
+msgid "PLUGIN_FILE_NOT_READABLE"
+msgstr ""
+"WARNING:plugins:Error bij laden\n"
+"%s: Dit bestand is niet leesbaar!"
+
+msgid "CHECKING_PLUGIN_UPDATES"
+msgstr "Controleren op plugin updates"
+
+msgid "CHECKING_PLUGINS_VERSIONS"
+msgstr "Controleren op plugin versies"
+
+msgid "DOWNLOADING_PLUGINS_UPDATES"
+msgstr "Downloaden van plugin updates"
+
+msgid "DONE"
+msgstr "Klaar"
+
+msgid "FAILED"
+msgstr "Mislukt"
+
+msgid "GETTING_PLUGINS_LIST"
+msgstr "Plugin lijst ophalen"
+
+msgid "NEW_PLUGINS_UPDATES_INSTALLED"
+msgstr "Nieuwe plugin updates zijn geÃ¯nstalleerd."
+
+msgid "APP_WILL_BE_RESTARTED"
+msgstr "Dit programma zal nu opnieuw opgestart worden."
+
+msgid "SYNTAX_ERROR"
+msgstr "Syntax error"
+
+msgid "NAME_DOES_NOT_CONTAIN"
+msgstr "Naam bevat niet"
+
+msgid "WAITING"
+msgstr "Wachten..."
+
+msgid "FINISHED"
+msgstr "Klaar"
+
+msgid "TITLE"
+msgstr "Titel"
+
+msgid "STATUS"
+msgstr "Status"
+
+msgid "DOWNLOADS"
+msgstr "Downloads"
+
+msgid "SAVE_FOLDER_NO_EXIST"
+msgstr "Het pad dat geselecteerd is om torrents te plaatsen bestaat niet!"
+
+msgid "SAVE_FOLDER_NOT_FOLDER"
+msgstr "Het pad dat geselecteerd is om torrents te plaatsen is geen map!"
+
+msgid "SAVE_FOLDER_NOT_WRITABLE"
+msgstr "Kan niet in het pad dat geselecteerd is om torrents te plaatsen schrijven!"
+
+msgid "TORRENT_APP_NOT_FOUND"
+msgstr "Het programma dat geselecteerd is om torrent bestanden mee te openen kon niet gevonden worden!"
+
+msgid "INCORRECT_CONFIG"
+msgstr "Somminge instellingen zijn incorrect. (Misschien waren ze handmatig veranderd?)"
+
+msgid "HELP_NO_PLUGIN_CHECK"
+msgstr "Niet controleren op plugin updates"
+
+msgid "CHECK_PLUGINS_UPDATES"
+msgstr "Controleer op plugin updates bij opstarten"
+
+msgid "PLUGINS_UPDATES"
+msgstr "Plugin updates"
+
+msgid "CHECK_NOW"
+msgstr "Controleer nu"
+
+msgid "SHOW_THIS_HELP_AND_EXIT"
+msgstr "Laat help zien en sluit af."
+
+msgid "BASIC_OPTIONS"
+msgstr "Basisinstellingen"
+
+msgid "ADVANCED_OPTIONS"
+msgstr "Geavanceerde opties (voor ontwikkelaars)"
+
+msgid "PATH_TO_SHARE"
+msgstr "Pad naar \"share\"-map (standaard: /usr/share)"
+
+msgid "NAME_CONTAINS"
+msgstr "Naam bevat"
+
+msgid "FILTER_DUPLICATES"
+msgstr "Filter dubbele"
+
+msgid "ENABLE"
+msgstr "Ingeschakeld"
+
+msgid "RETRY_MENU_ITEM"
+msgstr "Opni_ew"
+
+msgid "DOWNLOAD_MENU_ITEM"
+msgstr "_Download"
+
+msgid "CAN_DOWNLOAD_LAST_VERSION"
+msgstr "Je kunt nu de laatste versie van Torrent Search downloaden."
+
+msgid "DOWNLOAD_NOW"
+msgstr "_Download nu"
+
+msgid "PLEASE_WAIT"
+msgstr "Een moment geduld..."
+
+msgid "LOOKING_UP_AVAILABLE_FILES"
+msgstr "Controleren op beschikbare bestanden..."
+
+msgid "FOUND_NB_FILES"
+msgstr "%d bestand(en) gevonden"
+
+msgid "SELECT_FILE_TO_DOWNLOAD"
+msgstr "Selecteer bestand om te downloaden"
+
+msgid "DOWNLOAD"
+msgstr "_Download"
+
+msgid "PLEASE_SELECT_DOWNLOAD_FILE"
+msgstr "Selecteer bestand om te downloaden:"
+
+msgid "DEBIAN_PACKAGE"
+msgstr "Debian pakket"
+
+msgid "TARGZ_ARCHIVE"
+msgstr "tar.gz achief"
+
+msgid "SELECT_DESTINATION"
+msgstr "Selecteer doel"
+
+msgid "DOWNLOADING_FILENAME"
+msgstr "Downloaden van \"%s\"..."
+
+msgid "DOWNLOAD_SUCCESSFUL"
+msgstr "Download succesvol!"
+
+msgid "NO_DOWNLOAD_FILES"
+msgstr "Het programma kon de bestanden om te downloaden niet vinden!"
+
+msgid "RETRY_ALL_FAILED"
+msgstr "Probeer alle mislukte downloads opnieuw"
+
+msgid "CANCEL_ALL_FAILED"
+msgstr "Annuleer alle mislukte downloads"
+
+msgid "CANCEL_ALL"
+msgstr "Annuleer alle downloads"
+
+msgid "LAST_UPDATE"
+msgstr "Laatste update"
+
+msgid "AUTHOR"
+msgstr "Auteur"
+
+msgid "UNKNOWN"
+msgstr "Onbekend"
+
+msgid "DONT_SHOW_UNTIL_NEXT_VERSION"
+msgstr "Laat dit bericht niet nog een keer zien, tot de volgende versie."
+
+msgid "AUTH_REQUIRED_FOR_NEW_PLUGINS"
+msgstr "Identificatie benodigd voor nieuwe plugins"
+
+# Voor deze sites moet je inloggen, hiermee worden sites bedoeld als Demonoid.
+msgid "SOME_NEW_PLUGINS_REQUIRE_AUTH"
+msgstr "Voor sommige plugins moet je rechten hebben."
+
+msgid "SELECT_ONES_TO_ENABLE"
+msgstr "Selecteer degenen die je wilt inschakelen:"
+
+msgid "WINDOWS_INSTALLER"
+msgstr "Windows installer"
+
+msgid "DISABLE"
+msgstr "Uitschakelen"
+
+msgid "USERNAME"
+msgstr "Gebruikersnaam"
+
+msgid "PASSWORD"
+msgstr "Wachtwoord"
+
+msgid "REMEMBER_AUTH"
+msgstr "Onthoud authenticatie"
+
+msgid "AUTH_REQUIRED_FOR_PLUGIN"
+msgstr "Authenticatie is benodigd voor de \"%s\" plugin."
+
+msgid "AUTHENTICATION"
+msgstr "Authenticatie"
+
+msgid "AUTH_FAILED_FOR_PLUGIN"
+msgstr "Authenticatie mislukt voor de plugin: \"%s\"!"
+
+msgid "ABOUT_DIALOG_COMMENTS"
+msgstr "Zoek op verschillende websites naar torrents tegelijk"
+
+msgid "AFTER"
+msgstr "Geupload na:"
+
+msgid "BEFORE"
+msgstr "Geupload voor:"
+
+msgid "CATEGORY_VIDEO"
+msgstr "Video"
+
+msgid "CATEGORY_MOVIE"
+msgstr "Film"
+
+msgid "CATEGORY_MUSIC"
+msgstr "Muziek"
+
+msgid "CATEGORY_SOFTWARE"
+msgstr "Software"
+
+msgid "CATEGORY_GAME"
+msgstr "Spellen"
+
+msgid "CATEGORY_OTHER"
+msgstr "Anders"
+
+msgid "CATEGORY"
+msgstr "Categorie"
+
+msgid "CATEGORY_XXX"
+msgstr "XXX"
+
+msgid "CATEGORY_SPORTS"
+msgstr "Sport"
+
+msgid "CATEGORY_MANGA"
+msgstr "Manga"
+
+msgid "CATEGORY_TV"
+msgstr "Televisie"
+
+msgid "CATEGORY_DOCUMENTARY"
+msgstr "Documentaires"
+
+msgid "CATEGORY_PC"
+msgstr "PC"
+
+msgid "CATEGORY_PS2"
+msgstr "PS2"
+
+msgid "CATEGORY_PSP"
+msgstr "PSP"
+
+msgid "CATEGORY_XBOX"
+msgstr "Xbox"
+
+msgid "CATEGORY_XBOX360"
+msgstr "Xbox-360"
+
+msgid "CATEGORY_PDA"
+msgstr "PDA"
+
+msgid "ANY"
+msgstr "Alles"
+
+msgid "CATEGORY_AUDIO"
+msgstr "Audio"
+
+msgid "CATEGORY_MAC"
+msgstr "Mac"
+
+msgid "CATEGORY_WII"
+msgstr "Wii"
+
+msgid "REPORT_BUG"
+msgstr "Bug _rapporteren"
+
+msgid "CONTACT"
+msgstr "Contact"
+
+msgid "REQUEST_FEATURE"
+msgstr "Verzoek nieuwe functie"
+
+msgid "LANGUAGE"
+msgstr "Taal"
+
+msgid "STOP_SEARCH_WHEN_NB_RESULTS_REACHES"
+msgstr "Stop met zoeken bij aantal resultaten"
+
+msgid "COMMENTS"
+msgstr "Commentaar"
+
+msgid "RATE"
+msgstr "Snelheid"
+
+msgid "TORRENT_DETAILS"
+msgstr "Torrent informatie"
+
+msgid "TORRENT_NAME"
+msgstr "Torrent naam"
+
+msgid "NB_RESULTS_SHOWN"
+msgstr "%d resultaten weergegeven"
+
+msgid "GENERAL_INFORMATIONS"
+msgstr "Algemene informatie"
+
+msgid "INCLUDED_FILES"
+msgstr "Bestanden"
+
+msgid "FILENAME"
+msgstr "Bestandsnaam"
+
+msgid "POSTED_BY"
+msgstr "Geplaatst door %s"
+
+msgid "LOADING_TORRENT_DETAILS"
+msgstr "Torrent details laden..."

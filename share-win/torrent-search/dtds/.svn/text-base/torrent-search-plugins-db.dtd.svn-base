@@ -1,0 +1,10 @@
+<!ELEMENT plugins (plugin*)>
+<!ELEMENT plugin (title, released_time, author, filename, classname, download_url)>
+   <!ATTLIST plugin id CDATA #REQUIRED>
+   <!ATTLIST plugin version CDATA #REQUIRED>
+<!ELEMENT released_time (#PCDATA)>
+<!ELEMENT title (#PCDATA)>
+<!ELEMENT filename (#PCDATA)>
+<!ELEMENT author (#PCDATA)>
+<!ELEMENT classname (#PCDATA)>
+<!ELEMENT download_url (#PCDATA)>

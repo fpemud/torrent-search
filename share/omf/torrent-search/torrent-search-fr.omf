@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="utf-8"?>
+<omf>
+  <resource>
+    <creator>(Gwendal Le Bihan)</creator>
+    <maintainer>(Gwendal Le Bihan)</maintainer>
+    <title>Manuel de Torrent Search</title>
+    <date>Jul 2010</date>
+    <version identifier="Manuel Utilisateur De Torrent Search" date="Jul 2010"/>
+    <subject category="Internet"/>
+    <description>
+       
+    Manuel utilisateur pour l'application Torrent Search.
+       
+     </description>
+    <type>user's guide</type>
+    <format mime="text/xml" dtd="-//OASIS//DTD DocBook XML V4.1.2//EN"/>
+    <identifier url="file:///usr/share/gnome/help/torrent-search/fr/torrent-search.xml"/>
+    <language code="fr"/>
+    <rights type="GNU FDL" license.version="1.1" holder="Sun Microsystems"/>
+  </resource>
+</omf>

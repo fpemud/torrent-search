@@ -1,0 +1,7 @@
+<chapter id="plugins">
+   <title>Plugins</title>
+   <para>&app; uses plugins to search for torrent files on different websites. This way, new websites can be very easily added without the need of installing a new version of the software.</para>
+   <para>Plugins will be updated at each startup of &app;, unless you disabled this option in the <link linkend="preferences-general-plugins-updates">preferences dialog</link>.</para>
+   <para>If you would like a new website to be handled, please report to the <link linkend="contacts-request-plugin">Requesting a new plugin</link> section.</para>
+   <para>If you want to develop new plugins, see the <link linkend="developing-plugins">Developing plugins</link> section.</para>
+</chapter>

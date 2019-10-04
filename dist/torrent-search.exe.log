@@ -1,0 +1,7 @@
+F:\Dev\Python\torrent-search\dist\library.zip\TorrentSearch\auth.py:26: GtkWarning: Unable to locate theme engine in module_path: "wimp",
+F:\Dev\Python\torrent-search\dist\library.zip\TorrentSearch\Plugin.py:499: Warning: GError set over the top of a previous GError or uninitialized memory.
+This indicates a bug in someone's code. You must ensure an error is NULL before it's set.
+The overwriting error message was: Couldn't load bitmap
+F:\Dev\Python\torrent-search\dist\library.zip\TorrentSearch\Plugin.py:499: Warning: GError set over the top of a previous GError or uninitialized memory.
+This indicates a bug in someone's code. You must ensure an error is NULL before it's set.
+The overwriting error message was: Couldn't load bitmap

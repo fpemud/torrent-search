@@ -1,0 +1,7 @@
+<chapter id="developing">
+   <title>Torrent Search Ontwikkelen</title>
+   <sect1 id="developing-plugins">
+      <title>Plugins ontwikkelen</title>
+      <para>Als je zin hebt om nieuwe plugins te ontwikkelen, ga dan naar de "Torrent Search plugin development guide", die gevonden kan worden in het <ulink url="http://torrent-search.sourceforge.net/documentation">documentatie gedeelde</ulink> van de &app; website.</para>
+   </sect1>
+</chapter>

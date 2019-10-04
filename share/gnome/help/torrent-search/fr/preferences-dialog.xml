@@ -1,0 +1,39 @@
+<chapter id="preferences-dialog">
+   <title>Dialogue de pr&eacute;f&eacute;rences</title>
+   <sect1 id="preferences-general">
+      <title>Options g&eacute;n&eacute;rales</title>
+      <figure id="figure-preferences-general">
+         <title>Dialogue de pr&eacute;f&eacute;rences - Options g&eacute;n&eacute;rales</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-general.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <sect2 id="preferences-general-torrent-files">
+         <title>La bo&icirc;te "Fichiers torrent"</title>
+         <para>Dans la bo&icirc;te <guilabel>Fichiers torrent</guilabel>, vous pouvez choisir quoi faire avec les fichiers torrent t&eacute;l&eacute;charg&eacute;s. Vous pouvez soit les enregistrer dans un r&eacute;pertoire, soit les ouvrir avec une application reconnue pour g&eacute;rer les fichiers torrent, ou encore les ouvrir avec une application de votre choix.</para>
+      </sect2>
+      <sect2 id="preferences-general-plugins-updates">
+         <title>La bo&icirc;te "Mises &agrave; jour de plugins"</title>
+         <para>Ici vous pouvez choisir si vous souhaitez que &app; cherche les mises &agrave; jour de plugins au d&eacute;marrage. Ceci est recommand&eacute;. Toutefois, si vous choisissez de d&eacute;sactiver cette option, vous pouvez effectuer une mise &agrave; jour &agrave; tout moment en cliquant sur le bouton <guibutton>Chercher maintenant</guibutton>.</para>
+      </sect2>
+   </sect1>
+   <sect1 id="preferences-plugins">
+      <title>Plugins de recherche</title>
+      <figure id="figure-preferences-plugins">
+         <title>Dialogue de pr&eacute;f&eacute;rences - Plugins de recherche</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-plugins.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <para>Vous verrez ici la liste des plugins de recherche disponibles. Si vous pensez qu'un plugin ne fonctionne pas bien ou fournit de mauvais r&eacute;sultats, vous pouvez le d&eacute;sactiver en cliquant qur la case &agrave; cocher dans la colonne <guilabel>Activer</guilabel>.</para>
+      <para>Merci de signaler tout bug que vous pourriez remarquer. Voir la section <ulink type="help" url="?reporting-bugs">Signaler un bug</ulink> pour plus d'informations.</para>
+   </sect1>
+</chapter>

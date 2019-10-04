@@ -1,0 +1,39 @@
+<chapter id="preferences-dialog">
+   <title>Preferences dialog</title>
+   <sect1 id="preferences-general">
+      <title>General options</title>
+      <figure id="figure-preferences-general">
+         <title>"General options" tab of the preferences dialog</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-general.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <sect2 id="preferences-general-torrent-files">
+         <title>The "Torrent files" box</title>
+         <para>In the <guilabel>Torrent files</guilabel> box, you can choose what you want to do with torrent files once they are downloaded. You can either save them in a folder, open them with an application recognized to handle torrent files or choose an application of your own to open them.</para>
+      </sect2>
+      <sect2 id="preferences-general-plugins-updates">
+         <title>The "Plugins updates" box</title>
+         <para>Here you can choose whether you want &app; to check for plugins updates on startup. This is recommended. However, if you choose to disable automatic update, you can run it manually by clicking on the <guibutton>Check now</guibutton> button.</para>
+      </sect2>
+   </sect1>
+   <sect1 id="preferences-plugins">
+      <title>Search plugins</title>
+      <figure id="figure-preferences-plugins">
+         <title>"Search plugins" tab of the preferences dialog</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-plugins.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <para>In this tab, you will see a list of the available search plugins. If you feel like a plugin does not work or produces bad results, you can disable it by unchecking the checkbox in the <guilabel>Enable</guilabel> column.</para>
+      <para>Please also report any bug you might notice. See the <link linkend="reporting-bugs">Reporting bugs</link> section for more informations on reporting bugs.</para>
+   </sect1>
+</chapter>

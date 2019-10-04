@@ -1,0 +1,513 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: \n"
+"POT-Creation-Date: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>\n"
+"Language-Team: \n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=iso-8859-1\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+msgid "SEARCH"
+msgstr "Pesquisar"
+
+msgid "HELP_MENU_LABEL"
+msgstr "_Ajuda"
+
+msgid "FILE_MENU_LABEL"
+msgstr "_Ficheiro"
+
+msgid "EDIT_MENU_LABEL"
+msgstr "_Editar"
+
+msgid "PREFERENCES"
+msgstr "Preferências"
+
+msgid "GENERAL_OPTIONS"
+msgstr "Opções Gerais"
+
+msgid "SEARCH_PLUGINS"
+msgstr "Pesquisar plugins"
+
+msgid "HELP_SHOW_VERSION"
+msgstr "Mostrar versão e sair"
+
+msgid "TORRENT_FILES"
+msgstr "Ficheiros Torrent"
+
+msgid "SAVE_IN_FOLDER"
+msgstr "Guardar na pasta"
+
+msgid "USE_STANDARD_APP"
+msgstr "Usar aplicação padrão"
+
+msgid "USE_CUSTOM_APP"
+msgstr "Usar aplicação personalizada"
+
+msgid "SELECT_FOLDER"
+msgstr "Seleccionar pasta"
+
+msgid "SEARCH_RESULTS"
+msgstr "Resultados da pesquisa"
+
+msgid "DOWNLOADING_FILE"
+msgstr "Download do ficheiro..."
+
+msgid "DOWNLOAD_FAILED"
+msgstr "Download falhado!"
+
+msgid "FILE_NOT_FOUND_ON_SERVER"
+msgstr "Ficheiro não encontrado no servidor."
+
+msgid "RUN_SEARCH_ON_STARTUP"
+msgstr "Executar pesquisa no arranque."
+
+msgid "SEARCH_RESULTS_INIT"
+msgstr "Resultados da pesquisa - A iniciar..."
+
+msgid "GETTING_LINK"
+msgstr "Obter ligação..."
+
+msgid "DOWNLOADING"
+msgstr "A descarregar..."
+
+msgid "SEARCH_RESULTS_NO_RESULTS"
+msgstr "Resultados da pesquisa - Sem resultados"
+
+msgid "INITIALISING"
+msgstr "A iniciar..."
+
+msgid "NO_RESULTS"
+msgstr "Sem resultados"
+
+msgid "NB_RESULTS"
+msgstr "%d resultado(s)"
+
+msgid "SEARCH_FINISHED"
+msgstr "Pesquisa concluída"
+
+msgid "SEARCH_RUNNING"
+msgstr "A pesquisar..."
+
+msgid "NAME"
+msgstr "Nome"
+
+msgid "DATE"
+msgstr "Data"
+
+msgid "SIZE"
+msgstr "Tamanho"
+
+msgid "SEEDERS"
+msgstr "Seeders"
+
+msgid "LEECHERS"
+msgstr "Leechers"
+
+msgid "PLUGIN"
+msgstr "Plugin"
+
+msgid "NO_TITLE"
+msgstr "Sem título"
+
+msgid "DOWNLOAD_NO_COMMAND"
+msgstr ""
+"Não foi possível encontrar um programa para executar este ficheiro.\n"
+"Por favor, verifique as suas configurações nas definições de preferências."
+
+msgid "DOWNLOAD_COMMAND_NOT_FOUND"
+msgstr ""
+"O programa escolhido para abrir este ficheiro não pôde ser encontrado.\n"
+" Por favor, verifique as suas configurações nas definições de preferências."
+
+msgid "ADD_PLUGIN_DIR"
+msgstr "Adicionar uma pasta de plugins"
+
+msgid "PLUGIN_NAME"
+msgstr "Nome do plugin"
+
+msgid "ENABLED"
+msgstr "Activado"
+
+msgid "ERROR"
+msgstr "Erro"
+
+msgid "NO_PLUGINS_ENABLED"
+msgstr "Sem plugins activados!"
+
+msgid "CHECK_CONFIG"
+msgstr "Por favor, vá para a janela de preferências para verificar a sua configuração."
+
+msgid "SEARCH_OPTIONS"
+msgstr "Opções de pesquisa"
+
+msgid "HIDE_ZERO_SEEDERS"
+msgstr "Esconder torrents sem seeders"
+
+msgid "CLEAR_HISTORY"
+msgstr "_Limpar histórico de pesquisa"
+
+msgid "HISTORY_CLEARED"
+msgstr "Histórico apagado."
+
+msgid "INFORMATION"
+msgstr "Informação"
+
+msgid "MIN_SIZE"
+msgstr "Tamanho mínimo"
+
+msgid "MAX_SIZE"
+msgstr "Tamanho máximo"
+
+msgid "ONLY_EXACT_PHRASE"
+msgstr "Mostrar apenas torrents com a frase exata no nome"
+
+msgid "ONLY_ALL_WORDS"
+msgstr "Mostrar apenas torrents com todas as palavras no nome"
+
+msgid "NEW_VERSION_AVAILABLE"
+msgstr "Nova versão disponível"
+
+msgid "DONT_SHOW_MESG_AGAIN"
+msgstr "Não mostrar esta mensagem novamente"
+
+msgid "LAST_VERSION_MESG"
+msgstr "Versão %s do Torrent Search está disponível."
+
+msgid "NEW_VERSION_MESG"
+msgstr "Uma nova versão do Torrent Search está disponível."
+
+msgid "GO_TO_DOWNLOAD_LINK"
+msgstr "Pode ir para a seguinte página, para efectuar o download do ficheiro:"
+
+msgid "HELP_ADD_PLUGIN"
+msgstr "Adicionar um plugin num local personalizado"
+
+msgid "PLUGIN_FILE_NOT_FOUND"
+msgstr ""
+"WARNING:plugins:Erro de carregamento\n"
+"%s : Ficheiro não encontrado!"
+
+msgid "PLUGIN_FILE_NOT_FILE"
+msgstr ""
+"WARNING:plugins:Erro de carregamento\n"
+"%s : Não é um ficheiro!"
+
+msgid "PLUGIN_FILE_NOT_READABLE"
+msgstr ""
+"WARNING:plugins:Erro de carregamento\n"
+"%s : Ficheiro não é legível!"
+
+msgid "CHECKING_PLUGIN_UPDATES"
+msgstr "Verificar actualizações plugin..."
+
+msgid "CHECKING_PLUGINS_VERSIONS"
+msgstr "A verificar versões dos plugins"
+
+msgid "DOWNLOADING_PLUGINS_UPDATES"
+msgstr "Download actualizações de plugins"
+
+msgid "DONE"
+msgstr "Feito"
+
+msgid "FAILED"
+msgstr "Falhado"
+
+msgid "GETTING_PLUGINS_LIST"
+msgstr "Obter lista de plugins"
+
+msgid "NEW_PLUGINS_UPDATES_INSTALLED"
+msgstr "Novas actualizações de plugins foram instalados."
+
+msgid "APP_WILL_BE_RESTARTED"
+msgstr "A aplicação será agora reiniciada."
+
+msgid "SYNTAX_ERROR"
+msgstr "Erro de sintaxe"
+
+msgid "NAME_DOES_NOT_CONTAIN"
+msgstr "Nome não contém"
+
+msgid "WAITING"
+msgstr "A aguardar..."
+
+msgid "FINISHED"
+msgstr "Terminou"
+
+msgid "TITLE"
+msgstr "Título"
+
+msgid "STATUS"
+msgstr "Status"
+
+msgid "DOWNLOADS"
+msgstr "Downloads"
+
+msgid "SAVE_FOLDER_NO_EXIST"
+msgstr "O local escolhido para salvar os ficheiros torrents não existe!"
+
+msgid "SAVE_FOLDER_NOT_FOLDER"
+msgstr "O local escolhido para salvar os ficheiros torrents não é uma pasta!"
+
+msgid "SAVE_FOLDER_NOT_WRITABLE"
+msgstr "Não é possivel escrever no local escolhido para salvar os arquivos torrents!"
+
+msgid "TORRENT_APP_NOT_FOUND"
+msgstr "O aplicativo seleccionado para abrir arquivos torrent não pôde ser encontrado!"
+
+msgid "INCORRECT_CONFIG"
+msgstr "Alguns parâmetros de configuração estão incorrectos (talvez tenham sido modificados manualmente ?)."
+
+msgid "HELP_NO_PLUGIN_CHECK"
+msgstr "Não verificar actualizações para o plugin"
+
+msgid "CHECK_PLUGINS_UPDATES"
+msgstr "Verificar se há actualizações de plugins no arranque"
+
+msgid "PLUGINS_UPDATES"
+msgstr "Actualizações de plugins"
+
+msgid "CHECK_NOW"
+msgstr "Verificar agora"
+
+msgid "SHOW_THIS_HELP_AND_EXIT"
+msgstr "Mostrar esta mensagem de ajuda e sair"
+
+msgid "BASIC_OPTIONS"
+msgstr "Opções básicas"
+
+msgid "ADVANCED_OPTIONS"
+msgstr "Opções Avançadas (para desenvolvedores)"
+
+msgid "PATH_TO_SHARE"
+msgstr "Local da pasta de partilha (padrão: /usr/share)"
+
+msgid "NAME_CONTAINS"
+msgstr "Nome contém"
+
+msgid "FILTER_DUPLICATES"
+msgstr "Filtrar duplicados"
+
+msgid "ENABLE"
+msgstr "Activar"
+
+msgid "RETRY_MENU_ITEM"
+msgstr "_Tantar novamente"
+
+msgid "DOWNLOAD_MENU_ITEM"
+msgstr "_Download"
+
+msgid "CAN_DOWNLOAD_LAST_VERSION"
+msgstr "Pode efectuar o download da versão mais recente do Torrent Search agora."
+
+msgid "DOWNLOAD_NOW"
+msgstr "_Download agora"
+
+msgid "PLEASE_WAIT"
+msgstr "Por favor aguarde..."
+
+msgid "LOOKING_UP_AVAILABLE_FILES"
+msgstr "À procura de ficheiros disponíveis ..."
+
+msgid "FOUND_NB_FILES"
+msgstr "Encontrado %d ficheiro(s)"
+
+msgid "SELECT_FILE_TO_DOWNLOAD"
+msgstr "Seleccione o ficheiro para download"
+
+msgid "DOWNLOAD"
+msgstr "_Download"
+
+msgid "PLEASE_SELECT_DOWNLOAD_FILE"
+msgstr "Por favor seleccione o ficheiro para download:"
+
+msgid "DEBIAN_PACKAGE"
+msgstr "Pacote Debian"
+
+msgid "TARGZ_ARCHIVE"
+msgstr "Ficheiro tar.gz"
+
+msgid "SELECT_DESTINATION"
+msgstr "Escolha o destino"
+
+msgid "DOWNLOADING_FILENAME"
+msgstr "Downloading \"%s\"..."
+
+msgid "DOWNLOAD_SUCCESSFUL"
+msgstr "Download com sucesso!"
+
+msgid "NO_DOWNLOAD_FILES"
+msgstr "O aplicativo não conseguiu encontrar os ficheiros para download!"
+
+msgid "RETRY_ALL_FAILED"
+msgstr "Repetir todos os downloads falhados"
+
+msgid "CANCEL_ALL_FAILED"
+msgstr "Cancelar todos os downloads falhados"
+
+msgid "CANCEL_ALL"
+msgstr "Cancelar todos os downloads"
+
+msgid "LAST_UPDATE"
+msgstr "Última actualização"
+
+msgid "AUTHOR"
+msgstr "Autor"
+
+msgid "UNKNOWN"
+msgstr "Desconhecido"
+
+msgid "DONT_SHOW_UNTIL_NEXT_VERSION"
+msgstr "Não mostrar esta mensagem novamente até a próxima versão"
+
+msgid "AUTH_REQUIRED_FOR_NEW_PLUGINS"
+msgstr "Autenticação necessária para novos plugins"
+
+msgid "SOME_NEW_PLUGINS_REQUIRE_AUTH"
+msgstr "Alguns plugins novos necessitam de uma autenticação para serem usados."
+
+msgid "SELECT_ONES_TO_ENABLE"
+msgstr "Selecione aqueles que deseja activar:"
+
+msgid "WINDOWS_INSTALLER"
+msgstr "Instalador do Windows"
+
+msgid "DISABLE"
+msgstr "Desactivar"
+
+msgid "USERNAME"
+msgstr "Nome de utilizador"
+
+msgid "PASSWORD"
+msgstr "Senha"
+
+msgid "REMEMBER_AUTH"
+msgstr "Lembrar autenticação"
+
+msgid "AUTH_REQUIRED_FOR_PLUGIN"
+msgstr "Autenticação necessária para o plugin \"%s\"."
+
+msgid "AUTHENTICATION"
+msgstr "Autenticação"
+
+msgid "AUTH_FAILED_FOR_PLUGIN"
+msgstr "Falha de autenticação para o plugin \"%s\" !"
+
+msgid "ABOUT_DIALOG_COMMENTS"
+msgstr "Procurar por torrents em sites diferentes"
+
+msgid "AFTER"
+msgstr "Depois"
+
+msgid "BEFORE"
+msgstr "Antes"
+
+msgid "CATEGORY_VIDEO"
+msgstr "Vídeo"
+
+msgid "CATEGORY_MOVIE"
+msgstr "Filme"
+
+msgid "CATEGORY_MUSIC"
+msgstr "Música"
+
+msgid "CATEGORY_SOFTWARE"
+msgstr "Software"
+
+msgid "CATEGORY_GAME"
+msgstr "Jogo"
+
+msgid "CATEGORY_OTHER"
+msgstr "Outro"
+
+msgid "CATEGORY"
+msgstr "Categoria"
+
+msgid "CATEGORY_XXX"
+msgstr "XXX"
+
+msgid "CATEGORY_SPORTS"
+msgstr "Desportos"
+
+msgid "CATEGORY_MANGA"
+msgstr "Manga"
+
+msgid "CATEGORY_TV"
+msgstr "TV"
+
+msgid "CATEGORY_DOCUMENTARY"
+msgstr "Documentario"
+
+msgid "CATEGORY_PC"
+msgstr "PC"
+
+msgid "CATEGORY_PS2"
+msgstr "PS2"
+
+msgid "CATEGORY_PSP"
+msgstr "PSP"
+
+msgid "CATEGORY_XBOX"
+msgstr "XBOX"
+
+msgid "CATEGORY_XBOX360"
+msgstr "XBOX-360"
+
+msgid "CATEGORY_PDA"
+msgstr "PDA"
+
+msgid "ANY"
+msgstr "Qualquer"
+
+msgid "CATEGORY_AUDIO"
+msgstr "Áudio"
+
+msgid "CATEGORY_MAC"
+msgstr "Mac"
+
+msgid "CATEGORY_WII"
+msgstr "WII"
+
+msgid "REPORT_BUG"
+msgstr "_Reportar um erro"
+
+msgid "CONTACT"
+msgstr "Contacto"
+
+msgid "REQUEST_FEATURE"
+msgstr "Solicitar um recurso"
+
+msgid "LANGUAGE"
+msgstr "Língua"
+
+msgid "STOP_SEARCH_WHEN_NB_RESULTS_REACHES"
+msgstr "Stop search when number of results reaches"
+
+msgid "COMMENTS"
+msgstr "Comments"
+
+msgid "RATE"
+msgstr "Rate"
+
+msgid "TORRENT_DETAILS"
+msgstr "Torrent details"
+
+msgid "GENERAL_INFORMATIONS"
+msgstr "General informations"
+
+msgid "INCLUDED_FILES"
+msgstr "Included files"
+
+msgid "FILENAME"
+msgstr "Filename"
+
+msgid "POSTED_BY"
+msgstr "Posted by %s"
+
+msgid "LOADING_TORRENT_DETAILS"
+msgstr "Loading torrent details..."
+
+msgid "NB_RESULTS_SHOWN"
+msgstr "%d result(s) shown"
+

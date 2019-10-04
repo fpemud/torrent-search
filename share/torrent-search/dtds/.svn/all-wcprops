@@ -1,0 +1,17 @@
+K 25
+svn:wc:ra_dav:version-url
+V 68
+/svnroot/torrent-search/!svn/ver/186/trunk/share/torrent-search/dtds
+END
+torrent-search-plugin.dtd
+K 25
+svn:wc:ra_dav:version-url
+V 94
+/svnroot/torrent-search/!svn/ver/186/trunk/share/torrent-search/dtds/torrent-search-plugin.dtd
+END
+torrent-search-plugins-db.dtd
+K 25
+svn:wc:ra_dav:version-url
+V 98
+/svnroot/torrent-search/!svn/ver/139/trunk/share/torrent-search/dtds/torrent-search-plugins-db.dtd
+END

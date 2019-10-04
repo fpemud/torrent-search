@@ -1,0 +1,57 @@
+#! /usr/bin/python
+# -*- coding=utf-8 -*-
+
+"""
+    This file is part of Torrent Search.
+    
+    Torrent Search is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Torrent Search is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+try:
+   import _winreg, locale
+   locale.setlocale(locale.LC_ALL, "")
+   lang_code=locale.getlocale()[0][:2].lower()
+   key=_winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, _winreg.KEY_SET_VALUE)
+   _winreg.SetValueEx(key, "LANGUAGE", 0, _winreg.REG_SZ, lang_code)
+   _winreg.FlushKey(key)
+   _winreg.CloseKey(key)
+except:
+   pass
+
+from TorrentSearch import clp as optparse
+from TorrentSearch import Application
+from TorrentSearch.informations import *
+from TorrentSearch.DBusHandler import *
+import sys, os, tempfile, locale
+from TorrentSearch.constants import APPDATA_PATH
+
+sys.stderr = open(tempfile.mktemp(), "w")
+
+if __name__=='__main__':
+   optparser=optparse.OptionParser()
+   options,args=optparser.parse_args()
+   if options.show_help:
+      optparser.print_help()
+      exit(0)
+   if options.show_version:
+      optparser.print_version()
+      exit(0)
+   if args:
+      optparser.print_help()
+      exit(1)
+   bus=init_dbus()
+   if not try_dbus_connection(bus, options.search_pattern):
+      app=Application(options)
+      open_dbus_controller(bus,app)
+      app.run()

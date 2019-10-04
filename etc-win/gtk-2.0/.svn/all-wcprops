@@ -1,0 +1,23 @@
+K 25
+svn:wc:ra_dav:version-url
+V 58
+/svnroot/torrent-search/!svn/ver/274/trunk/etc-win/gtk-2.0
+END
+gtk.immodules
+K 25
+svn:wc:ra_dav:version-url
+V 72
+/svnroot/torrent-search/!svn/ver/274/trunk/etc-win/gtk-2.0/gtk.immodules
+END
+gdk-pixbuf.loaders
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/torrent-search/!svn/ver/274/trunk/etc-win/gtk-2.0/gdk-pixbuf.loaders
+END
+im-multipress.conf
+K 25
+svn:wc:ra_dav:version-url
+V 77
+/svnroot/torrent-search/!svn/ver/274/trunk/etc-win/gtk-2.0/im-multipress.conf
+END

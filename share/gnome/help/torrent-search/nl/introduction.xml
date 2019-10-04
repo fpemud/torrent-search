@@ -1,0 +1,32 @@
+<chapter id="introduction">
+	<title>Introductie</title>
+	<sect1 id="about">
+		<title>Over Torrent Search</title>
+		<para>
+			&app; is een programma voor de Gnome Desktop Omgeving, die in staat is te zoeken voor torrents op meerdere websites tegelijkertijd, en het zo gemakkelijker maakt de torrent te vinden die je zoekt.
+		</para>
+		<para>
+			We hopen dat je als een gebruiker van dit programma ons helpt
+			&app; te verbeteren door feedback te geven. Goed én slechte
+			ervaringen / suggesties zijn voor ons even goed.
+			Als je zelf een ontwikkelaar bent en graag wilt helpen met programmeren,
+			vertalen of documenteren dan is je hulp meer dan welkom.
+		</para>
+      <para>
+         Ga naar <ulink url="http://torrent-search.gwendallebihan.net/">http://torrent-search.gwendallebihan.net</ulink>
+			voor het laatste nieuws over &app;.
+      </para>
+	</sect1>
+	<sect1 id="LibraryRequirements">
+		<title>Benodigdheden</title>
+		<para>De volgende bibliotheken zijn nodig om &app; te installeren en uit te voeren:</para>
+		<itemizedlist>
+		   <listitem><para>python 2.6 of hoger</para></listitem>
+		   <listitem><para>gettext 0.17 of hoger</para></listitem>
+		   <listitem><para>python-gtk2 2.12 of hoger</para></listitem>
+		   <listitem><para>python-libxml2 2.7.6 of hoger</para></listitem>
+		   <listitem><para>python-httplib2 0.6.0-1 of hoger</para></listitem>
+         <listitem><para>python-dbus 0.83.0 of hoger</para></listitem>
+		</itemizedlist>
+	</sect1>
+</chapter>

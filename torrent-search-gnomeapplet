@@ -1,0 +1,71 @@
+#! /usr/bin/python
+# -*- coding=utf-8 -*-
+
+"""
+    This file is part of Torrent Search.
+    
+    Torrent Search is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Torrent Search is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+from TorrentSearch.informations import VERSION
+from TorrentSearch.config import AppConfig
+import gnomeapplet, gtk, os
+
+class TorrentSearchApplet(gtk.Entry):
+   def __init__(self,applet):
+      gtk.Entry.__init__(self)
+      self.set_size_request(160,applet.get_size())
+      self.set_property("primary-icon-name","torrent-search")
+      self.set_property("secondary-icon-stock",gtk.STOCK_CLEAR)
+      self.connect("button_press_event",self.on_applet_button_press_event,applet)
+      self.connect("activate",self.on_activate)
+      self.search_completion=gtk.EntryCompletion()
+      self.set_completion(self.search_completion)
+      self.completion_lb=gtk.ListStore(str)
+      self.search_completion.set_model(self.completion_lb)
+      self.search_completion.set_text_column(0)
+      self.update_completion()
+      self.connect("focus_in_event",self.on_focus_in_event)
+      self.connect("icon_press",self.on_icon_press)
+   def on_icon_press(self,widget,position,event):
+      if position==gtk.ENTRY_ICON_SECONDARY and event.button==1:
+         self.set_text('')
+         return True
+   def on_focus_in_event(self,widget,event):
+      self.select_region(0,-1)
+   def _get_search_history(self):
+      config=AppConfig(self)
+      return config["search_history"]
+   search_history=property(_get_search_history)
+   def update_completion(self):
+      self.completion_lb.clear()
+      for i in self.search_history:
+         self.completion_lb.append([i])
+   def on_activate(self,widget):
+      pattern=self.get_text()
+      if pattern:
+         self.select_region(0,-1)
+         os.system("torrent-search -s \"%s\" &"%pattern.replace('"','\\"'))
+   def on_applet_button_press_event(self,widget,event,applet):
+      if event.button==1 and not self.has_focus():
+         applet.request_focus(event.time)
+         self.update_completion()
+
+def factory(applet,iid):
+   applet.add(TorrentSearchApplet(applet))
+   applet.set_applet_flags(gnomeapplet.HAS_HANDLE)
+   applet.show_all()
+
+if __name__=="__main__":
+   gnomeapplet.bonobo_factory("OAFIID:TorrentSearch_Applet_Factory",gnomeapplet.Applet,"Torrent Search Searchbar Applet",VERSION,factory)

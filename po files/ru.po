@@ -1,0 +1,493 @@
+msgid "SEARCH"
+msgstr "Поиск"
+
+msgid "HELP_MENU_LABEL"
+msgstr "_Помощь"
+
+msgid "FILE_MENU_LABEL"
+msgstr "_Файл"
+
+msgid "EDIT_MENU_LABEL"
+msgstr "_Правка"
+
+msgid "PREFERENCES"
+msgstr "Настройки"
+
+msgid "GENERAL_OPTIONS"
+msgstr "Базовые настройки"
+
+msgid "SEARCH_PLUGINS"
+msgstr "Поиск дополнений"
+
+msgid "HELP_SHOW_VERSION"
+msgstr "Показать номер версии и выйти"
+
+msgid "TORRENT_FILES"
+msgstr "Торрент-файлы"
+
+msgid "SAVE_IN_FOLDER"
+msgstr "Сохранить в папке"
+
+msgid "USE_STANDARD_APP"
+msgstr "Использовать стандартное приложение"
+
+msgid "USE_CUSTOM_APP"
+msgstr "Использовать другое приложение"
+
+msgid "SELECT_FOLDER"
+msgstr "Выбрать папку"
+
+msgid "SEARCH_RESULTS"
+msgstr "Результаты поиска"
+
+msgid "DOWNLOADING_FILE"
+msgstr "Загрузка файла..."
+
+msgid "DOWNLOAD_FAILED"
+msgstr "Загрузка завершилась неудачей !"
+
+msgid "FILE_NOT_FOUND_ON_SERVER"
+msgstr "Файл не найден на сервере."
+
+msgid "RUN_SEARCH_ON_STARTUP"
+msgstr "Запустить поиск при запуске"
+
+msgid "SEARCH_RESULTS_INIT"
+msgstr "Результаты поиска - Инициализация..."
+
+msgid "GETTING_LINK"
+msgstr "Получение ссылки..."
+
+msgid "DOWNLOADING"
+msgstr "Загрузка..."
+
+msgid "SEARCH_RESULTS_NO_RESULTS"
+msgstr "Результаты поиска - Ничего не найдено"
+
+msgid "INITIALISING"
+msgstr "Инициализация..."
+
+msgid "NO_RESULTS"
+msgstr "Нет результатов"
+
+msgid "NB_RESULTS"
+msgstr "%d результат(а)"
+
+msgid "SEARCH_FINISHED"
+msgstr "Поиск завершен"
+
+msgid "SEARCH_RUNNING"
+msgstr "Поиск..."
+
+msgid "NAME"
+msgstr "Имя"
+
+msgid "DATE"
+msgstr "Дата"
+
+msgid "SIZE"
+msgstr "Размер"
+
+msgid "SEEDERS"
+msgstr "Сидеры"
+
+msgid "LEECHERS"
+msgstr "Личеры"
+
+msgid "PLUGIN"
+msgstr "Дополнение"
+
+msgid "NO_TITLE"
+msgstr "Нет названия"
+
+msgid "DOWNLOAD_NO_COMMAND"
+msgstr "Невозможно найти программу для запуска файла.\nПожалуйста проверьте ваши настройки в диалоге настроек."
+
+msgid "DOWNLOAD_COMMAND_NOT_FOUND"
+msgstr "Выбранная прогармма для открытия этого файла не найдена.\nПожалуйста проверьте ваши настройки в диалоге настроек."
+
+msgid "ADD_PLUGIN_DIR"
+msgstr "Добавить папку дополнений"
+
+msgid "PLUGIN_NAME"
+msgstr "Имя дополнения"
+
+msgid "ENABLED"
+msgstr "Включен"
+
+msgid "ERROR"
+msgstr "Ошибка"
+
+msgid "NO_PLUGINS_ENABLED"
+msgstr "Нет активных расширений!"
+
+msgid "CHECK_CONFIG"
+msgstr "Пожалуйста пройдите в диалог настроек и проверьте вашу конфигурацию."
+
+msgid "SEARCH_OPTIONS"
+msgstr "Настройки поиска"
+
+msgid "HIDE_ZERO_SEEDERS"
+msgstr "Скрыть торренты без сидеров"
+
+msgid "CLEAR_HISTORY"
+msgstr "_Очистить историю поиска"
+
+msgid "HISTORY_CLEARED"
+msgstr "История очищена."
+
+msgid "INFORMATION"
+msgstr "Информация"
+
+msgid "MIN_SIZE"
+msgstr "Минимальный размер"
+
+msgid "MAX_SIZE"
+msgstr "Максимальный размер"
+
+msgid "ONLY_EXACT_PHRASE"
+msgstr "Показать только торренты с точной фразой в имени"
+
+msgid "ONLY_ALL_WORDS"
+msgstr "Показывать только торренты со всеми словами в имени"
+
+msgid "NEW_VERSION_AVAILABLE"
+msgstr "Доступна новая версия"
+
+msgid "DONT_SHOW_MESG_AGAIN"
+msgstr "Не показывать это сообщение снова"
+
+msgid "LAST_VERSION_MESG"
+msgstr "Для программы Torrent Search доступна версия %s."
+
+msgid "NEW_VERSION_MESG"
+msgstr "Доступна новая версия для Torrent Search."
+
+msgid "GO_TO_DOWNLOAD_LINK"
+msgstr "Для загрузки файла вы можете перейти на следующую страницу :"
+
+msgid "HELP_ADD_PLUGIN"
+msgstr "Добавить плагин из выбранной папки"
+
+msgid "PLUGIN_FILE_NOT_FOUND"
+msgstr "WARNING:plugins:Ошибка загрузки\n%s : Файл не найден !"
+
+msgid "PLUGIN_FILE_NOT_FILE"
+msgstr "WARNING:plugins:Ошибка загрузки\n%s : Это не файл !"
+
+msgid "PLUGIN_FILE_NOT_READABLE"
+msgstr "WARNING:plugins:Ошибка загрузки\n%s : Файл не читабелен !"
+
+msgid "CHECKING_PLUGIN_UPDATES"
+msgstr "Проверка обновлений для дополнений..."
+
+msgid "CHECKING_PLUGINS_VERSIONS"
+msgstr "Проверка версий дополнений"
+
+msgid "DOWNLOADING_PLUGINS_UPDATES"
+msgstr "Загрузка обновлений для дополнений"
+
+msgid "DONE"
+msgstr "Готово"
+
+msgid "FAILED"
+msgstr "Ошибка"
+
+msgid "GETTING_PLUGINS_LIST"
+msgstr "Получение списка дополнений"
+
+msgid "NEW_PLUGINS_UPDATES_INSTALLED"
+msgstr "Обновления для дополнений были установлены."
+
+msgid "APP_WILL_BE_RESTARTED"
+msgstr "Приложение сейчас будет перезапущено."
+
+msgid "SYNTAX_ERROR"
+msgstr "Ошибка синтаксиса"
+
+msgid "NAME_DOES_NOT_CONTAIN"
+msgstr "Имя не содержит"
+
+msgid "WAITING"
+msgstr "Ожидание..."
+
+msgid "FINISHED"
+msgstr "Завершено"
+
+msgid "TITLE"
+msgstr "Заголовок"
+
+msgid "STATUS"
+msgstr "Статус"
+
+msgid "DOWNLOADS"
+msgstr "Загрузки"
+
+msgid "SAVE_FOLDER_NO_EXIST"
+msgstr "Выбранный путь для сохранения торрентов не существует !"
+
+msgid "SAVE_FOLDER_NOT_FOLDER"
+msgstr "Выбранный путь для сохранения торрентов не является каталогом !"
+
+msgid "SAVE_FOLDER_NOT_WRITABLE"
+msgstr "Выбранный путь для сохранения торрентов не доступен для записи !"
+
+msgid "TORRENT_APP_NOT_FOUND"
+msgstr "Выбранное приложение для открытия торрентов не найдено !"
+
+msgid "INCORRECT_CONFIG"
+msgstr "Некоторые параметры конфигурации неверны (возможно они были изменены вручную ?)."
+
+msgid "HELP_NO_PLUGIN_CHECK"
+msgstr "Не проверять обновления дополнений"
+
+msgid "CHECK_PLUGINS_UPDATES"
+msgstr "Проверять обновления дополнений при запуске"
+
+msgid "PLUGINS_UPDATES"
+msgstr "Обновления дополнений"
+
+msgid "CHECK_NOW"
+msgstr "Поверить сейчас"
+
+msgid "SHOW_THIS_HELP_AND_EXIT"
+msgstr "Показать эту справку и выйти"
+
+msgid "BASIC_OPTIONS"
+msgstr "Базовые опции"
+
+msgid "ADVANCED_OPTIONS"
+msgstr "Дополнительные опции (для разработчиков)"
+
+msgid "PATH_TO_SHARE"
+msgstr "Путь к общей папке (по умолчанию: /usr/share)"
+
+msgid "NAME_CONTAINS"
+msgstr "Имя содержит"
+
+msgid "FILTER_DUPLICATES"
+msgstr "Фильтровать дубликаты"
+
+msgid "ENABLE"
+msgstr "Разрешить"
+
+msgid "RETRY_MENU_ITEM"
+msgstr "_Повторить"
+
+msgid "DOWNLOAD_MENU_ITEM"
+msgstr "_Загрузить"
+
+msgid "CAN_DOWNLOAD_LAST_VERSION"
+msgstr "Сейчас вы можете загрузить последнюю версию Torrent Search."
+
+msgid "DOWNLOAD_NOW"
+msgstr "З_агрузить сейчас"
+
+msgid "PLEASE_WAIT"
+msgstr "Подождите пожалуйста..."
+
+msgid "LOOKING_UP_AVAILABLE_FILES"
+msgstr "Просмотр доступных файлов..."
+
+msgid "FOUND_NB_FILES"
+msgstr "Найдено %d файл(а)"
+
+msgid "SELECT_FILE_TO_DOWNLOAD"
+msgstr "Выберите файл для загрузки"
+
+msgid "DOWNLOAD"
+msgstr "_Загрузить"
+
+msgid "PLEASE_SELECT_DOWNLOAD_FILE"
+msgstr "Пожалуйста выберите файл для загрузки :"
+
+msgid "DEBIAN_PACKAGE"
+msgstr "пакет для Debian"
+
+msgid "TARGZ_ARCHIVE"
+msgstr "архив tar.gz"
+msgid "SELECT_DESTINATION"
+msgstr "Выберите назначение"
+
+msgid "DOWNLOADING_FILENAME"
+msgstr "Загрузка \"%s\"..."
+
+msgid "DOWNLOAD_SUCCESSFUL"
+msgstr "Загрузка завершена успешно !"
+
+msgid "NO_DOWNLOAD_FILES"
+msgstr "Приложение не может найти файлы для загрузки !"
+
+msgid "RETRY_ALL_FAILED"
+msgstr "Повторить все неудачные загрузки"
+
+msgid "CANCEL_ALL_FAILED"
+msgstr "Отменить все неудачные загрузки"
+
+msgid "CANCEL_ALL"
+msgstr "Отменить все возможные загрузки"
+
+msgid "LAST_UPDATE"
+msgstr "Последнее обновление"
+
+msgid "AUTHOR"
+msgstr "Автор"
+
+msgid "UNKNOWN"
+msgstr "Неизвестно"
+
+msgid "DONT_SHOW_UNTIL_NEXT_VERSION"
+msgstr "Не показывать это сообщение снова до следующей версии"
+
+msgid "AUTH_REQUIRED_FOR_NEW_PLUGINS"
+msgstr "Новые дополнения требуют аутентификации"
+
+msgid "SOME_NEW_PLUGINS_REQUIRE_AUTH"
+msgstr "Некоторые новые дополнения требуют аутентификации."
+
+msgid "SELECT_ONES_TO_ENABLE"
+msgstr "Выберите те, которые необходимо включить :"
+
+msgid "WINDOWS_INSTALLER"
+msgstr "Установщик для Windows"
+
+msgid "DISABLE"
+msgstr "Отключить"
+
+msgid "AUTHENTICATION"
+msgstr "Аутентификация"
+
+msgid "USERNAME"
+msgstr "Имя пользователя"
+
+msgid "PASSWORD"
+msgstr "Пароль"
+
+msgid "REMEMBER_AUTH"
+msgstr "Запомнить данные"
+
+msgid "AUTH_FAILED_FOR_PLUGIN"
+msgstr "Аутентификация завершилась неудачей для дополнения \"%s\" !"
+
+msgid "AUTH_REQUIRED_FOR_PLUGIN"
+msgstr "Необходима аутентификация для дополнения \"%s\"."
+
+msgid "ABOUT_DIALOG_COMMENTS"
+msgstr "Поиск торрентов на различных веб-сайтах"
+
+msgid "AFTER"
+msgstr "После"
+
+msgid "BEFORE"
+msgstr "Перед"
+
+msgid "CATEGORY_VIDEO"
+msgstr "Видео"
+
+msgid "CATEGORY_MOVIE"
+msgstr "Фильмы"
+
+msgid "CATEGORY_MUSIC"
+msgstr "Музыка"
+
+msgid "CATEGORY_SOFTWARE"
+msgstr "Программы"
+
+msgid "CATEGORY_GAME"
+msgstr "Игры"
+
+msgid "CATEGORY_OTHER"
+msgstr "Другое"
+
+msgid "CATEGORY"
+msgstr "Категория"
+
+msgid "CATEGORY_XXX"
+msgstr "XXX"
+
+msgid "CATEGORY_SPORTS"
+msgstr "Спорт"
+
+msgid "CATEGORY_MANGA"
+msgstr "Аниме"
+
+msgid "CATEGORY_TV"
+msgstr "ТВ"
+
+msgid "CATEGORY_DOCUMENTARY"
+msgstr "Документальное"
+
+msgid "CATEGORY_PC"
+msgstr "PC"
+
+msgid "CATEGORY_PS2"
+msgstr "PS2"
+
+msgid "CATEGORY_PSP"
+msgstr "PSP"
+
+msgid "CATEGORY_XBOX"
+msgstr "XBOX"
+
+msgid "CATEGORY_XBOX360"
+msgstr "XBOX-360"
+
+msgid "CATEGORY_PDA"
+msgstr "PDA"
+
+msgid "ANY"
+msgstr "Все"
+
+msgid "CATEGORY_AUDIO"
+msgstr "Аудио"
+
+msgid "CATEGORY_MAC"
+msgstr "Mac"
+
+msgid "CATEGORY_WII"
+msgstr "WII"
+
+msgid "REPORT_BUG"
+msgstr "_Сообщить об ошибке"
+
+msgid "CONTACT"
+msgstr "Контакты"
+
+msgid "REQUEST_FEATURE"
+msgstr "Просьба об улучшении"
+msgid "LANGUAGE"
+msgstr "Язык"
+
+msgid "STOP_SEARCH_WHEN_NB_RESULTS_REACHES"
+msgstr "Stop search when number of results reaches"
+
+msgid "COMMENTS"
+msgstr "Comments"
+
+msgid "RATE"
+msgstr "Rate"
+
+msgid "TORRENT_DETAILS"
+msgstr "Torrent details"
+
+msgid "GENERAL_INFORMATIONS"
+msgstr "General informations"
+
+msgid "INCLUDED_FILES"
+msgstr "Included files"
+
+msgid "FILENAME"
+msgstr "Filename"
+
+msgid "POSTED_BY"
+msgstr "Posted by %s"
+
+msgid "LOADING_TORRENT_DETAILS"
+msgstr "Loading torrent details..."
+
+msgid "NB_RESULTS_SHOWN"
+msgstr "%d result(s) shown"
+
+msgid "OPEN_WEB_PAGE"
+msgstr "Open web page"
+

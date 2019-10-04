@@ -1,0 +1,833 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html>
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<title>Torrent Search Gebruikershandleiding</title>
+<meta name="GENERATOR" content="Modular DocBook HTML Stylesheet Version 1.79">
+</head>
+<body class="book" bgcolor="#FFFFFF" text="#000000" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="BOOK">
+<a name="index"></a><div class="TITLEPAGE">
+<h1 class="title"><a name="AEN2">Torrent Search Gebruikershandleiding</a></h1>
+<h3 class="author">
+<a name="AEN12"></a>Gwendal Le Bihan</h3>
+<div class="affiliation"><div class="address"><p class="address"><code class="email">&lt;<a href="mailto:gwendal.lebihan.dev@gmail.com">gwendal.lebihan.dev@gmail.com</a>&gt;</code></p></div></div>
+<p class="copyright">Copyright &copy; 2010 Gwendal Le Bihan</p>
+<div class="legalnotice">
+<p></p>
+<a name="AEN7"></a><p>Permission is granted to copy, distribute and/or modify this document under the terms of the GNU Free Documentation License, Version 1.1 or any later version published by the Free Software Foundation; with no Invariant Sections, no Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in the section entitled "GNU Free Documentation License". </p>
+<p></p>
+</div>
+<hr>
+</div>
+<div class="TOC"><dl>
+<dt><b>Inhoudsopgave</b></dt>
+<dt>1. <a href="#introduction">Introductie</a>
+</dt>
+<dd><dl>
+<dt>1.1. <a href="#about">Over Torrent Search</a>
+</dt>
+<dt>1.2. <a href="#LibraryRequirements">Benodigdheden</a>
+</dt>
+</dl></dd>
+<dt>2. <a href="#getting-started">Beginnen met het gebruik van Torrent Search</a>
+</dt>
+<dd><dl>
+<dt>2.1. <a href="#installation">Installatie</a>
+</dt>
+<dt>2.2. <a href="#starting">Het programma starten</a>
+</dt>
+<dd><dl>
+<dt>2.2.1. <a href="#quickstart">Snelle start</a>
+</dt>
+<dt>2.2.2. <a href="#command-line">Argumenten bij starten vanuit terminal</a>
+</dt>
+</dl></dd>
+<dt>2.3. <a href="#main-window">Het hoofdscherm</a>
+</dt>
+<dd><dl>
+<dt>2.3.1. <a href="#mainmenu">Hoofdmenu</a>
+</dt>
+<dt>2.3.2. <a href="#searchbar">Searchbar</a>
+</dt>
+<dt>2.3.3. <a href="#search-options">Zoek opties</a>
+</dt>
+<dt>2.3.4. <a href="#results-list">Resultaten lijst</a>
+</dt>
+<dt>2.3.5. <a href="#downloads-bar">Downloads zijbalk</a>
+</dt>
+</dl></dd>
+</dl></dd>
+<dt>3. <a href="#preferences-dialog">Voorkeuren scherm</a>
+</dt>
+<dd><dl>
+<dt>3.1. <a href="#preferences-general">Standaard opties</a>
+</dt>
+<dd><dl>
+<dt>3.1.1. <a href="#preferences-general-torrent-files">Het "Torrent bestandes" vak</a>
+</dt>
+<dt>3.1.2. <a href="#preferences-general-plugins-updates">Het "Plugin updates" vak</a>
+</dt>
+</dl></dd>
+<dt>3.2. <a href="#preferences-plugins">Zoek-plugins</a>
+</dt>
+</dl></dd>
+<dt>4. <a href="#plugins">Plugins</a>
+</dt>
+<dt>5. <a href="#developing">Torrent Search Ontwikkelen</a>
+</dt>
+<dd><dl><dt>5.1. <a href="#developing-plugins">Plugins ontwikkelen</a>
+</dt></dl></dd>
+<dt>6. <a href="#contacts">Contact</a>
+</dt>
+<dd><dl>
+<dt>6.1. <a href="#contacts-request-plugin">Om een nieuwe plugin vragen.</a>
+</dt>
+<dt>6.2. <a href="#reporting-bugs">Bugs doorgeven</a>
+</dt>
+</dl></dd>
+<dt>A. <a href="#fdl">GNU Free Documentation License</a>
+</dt>
+</dl></div>
+<div class="LOT"><dl class="LOT">
+<dt><b>Lijst van figuren</b></dt>
+<dt>2-1. <a href="#figure-mainwindow">Torrent Zoek scherm</a>
+</dt>
+<dt>2-2. <a href="#figure-search-options">Zoek opties vak</a>
+</dt>
+<dt>3-1. <a href="#figure-preferences-general">"Standaard options" tab van het opties scherm</a>
+</dt>
+<dt>3-2. <a href="#figure-preferences-plugins">"Plugins" tab van het voorkeuren scherm</a>
+</dt>
+</dl></div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="introduction"></a>Hoofdstuk 1. Introductie</h1>
+<div class="sect1">
+<h2 class="sect1"><a name="about">1.1. Over Torrent Search</a></h2>
+<p>			<span class="emphasis"><i class="emphasis">Torrent Search</i></span> is een programma voor de Gnome Desktop Omgeving, die in staat is te zoeken voor torrents op meerdere websites tegelijkertijd, en het zo gemakkelijker maakt de torrent te vinden die je zoekt.
+		</p>
+<p>			We hopen dat je als een gebruiker van dit programma ons helpt
+			<span class="emphasis"><i class="emphasis">Torrent Search</i></span> te verbeteren door feedback te geven. Goed &Atilde;&#272;n slechte
+			ervaringen / suggesties zijn voor ons even goed.
+			Als je zelf een ontwikkelaar bent en graag wilt helpen met programmeren,
+			vertalen of documenteren dan is je hulp meer dan welkom.
+		</p>
+<p>         Ga naar <a href="http://torrent-search.gwendallebihan.net/" target="_top">http://torrent-search.gwendallebihan.net</a>
+			voor het laatste nieuws over <span class="emphasis"><i class="emphasis">Torrent Search</i></span>.
+      </p>
+</div>
+<div class="sect1">
+<hr>
+<h2 class="sect1"><a name="LibraryRequirements">1.2. Benodigdheden</a></h2>
+<p>De volgende bibliotheken zijn nodig om <span class="emphasis"><i class="emphasis">Torrent Search</i></span> te installeren en uit te voeren:</p>
+<p></p>
+<ul>
+<li><p>python 2.6 of hoger</p></li>
+<li><p>gettext 0.17 of hoger</p></li>
+<li><p>python-gtk2 2.12 of hoger</p></li>
+<li><p>python-libxml2 2.7.6 of hoger</p></li>
+<li><p>python-httplib2 0.6.0-1 of hoger</p></li>
+<li><p>python-dbus 0.83.0 of hoger</p></li>
+</ul>
+</div>
+</div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="getting-started"></a>Hoofdstuk 2. Beginnen met het gebruik van Torrent Search</h1>
+<div class="sect1">
+<h2 class="sect1"><a name="installation">2.1. Installatie</a></h2>
+<p>De manier waarop je <span class="emphasis"><i class="emphasis">Torrent Search</i></span> installeert, hangt af van welk besturingssysteem je gebruikt:</p>
+<p></p>
+<div class="variablelist"><dl>
+<dt>Op Debian/Ubuntu</dt>
+<dd>
+<p>Download het Debian softwarepakket (.deb bestand) van de website en dubbelklik op het gedownloade bestand: De pakkettenbeheerder zal gestart worden en de installatie zal starten zodra je op <span class="guilabel">Installeer pakket</span> klikt.</p>
+<p>Je kunt ook de terminal gebruiken: <b class="command">gdebi <tt class="filename">/pad/naar/bestand</tt></b>.</p>
+</dd>
+<dt>Andere Linux distributies</dt>
+<dd>
+<p>Download de bron tarball (.tar.gz bestand) en pak het bestand uit. Open dan een terminal en voer de volgende commando's uit:</p>
+<p><b class="command">cd <tt class="filename">/pad/naar/uitgepakte/bestanden</tt></b></p>
+<p><b class="command">python <tt class="filename">setup.py</tt> install</b></p>
+</dd>
+</dl></div>
+</div>
+<div class="sect1">
+<hr>
+<h2 class="sect1"><a name="starting">2.2. Het programma starten</a></h2>
+<div class="sect2">
+<h3 class="sect2"><a name="quickstart">2.2.1. Snelle start</a></h3>
+<p>            Je kunt <span class="emphasis"><i class="emphasis">Torrent Search</i></span> op verschillende manieren starten:
+         </p>
+<p></p>
+<div class="variablelist"><dl>
+<dt>Programma's menu</dt>
+<dd><p>Kies 
+                     <span class="guisubmenu">                           Internet
+                        </span>-&gt;<span class="guimenuitem">                           Torrent Search
+                        </span></p></dd>
+<dt>Vanuit een terminal</dt>
+<dd><p>Typ <b class="command">torrent-search</b>, en druk op
+                     <b class="keycap">Enter</b>.</p></dd>
+</dl></div>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="command-line">2.2.2. Argumenten bij starten vanuit terminal</a></h3>
+<p>Hier is een beschrijving van de argumenten die gebruikt kunnen worden bij het starten van <span class="emphasis"><i class="emphasis">Torrent Search</i></span> vanuit een terminal.</p>
+<div class="sect3">
+<hr>
+<h4 class="sect3"><a name="command-line-basic">2.2.2.1. Standaard opties</a></h4>
+<p></p>
+<div class="variablelist"><dl>
+<dt>-h, --help</dt>
+<dd><p>Laat help zien en sluit af</p></dd>
+<dt>-v, --version</dt>
+<dd><p>Laat versienummer zien en sluit af</p></dd>
+<dt>-s, --search</dt>
+<dd><p>Zoek meteen iets bij het opstarten</p></dd>
+<dt>--no-plugins-check</dt>
+<dd><p>Controleer niet op plugins</p></dd>
+</dl></div>
+</div>
+<div class="sect3">
+<hr>
+<h4 class="sect3"><a name="command-line-advanced">2.2.2.2. Geavanceerde opties</a></h4>
+<p>Deze opties zouden alleen gebruikt worden door ontwikkelaars.</p>
+<p></p>
+<div class="variablelist"><dl>
+<dt>--share-dir</dt>
+<dd><p>Stel een alternatief pad in voor de <tt class="filename">share</tt> map.</p></dd>
+<dt>--add-plugin</dt>
+<dd><p>Laad een plugin in vanuit een specifiek pad.</p></dd>
+</dl></div>
+</div>
+</div>
+</div>
+<div class="sect1">
+<hr>
+<h2 class="sect1"><a name="main-window">2.3. Het hoofdscherm</a></h2>
+<div class="figure">
+<a name="figure-mainwindow"></a><p><b>Figuur 2-1. Torrent Zoek scherm</b></p>
+<div class="mediaobject"><p><img src="figures/mainwindow.png"></p></div>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="mainmenu">2.3.1. Hoofdmenu</a></h3>
+<div class="sect3">
+<h4 class="sect3"><a name="filemenu">2.3.1.1. Bestand menu</a></h4>
+<p></p>
+<div class="variablelist"><dl>
+<dt>Sluit af</dt>
+<dd><p>Sluit het programma af</p></dd>
+</dl></div>
+</div>
+<div class="sect3">
+<hr>
+<h4 class="sect3"><a name="editmenu">2.3.1.2. Bewerken menu</a></h4>
+<p></p>
+<div class="variablelist"><dl>
+<dt>Voorkeuren</dt>
+<dd><p>Laat het <a href="#preferences-dialog">voorkeuren schermpje</a> zien.</p></dd>
+</dl></div>
+</div>
+<div class="sect3">
+<hr>
+<h4 class="sect3"><a name="helpmenu">2.3.1.3. Help menu</a></h4>
+<p></p>
+<div class="variablelist"><dl>
+<dt>Help</dt>
+<dd><p>Laat deze documentatie zien, gefocust op het deel dat te maken heeft met het huidig geselecteerde object, als dat mogelijk is.</p></dd>
+<dt>Over <span class="emphasis"><i class="emphasis">Torrent Search</i></span>
+</dt>
+<dd><p>Laat het "Over <span class="emphasis"><i class="emphasis">Torrent Search</i></span>" schermpje zien.</p></dd>
+</dl></div>
+</div>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="searchbar">2.3.2. Searchbar</a></h3>
+<p>Om te beginnen met zoeken naar torrents, typ gewoon een zoekopdracht in de zoekbalk en druk op <b class="keycap">Enter</b> of klik op <span class="guibutton">Zoek</span>. Je zoekresultaten zullen in de <a href="#results-list">resultatenlijst</a> in het <span class="guilabel">Zoekresultaten</span> vak tevoorschijn komen.</p>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="search-options">2.3.3. Zoek opties</a></h3>
+<p>Om je zoek opties aan te passen, klik op de <span class="guilabel">Zoek opties</span> expander onder de zoekbalk. Je zult het volgende vak tevoorschijn zien komen:</p>
+<div class="figure">
+<a name="figure-search-options"></a><p><b>Figuur 2-2. Zoek opties vak</b></p>
+<div class="mediaobject"><p><img src="figures/search-options.png"></p></div>
+</div>
+<p>Je kunt een aantal filters instellen zodat je alleen resultaten krijgt waar jij ge&Atilde;&#330;nteresseerd in bent. Je hoeft de zoekopdracht niet opnieuw uit te voeren als je de opties aanpast, omdat de filters automatisch toegepast zullen worden.</p>
+<div class="warning">
+<p></p>
+<table class="warning" width="100%" border="0"><tr>
+<td width="25" align="CENTER" valign="TOP"><img src="../images/warning.gif" hspace="5" alt="Waarschuwing"></td>
+<td align="LEFT" valign="TOP"><p>Sommige plugins kunnen niet met de <span class="guilabel">Filter duplicaten</span> filter werken.</p></td>
+</tr></table>
+</div>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="results-list">2.3.4. Resultaten lijst</a></h3>
+<p>Als je een zoekopdracht hebt gedaan, dan zullen de resultaten verschijnen die bij jouw criteria's horen in de resultaten lijst. Het aantal resultaten weergeven in het <span class="guilabel">Zoekresultaten</span> vak is het aantal gevonden torrents: Als je een aantal filters hebt ingesteld bij <a href="#search-options">Zoek opties</a>, dan kan het aantal afwijken van wat erboven staat.</p>
+<p>Om een torrent bestand te downloaden, dubbelklik op de regel van de torrent, of klik met de rechtermuisknop en selecteer  <span class="guilabel">Download</span> van het menu. De download-voortgand zal verschijnen in de <a href="#downloads-bar">Downloads zijbalk</a>.</p>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="downloads-bar">2.3.5. Downloads zijbalk</a></h3>
+<p>De <span class="guilabel">Downloads zijbalk</span> zal de voortgang laten zien voor de verschillende downloads die je aan hebt gezet. Als een download klaar is, dan zal de regel verdwijnen uit de lijst.</p>
+<p>Actieve downloads komen met een groene achtergrond, mislukte komen met een rode achtergrond.</p>
+<p>Zolang dat een download <span class="guilabel">Wachtend</span> is, kun je hem annuleren door <span class="guilabel">Annuleer</span> te selecteren in het menu dat verschijnt als je er rechts op klikt. Vanaf het moment dat een download gestart is, kan hij niet meer geannuleerd worden.</p>
+<p>Als het downloaden van een bestand mislukt is, dan kun je met de rechtermuisknop kiezen of je de download opnieuw wilt proberen, of dat je hem wilt annuleren.</p>
+</div>
+</div>
+</div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="preferences-dialog"></a>Hoofdstuk 3. Voorkeuren scherm</h1>
+<div class="sect1">
+<h2 class="sect1"><a name="preferences-general">3.1. Standaard opties</a></h2>
+<div class="figure">
+<a name="figure-preferences-general"></a><p><b>Figuur 3-1. "Standaard options" tab van het opties scherm</b></p>
+<div class="mediaobject"><p><img src="figures/prefs-general.png"></p></div>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="preferences-general-torrent-files">3.1.1. Het "Torrent bestandes" vak</a></h3>
+<p>Het het <span class="guilabel">Torrent bestanden</span> vak kun je kiezen wat je met je gedownloade torrent bestanden wilt doen. Je kunt je opslaan in een bepaalde map, je kunt ze openen met een programma dat torrent bestanden ondersteunt of je kunt zelf een programma instellen om ze mee te openen.</p>
+</div>
+<div class="sect2">
+<hr>
+<h3 class="sect2"><a name="preferences-general-plugins-updates">3.1.2. Het "Plugin updates" vak</a></h3>
+<p>Hier kun je kiezen of je <span class="emphasis"><i class="emphasis">Torrent Search</i></span> wilt laten zoeken voor updates voor je plugins bij het opstarten. Dit is aanbevolen, maar als je kiest het uit te schakelen, dan kun je handmatig zoeken door op de <span class="guibutton">Controleer nu</span> knop te klikken.</p>
+</div>
+</div>
+<div class="sect1">
+<hr>
+<h2 class="sect1"><a name="preferences-plugins">3.2. Zoek-plugins</a></h2>
+<div class="figure">
+<a name="figure-preferences-plugins"></a><p><b>Figuur 3-2. "Plugins" tab van het voorkeuren scherm</b></p>
+<div class="mediaobject"><p><img src="figures/prefs-plugins.png"></p></div>
+</div>
+<p>In deze tab zie je een lijst van beschikbare zoek-plugins. Als je vindt dat een plugin het werk niet goed of slechte resultaten oplevert, dan kun je hem uitschekelen door op het checkbox te klikken in de <span class="guilabel">Inschakelen</span> kolom.</p>
+<p>Als je een bug/fout tegenkomt. Bekijk de <a href="#reporting-bugs">Reporting bugs</a> sectie voor meer informatie over het doorgeven van bugs.</p>
+</div>
+</div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="plugins"></a>Hoofdstuk 4. Plugins</h1>
+<p><span class="emphasis"><i class="emphasis">Torrent Search</i></span> gebruikt plugins om te zoeken naar torrent bestanden op verschillende websites. Op deze manier kunnen nieuwe websites gemakkelijk toegevoegd worden zonder een nieuwe versie van de software te installerene.</p>
+<p>De plugins worden bij upgedate worden elke keer dat <span class="emphasis"><i class="emphasis">Torrent Search</i></span> opgestart wordt, tenzij je deze functie hebt uitgeschakeld hebt in het <a href="#preferences-general-plugins-updates">voorkeuren venster</a>.</p>
+<p>Als je graag wilt dat een nieuwe website ook als een plugin toegevoegd wordt, leer dan meer in de <a href="#contacts-request-plugin">Nieuwe plugin vragen</a> sectie.</p>
+<p>Als je  mee wilt helpen met het ontwikkelen van ieuwe plugins, ga dan naar de <a href="#developing-plugins">Plugins ontwikkelen</a> sectie.</p>
+</div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="developing"></a>Hoofdstuk 5. Torrent Search Ontwikkelen</h1>
+<div class="sect1">
+<h2 class="sect1"><a name="developing-plugins">5.1. Plugins ontwikkelen</a></h2>
+<p>Als je zin hebt om nieuwe plugins te ontwikkelen, ga dan naar de "Torrent Search plugin development guide", die gevonden kan worden in het <a href="http://torrent-search.sourceforge.net/documentation" target="_top">documentatie gedeelde</a> van de <span class="emphasis"><i class="emphasis">Torrent Search</i></span> website.</p>
+</div>
+</div>
+<div class="chapter">
+<hr>
+<h1>
+<a name="contacts"></a>Hoofdstuk 6. Contact</h1>
+<div class="sect1">
+<h2 class="sect1"><a name="contacts-request-plugin">6.1. Om een nieuwe plugin vragen.</a></h2>
+<p>Ken je een torrent-website waarvoor je graag een plugin zou willen hebben in <span class="emphasis"><i class="emphasis">Torrent Search</i></span>, ga dan naar de <a href="http://sourceforge.net/tracker/?group_id=337561&amp;atid=1414046" target="_top">"Feature Requests" tracker</a> op Sourceforge, of plaats een bericht op de <a href="http://sourceforge.net/projects/torrent-search/forums/forum/1189107/topic/3793391" target="_top">"Suggest new search websites" thread</a> op het forum.</p>
+<p>Je kunt ook een e-mail sturen naar <a href="mailto:gwendal.lebihan.dev@gmail.com" target="_top">gwendal.lebihan.dev@gmail.com</a>.</p>
+</div>
+<div class="sect1">
+<hr>
+<h2 class="sect1"><a name="reporting-bugs">6.2. Bugs doorgeven</a></h2>
+<p>Om een bug door te geven, ga naar de <a href="http://sourceforge.net/tracker/?func=add&amp;group_id=337561&amp;atid=1414043" target="_top">bugs tracker</a> op Sourceforge. Probeer zo veel mogelijk informatie te geven over de bug, en geef eventuele terminal-output mee als je die hebt.</p>
+<p>Je kunt hier ook gewoon een e-mail sturen naar <a href="mailto:gwendal.lebihan.dev@gmail.com" target="_top">gwendal.lebihan.dev@gmail.com</a>, als je bijvoorbeeld geen account hebt op Sourceforge.</p>
+</div>
+</div>
+<div class="appendix">
+<hr>
+<h1>
+<a name="fdl"></a>Bijlage A. GNU Free Documentation License</h1>
+<p>Version 1.3, 3 November 2008</p>
+<p>    Copyright &#272; 2000, 2001, 2002, 2007, 2008
+    <a href="http://www.fsf.org/" target="_top">Free Software Foundation, Inc.</a>
+  </p>
+<p>    Everyone is permitted to copy and distribute verbatim copies of this
+    license document, but changing it is not allowed.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section0"></a>
+    0. PREAMBLE
+  </h3>
+<p>    The purpose of this License is to make a manual, textbook, or other
+    functional and useful document &ldquo;free&rdquo; in the sense of freedom:
+    to assure everyone the effective freedom to copy and redistribute it, with
+    or without modifying it, either commercially or
+    noncommercially. Secondarily, this License preserves for the author and
+    publisher a way to get credit for their work, while not being considered
+    responsible for modifications made by others.
+  </p>
+<p>    This License is a kind of &ldquo;copyleft&rdquo;, which means that
+    derivative works of the document must themselves be free in the same
+    sense. It complements the GNU General Public License, which is a copyleft
+    license designed for free software.
+  </p>
+<p>    We have designed this License in order to use it for manuals for free
+    software, because free software needs free documentation: a free program
+    should come with manuals providing the same freedoms that the software
+    does. But this License is not limited to software manuals; it can be used
+    for any textual work, regardless of subject matter or whether it is
+    published as a printed book. We recommend this License principally for
+    works whose purpose is instruction or reference.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section1"></a>
+    1. APPLICABILITY AND DEFINITIONS
+  </h3>
+<p>    This License applies to any manual or other work, in any medium, that
+    contains a notice placed by the copyright holder saying it can be
+    distributed under the terms of this License. Such a notice grants a
+    world-wide, royalty-free license, unlimited in duration, to use that work
+    under the conditions stated herein. The &ldquo;Document&rdquo;, below,
+    refers to any such manual or work. Any member of the public is a licensee,
+    and is addressed as &ldquo;you&rdquo;. You accept the license if you copy,
+    modify or distribute the work in a way requiring permission under
+    copyright law.
+  </p>
+<p>    A &ldquo;Modified Version&rdquo; of the Document means any work containing
+    the Document or a portion of it, either copied verbatim, or with
+    modifications and/or translated into another language.
+  </p>
+<p>    A &ldquo;Secondary Section&rdquo; is a named appendix or a front-matter
+    section of the Document that deals exclusively with the relationship of
+    the publishers or authors of the Document to the Document&rsquo;s overall
+    subject (or to related matters) and contains nothing that could fall
+    directly within that overall subject. (Thus, if the Document is in part a
+    textbook of mathematics, a Secondary Section may not explain any
+    mathematics.) The relationship could be a matter of historical connection
+    with the subject or with related matters, or of legal, commercial,
+    philosophical, ethical or political position regarding them.
+  </p>
+<p>    The &ldquo;Invariant Sections&rdquo; are certain Secondary Sections whose
+    titles are designated, as being those of Invariant Sections, in the notice
+    that says that the Document is released under this License. If a section
+    does not fit the above definition of Secondary then it is not allowed to
+    be designated as Invariant. The Document may contain zero Invariant
+    Sections. If the Document does not identify any Invariant Sections then
+    there are none.
+  </p>
+<p>    The &ldquo;Cover Texts&rdquo; are certain short passages of text that are
+    listed, as Front-Cover Texts or Back-Cover Texts, in the notice that says
+    that the Document is released under this License. A Front-Cover Text may
+    be at most 5 words, and a Back-Cover Text may be at most 25 words.
+  </p>
+<p>    A &ldquo;Transparent&rdquo; copy of the Document means a machine-readable
+    copy, represented in a format whose specification is available to the
+    general public, that is suitable for revising the document
+    straightforwardly with generic text editors or (for images composed of
+    pixels) generic paint programs or (for drawings) some widely available
+    drawing editor, and that is suitable for input to text formatters or for
+    automatic translation to a variety of formats suitable for input to text
+    formatters. A copy made in an otherwise Transparent file format whose
+    markup, or absence of markup, has been arranged to thwart or discourage
+    subsequent modification by readers is not Transparent. An image format is
+    not Transparent if used for any substantial amount of text. A copy that is
+    not &ldquo;Transparent&rdquo; is called &ldquo;Opaque&rdquo;.
+  </p>
+<p>    Examples of suitable formats for Transparent copies include plain ASCII
+    without markup, Texinfo input format, LaTeX input format, SGML or XML
+    using a publicly available DTD, and standard-conforming simple HTML,
+    PostScript or PDF designed for human modification. Examples of transparent
+    image formats include PNG, XCF and JPG. Opaque formats include proprietary
+    formats that can be read and edited only by proprietary word processors,
+    SGML or XML for which the DTD and/or processing tools are not generally
+    available, and the machine-generated HTML, PostScript or PDF produced by
+    some word processors for output purposes only.
+  </p>
+<p>    The &ldquo;Title Page&rdquo; means, for a printed book, the title page
+    itself, plus such following pages as are needed to hold, legibly, the
+    material this License requires to appear in the title page. For works in
+    formats which do not have any title page as such, &ldquo;Title Page&rdquo;
+    means the text near the most prominent appearance of the work&rsquo;s
+    title, preceding the beginning of the body of the text.
+  </p>
+<p>    The &ldquo;publisher&rdquo; means any person or entity that distributes
+    copies of the Document to the public.
+  </p>
+<p>    A section &ldquo;Entitled XYZ&rdquo; means a named subunit of the Document
+    whose title either is precisely XYZ or contains XYZ in parentheses
+    following text that translates XYZ in another language. (Here XYZ stands
+    for a specific section name mentioned below, such as
+    &ldquo;Acknowledgements&rdquo;, &ldquo;Dedications&rdquo;,
+    &ldquo;Endorsements&rdquo;, or &ldquo;History&rdquo;.) To &ldquo;Preserve
+    the Title&rdquo; of such a section when you modify the Document means that
+    it remains a section &ldquo;Entitled XYZ&rdquo; according to this
+    definition.
+  </p>
+<p>    The Document may include Warranty Disclaimers next to the notice which
+    states that this License applies to the Document. These Warranty
+    Disclaimers are considered to be included by reference in this License,
+    but only as regards disclaiming warranties: any other implication that
+    these Warranty Disclaimers may have is void and has no effect on the
+    meaning of this License.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section2"></a>
+    2. VERBATIM COPYING
+  </h3>
+<p>    You may copy and distribute the Document in any medium, either
+    commercially or noncommercially, provided that this License, the copyright
+    notices, and the license notice saying this License applies to the
+    Document are reproduced in all copies, and that you add no other
+    conditions whatsoever to those of this License. You may not use technical
+    measures to obstruct or control the reading or further copying of the
+    copies you make or distribute. However, you may accept compensation in
+    exchange for copies. If you distribute a large enough number of copies you
+    must also follow the conditions in section 3.
+  </p>
+<p>    You may also lend copies, under the same conditions stated above, and you
+    may publicly display copies.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section3"></a>
+    3. COPYING IN QUANTITY
+  </h3>
+<p>    If you publish printed copies (or copies in media that commonly have
+    printed covers) of the Document, numbering more than 100, and the
+    Document&rsquo;s license notice requires Cover Texts, you must enclose
+    the copies in covers that carry, clearly and legibly, all these Cover
+    Texts: Front-Cover Texts on the front cover, and Back-Cover Texts on the
+    back cover. Both covers must also clearly and legibly identify you as the
+    publisher of these copies. The front cover must present the full title
+    with all words of the title equally prominent and visible. You may add
+    other material on the covers in addition. Copying with changes limited to
+    the covers, as long as they preserve the title of the Document and satisfy
+    these conditions, can be treated as verbatim copying in other respects.
+  </p>
+<p>    If the required texts for either cover are too voluminous to fit legibly,
+    you should put the first ones listed (as many as fit reasonably) on the
+    actual cover, and continue the rest onto adjacent pages.
+  </p>
+<p>    If you publish or distribute Opaque copies of the Document numbering more
+    than 100, you must either include a machine-readable Transparent copy
+    along with each Opaque copy, or state in or with each Opaque copy a
+    computer-network location from which the general network-using public has
+    access to download using public-standard network protocols a complete
+    Transparent copy of the Document, free of added material. If you use the
+    latter option, you must take reasonably prudent steps, when you begin
+    distribution of Opaque copies in quantity, to ensure that this Transparent
+    copy will remain thus accessible at the stated location until at least one
+    year after the last time you distribute an Opaque copy (directly or
+    through your agents or retailers) of that edition to the public.
+  </p>
+<p>    It is requested, but not required, that you contact the authors of the
+    Document well before redistributing any large number of copies, to give
+    them a chance to provide you with an updated version of the Document.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section4"></a>
+    4. MODIFICATIONS
+  </h3>
+<p>    You may copy and distribute a Modified Version of the Document under the
+    conditions of sections 2 and 3 above, provided that you release the
+    Modified Version under precisely this License, with the Modified Version
+    filling the role of the Document, thus licensing distribution and
+    modification of the Modified Version to whoever possesses a copy of it. In
+    addition, you must do these things in the Modified Version:
+  </p>
+<p></p>
+<ol type="A">
+<li><p>        Use in the Title Page (and on the covers, if any) a title distinct
+        from that of the Document, and from those of previous versions (which
+        should, if there were any, be listed in the History section of the
+        Document). You may use the same title as a previous version if the
+        original publisher of that version gives permission.
+      </p></li>
+<li><p>        List on the Title Page, as authors, one or more persons or entities
+        responsible for authorship of the modifications in the Modified
+        Version, together with at least five of the principal authors of the
+        Document (all of its principal authors, if it has fewer than five),
+        unless they release you from this requirement.
+      </p></li>
+<li><p>        State on the Title page the name of the publisher of the Modified
+        Version, as the publisher.
+      </p></li>
+<li><p>        Preserve all the copyright notices of the Document.
+      </p></li>
+<li><p>        Add an appropriate copyright notice for your modifications adjacent to
+        the other copyright notices.
+      </p></li>
+<li><p>        Include, immediately after the copyright notices, a license notice
+        giving the public permission to use the Modified Version under the
+        terms of this License, in the form shown in the Addendum below.
+      </p></li>
+<li><p>        Preserve in that license notice the full lists of Invariant Sections
+        and required Cover Texts given in the Document&rsquo;s license
+        notice.
+      </p></li>
+<li><p>        Include an unaltered copy of this License.
+      </p></li>
+<li><p>        Preserve the section Entitled &ldquo;History&rdquo;, Preserve its
+        Title, and add to it an item stating at least the title, year, new
+        authors, and publisher of the Modified Version as given on the Title
+        Page. If there is no section Entitled &ldquo;History&rdquo; in the
+        Document, create one stating the title, year, authors, and publisher
+        of the Document as given on its Title Page, then add an item
+        describing the Modified Version as stated in the previous sentence.
+      </p></li>
+<li><p>        Preserve the network location, if any, given in the Document for
+        public access to a Transparent copy of the Document, and likewise the
+        network locations given in the Document for previous versions it was
+        based on.  These may be placed in the &ldquo;History&rdquo;
+        section. You may omit a network location for a work that was published
+        at least four years before the Document itself, or if the original
+        publisher of the version it refers to gives permission.
+      </p></li>
+<li><p>        For any section Entitled &ldquo;Acknowledgements&rdquo; or
+        &ldquo;Dedications&rdquo;, Preserve the Title of the section, and
+        preserve in the section all the substance and tone of each of the
+        contributor acknowledgements and/or dedications given therein.
+      </p></li>
+<li><p>        Preserve all the Invariant Sections of the Document, unaltered in
+        their text and in their titles. Section numbers or the equivalent are
+        not considered part of the section titles.
+      </p></li>
+<li><p>        Delete any section Entitled &ldquo;Endorsements&rdquo;. Such a section
+        may not be included in the Modified Version.
+      </p></li>
+<li><p>        Do not retitle any existing section to be Entitled
+        &ldquo;Endorsements&rdquo; or to conflict in title with any Invariant
+        Section.
+      </p></li>
+<li><p>        Preserve any Warranty Disclaimers.
+      </p></li>
+</ol>
+<p>    If the Modified Version includes new front-matter sections or appendices
+    that qualify as Secondary Sections and contain no material copied from the
+    Document, you may at your option designate some or all of these sections
+    as invariant. To do this, add their titles to the list of Invariant
+    Sections in the Modified Version&rsquo;s license notice. These titles
+    must be distinct from any other section titles.
+  </p>
+<p>    You may add a section Entitled &ldquo;Endorsements&rdquo;, provided it
+    contains nothing but endorsements of your Modified Version by various
+    parties &mdash; for example, statements of peer review or that the text
+    has been approved by an organization as the authoritative definition of a
+    standard.
+  </p>
+<p>    You may add a passage of up to five words as a Front-Cover Text, and a
+    passage of up to 25 words as a Back-Cover Text, to the end of the list of
+    Cover Texts in the Modified Version. Only one passage of Front-Cover Text
+    and one of Back-Cover Text may be added by (or through arrangements made
+    by) any one entity. If the Document already includes a cover text for the
+    same cover, previously added by you or by arrangement made by the same
+    entity you are acting on behalf of, you may not add another; but you may
+    replace the old one, on explicit permission from the previous publisher
+    that added the old one.
+  </p>
+<p>    The author(s) and publisher(s) of the Document do not by this License give
+    permission to use their names for publicity for or to assert or imply
+    endorsement of any Modified Version.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section5"></a>
+    5. COMBINING DOCUMENTS
+  </h3>
+<p>    You may combine the Document with other documents released under this
+    License, under the terms defined in section 4 above for modified versions,
+    provided that you include in the combination all of the Invariant Sections
+    of all of the original documents, unmodified, and list them all as
+    Invariant Sections of your combined work in its license notice, and that
+    you preserve all their Warranty Disclaimers.
+  </p>
+<p>    The combined work need only contain one copy of this License, and multiple
+    identical Invariant Sections may be replaced with a single copy. If there
+    are multiple Invariant Sections with the same name but different contents,
+    make the title of each such section unique by adding at the end of it, in
+    parentheses, the name of the original author or publisher of that section
+    if known, or else a unique number. Make the same adjustment to the section
+    titles in the list of Invariant Sections in the license notice of the
+    combined work.
+  </p>
+<p>    In the combination, you must combine any sections Entitled
+    &ldquo;History&rdquo; in the various original documents, forming one
+    section Entitled &ldquo;History&rdquo;; likewise combine any sections
+    Entitled &ldquo;Acknowledgements&rdquo;, and any sections Entitled
+    &ldquo;Dedications&rdquo;. You must delete all sections Entitled
+    &ldquo;Endorsements&rdquo;.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section6"></a>
+    6. COLLECTIONS OF DOCUMENTS
+  </h3>
+<p>    You may make a collection consisting of the Document and other documents
+    released under this License, and replace the individual copies of this
+    License in the various documents with a single copy that is included in
+    the collection, provided that you follow the rules of this License for
+    verbatim copying of each of the documents in all other respects.
+  </p>
+<p>    You may extract a single document from such a collection, and distribute
+    it individually under this License, provided you insert a copy of this
+    License into the extracted document, and follow this License in all other
+    respects regarding verbatim copying of that document.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section7"></a>
+    7. AGGREGATION WITH INDEPENDENT WORKS
+  </h3>
+<p>    A compilation of the Document or its derivatives with other separate and
+    independent documents or works, in or on a volume of a storage or
+    distribution medium, is called an &ldquo;aggregate&rdquo; if the copyright
+    resulting from the compilation is not used to limit the legal rights of
+    the compilation&rsquo;s users beyond what the individual works
+    permit. When the Document is included in an aggregate, this License does
+    not apply to the other works in the aggregate which are not themselves
+    derivative works of the Document.
+  </p>
+<p>    If the Cover Text requirement of section 3 is applicable to these copies
+    of the Document, then if the Document is less than one half of the entire
+    aggregate, the Document&rsquo;s Cover Texts may be placed on covers that
+    bracket the Document within the aggregate, or the electronic equivalent of
+    covers if the Document is in electronic form. Otherwise they must appear
+    on printed covers that bracket the whole aggregate.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section8"></a>
+    8. TRANSLATION
+  </h3>
+<p>    Translation is considered a kind of modification, so you may distribute
+    translations of the Document under the terms of section 4. Replacing
+    Invariant Sections with translations requires special permission from
+    their copyright holders, but you may include translations of some or all
+    Invariant Sections in addition to the original versions of these Invariant
+    Sections. You may include a translation of this License, and all the
+    license notices in the Document, and any Warranty Disclaimers, provided
+    that you also include the original English version of this License and the
+    original versions of those notices and disclaimers. In case of a
+    disagreement between the translation and the original version of this
+    License or a notice or disclaimer, the original version will prevail.
+  </p>
+<p>    If a section in the Document is Entitled &ldquo;Acknowledgements&rdquo;,
+    &ldquo;Dedications&rdquo;, or &ldquo;History&rdquo;, the requirement
+    (section 4) to Preserve its Title (section 1) will typically require
+    changing the actual title.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section9"></a>
+    9. TERMINATION
+  </h3>
+<p>    You may not copy, modify, sublicense, or distribute the Document except as
+    expressly provided under this License. Any attempt otherwise to copy,
+    modify, sublicense, or distribute it is void, and will automatically
+    terminate your rights under this License.
+  </p>
+<p>    However, if you cease all violation of this License, then your license
+    from a particular copyright holder is reinstated (a) provisionally, unless
+    and until the copyright holder explicitly and finally terminates your
+    license, and (b) permanently, if the copyright holder fails to notify you
+    of the violation by some reasonable means prior to 60 days after the
+    cessation.
+  </p>
+<p>    Moreover, your license from a particular copyright holder is reinstated
+    permanently if the copyright holder notifies you of the violation by some
+    reasonable means, this is the first time you have received notice of
+    violation of this License (for any work) from that copyright holder, and
+    you cure the violation prior to 30 days after your receipt of the notice.
+  </p>
+<p>    Termination of your rights under this section does not terminate the
+    licenses of parties who have received copies or rights from you under this
+    License. If your rights have been terminated and not permanently
+    reinstated, receipt of a copy of some or all of the same material does not
+    give you any rights to use it.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section10"></a>
+    10. FUTURE REVISIONS OF THIS LICENSE
+  </h3>
+<p>    The Free Software Foundation may publish new, revised versions of the GNU
+    Free Documentation License from time to time. Such new versions will be
+    similar in spirit to the present version, but may differ in detail to
+    address new problems or concerns. See
+    <a href="http://www.gnu.org/copyleft/" target="_top">Copyleft</a>.
+  </p>
+<p>    Each version of the License is given a distinguishing version number. If
+    the Document specifies that a particular numbered version of this License
+    &ldquo;or any later version&rdquo; applies to it, you have the option of
+    following the terms and conditions either of that specified version or of
+    any later version that has been published (not as a draft) by the Free
+    Software Foundation. If the Document does not specify a version number of
+    this License, you may choose any version ever published (not as a draft)
+    by the Free Software Foundation. If the Document specifies that a proxy
+    can decide which future versions of this License can be used, that
+    proxy&rsquo;s public statement of acceptance of a version permanently
+    authorizes you to choose that version for the Document.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="section11"></a>
+    11. RELICENSING
+  </h3>
+<p>    &ldquo;Massive Multiauthor Collaboration Site&rdquo; (or &ldquo;MMC
+    Site&rdquo;) means any World Wide Web server that publishes copyrightable
+    works and also provides prominent facilities for anybody to edit those
+    works. A public wiki that anybody can edit is an example of such a
+    server. A &ldquo;Massive Multiauthor Collaboration&rdquo; (or
+    &ldquo;MMC&rdquo;) contained in the site means any set of copyrightable
+    works thus published on the MMC site.
+  </p>
+<p>    &ldquo;CC-BY-SA&rdquo; means the Creative Commons Attribution-Share Alike
+    3.0 license published by Creative Commons Corporation, a not-for-profit
+    corporation with a principal place of business in San Francisco,
+    California, as well as future copyleft versions of that license published
+    by that same organization.
+  </p>
+<p>    &ldquo;Incorporate&rdquo; means to publish or republish a Document, in
+    whole or in part, as part of another Document.
+  </p>
+<p>    An MMC is &ldquo;eligible for relicensing&rdquo; if it is licensed under
+    this License, and if all works that were first published under this
+    License somewhere other than this MMC, and subsequently incorporated in
+    whole or in part into the MMC, (1) had no cover texts or invariant
+    sections, and (2) were thus incorporated prior to November 1, 2008.
+  </p>
+<p>    The operator of an MMC Site may republish an MMC contained in the site
+    under CC-BY-SA on the same site at any time before August 1, 2009,
+    provided the MMC is eligible for relicensing.
+  </p>
+<h3 class="BRIDGEHEAD">
+<a name="addendum"></a>
+    ADDENDUM: How to use this License for your documents
+  </h3>
+<p>    To use this License in a document you have written, include a copy of the
+    License in the document and put the following copyright and license
+    notices just after the title page:
+  </p>
+<pre class="screen">Copyright &#272; YEAR YOUR NAME
+
+Permission is granted to copy, distribute and/or modify this document under the
+terms of the GNU Free Documentation License, Version 1.3 or any later version
+published by the Free Software Foundation; with no Invariant Sections, no
+Front-Cover Texts, and no Back-Cover Texts. A copy of the license is included in
+the section entitled &ldquo;GNU Free Documentation License&rdquo;.</pre>
+<p>    If you have Invariant Sections, Front-Cover Texts and Back-Cover Texts,
+    replace the &ldquo;with&hellip; Texts.&rdquo; line with this:
+  </p>
+<pre class="screen">with the Invariant Sections being LIST THEIR TITLES, with the Front-Cover Texts
+being LIST, and with the Back-Cover Texts being LIST.</pre>
+<p>    If you have Invariant Sections without Cover Texts, or some other
+    combination of the three, merge those two alternatives to suit the
+    situation.
+  </p>
+<p>    If your document contains nontrivial examples of program code, we
+    recommend releasing these examples in parallel under your choice of free
+    software license, such as the GNU General Public License, to permit their
+    use in free software.
+  </p>
+</div>
+</div></body>
+</html>

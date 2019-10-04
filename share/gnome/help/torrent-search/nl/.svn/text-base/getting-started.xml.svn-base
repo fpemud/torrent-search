@@ -1,0 +1,192 @@
+<chapter id="getting-started">
+	<title>Beginnen met het gebruik van Torrent Search</title>
+   <sect1 id="installation">
+      <title>Installatie</title>
+      <para>De manier waarop je &app; installeert, hangt af van welk besturingssysteem je gebruikt:</para>
+      <variablelist>
+         <varlistentry>
+            <term>Op Debian/Ubuntu</term>
+            <listitem><para>Download het Debian softwarepakket (.deb bestand) van de website en dubbelklik op het gedownloade bestand: De pakkettenbeheerder zal gestart worden en de installatie zal starten zodra je op <guilabel>Installeer pakket</guilabel> klikt.</para>
+            <para>Je kunt ook de terminal gebruiken: <command>gdebi <filename>/pad/naar/bestand</filename></command>.</para></listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>Andere Linux distributies</term>
+            <listitem><para>Download de bron tarball (.tar.gz bestand) en pak het bestand uit. Open dan een terminal en voer de volgende commando's uit:</para>
+            <para><command>cd <filename>/pad/naar/uitgepakte/bestanden</filename></command></para>
+            <para><command>python <filename>setup.py</filename> install</command></para></listitem>
+         </varlistentry>
+      </variablelist>
+   </sect1>
+   <sect1 id="starting">
+      <title>Het programma starten</title>
+      <sect2 id="quickstart">
+         <title>Snelle start</title>
+         <para>
+            Je kunt &app; op verschillende manieren starten:
+         </para>
+         <variablelist>
+            <varlistentry>
+               <term>Programma's menu</term>
+               <listitem>
+                     <para>Kies 
+                     <menuchoice>
+                        <guisubmenu>
+                           Internet
+                        </guisubmenu>
+                        <guimenuitem>
+                           Torrent Search
+                        </guimenuitem>
+                     </menuchoice></para>
+               </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Vanuit een terminal</term>
+               <listitem>
+                     <para>Typ <command>torrent-search</command>, en druk op
+                     <keycap>Enter</keycap>.</para>
+               </listitem>
+            </varlistentry>
+         </variablelist>
+      </sect2>
+      <sect2 id="command-line">
+         <title>Argumenten bij starten vanuit terminal</title>
+         <para>Hier is een beschrijving van de argumenten die gebruikt kunnen worden bij het starten van &app; vanuit een terminal.</para>
+         <sect3 id="command-line-basic">
+            <title>Standaard opties</title>
+            <variablelist>
+               <varlistentry>
+                  <term>-h, --help</term>
+                  <listitem>
+                     <para>Laat help zien en sluit af</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>-v, --version</term>
+                  <listitem>
+                     <para>Laat versienummer zien en sluit af</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>-s, --search</term>
+                  <listitem>
+                     <para>Zoek meteen iets bij het opstarten</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>--no-plugins-check</term>
+                  <listitem>
+                     <para>Controleer niet op plugins</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="command-line-advanced">
+            <title>Geavanceerde opties</title>
+            <para>Deze opties zouden alleen gebruikt worden door ontwikkelaars.</para>
+            <variablelist>
+               <varlistentry>
+                  <term>--share-dir</term>
+                  <listitem>
+                     <para>Stel een alternatief pad in voor de <filename>share</filename> map.</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>--add-plugin</term>
+                  <listitem>
+                     <para>Laad een plugin in vanuit een specifiek pad.</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+      </sect2>
+   </sect1>
+   <sect1 id="main-window">
+      <title>Het hoofdscherm</title>
+      <figure id="figure-mainwindow">
+         <title>Torrent Zoek scherm</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/mainwindow.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <sect2 id="mainmenu">
+         <title>Hoofdmenu</title>
+         <sect3 id="filemenu">
+            <title>Bestand menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Sluit af</term>
+                  <listitem>
+                     <para>Sluit het programma af</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="editmenu">
+            <title>Bewerken menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Voorkeuren</term>
+                  <listitem>
+                     <para>Laat het <link linkend="preferences-dialog">voorkeuren schermpje</link> zien.</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="helpmenu">
+            <title>Help menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Help</term>
+                  <listitem>
+                     <para>Laat deze documentatie zien, gefocust op het deel dat te maken heeft met het huidig geselecteerde object, als dat mogelijk is.</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>Over &app;</term>
+                  <listitem>
+                     <para>Laat het "Over &app;" schermpje zien.</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+      </sect2>
+      <sect2 id="searchbar">
+         <title>Searchbar</title>
+         <para>Om te beginnen met zoeken naar torrents, typ gewoon een zoekopdracht in de zoekbalk en druk op <keycap>Enter</keycap> of klik op <guibutton>Zoek</guibutton>. Je zoekresultaten zullen in de <link linkend="results-list">resultatenlijst</link> in het <guilabel>Zoekresultaten</guilabel> vak tevoorschijn komen.</para>
+      </sect2>
+      <sect2 id="search-options">
+         <title>Zoek opties</title>
+         <para>Om je zoek opties aan te passen, klik op de <guilabel>Zoek opties</guilabel> expander onder de zoekbalk. Je zult het volgende vak tevoorschijn zien komen:</para>
+         <figure id="figure-search-options">
+            <title>Zoek opties vak</title>
+            <screenshot>
+               <mediaobject>
+                  <imageobject>
+                     <imagedata fileref="figures/search-options.png" format="PNG"/>
+                  </imageobject>
+               </mediaobject>
+            </screenshot>
+         </figure>
+         <para>Je kunt een aantal filters instellen zodat je alleen resultaten krijgt waar jij geïnteresseerd in bent. Je hoeft de zoekopdracht niet opnieuw uit te voeren als je de opties aanpast, omdat de filters automatisch toegepast zullen worden.</para>
+         <warning>
+            <para>Sommige plugins kunnen niet met de <guilabel>Filter duplicaten</guilabel> filter werken.</para>
+         </warning>
+      </sect2>
+      <sect2 id="results-list">
+         <title>Resultaten lijst</title>
+         <para>Als je een zoekopdracht hebt gedaan, dan zullen de resultaten verschijnen die bij jouw criteria's horen in de resultaten lijst. Het aantal resultaten weergeven in het <guilabel>Zoekresultaten</guilabel> vak is het aantal gevonden torrents: Als je een aantal filters hebt ingesteld bij <link linkend="search-options">Zoek opties</link>, dan kan het aantal afwijken van wat erboven staat.</para>
+         <para>Om een torrent bestand te downloaden, dubbelklik op de regel van de torrent, of klik met de rechtermuisknop en selecteer  <guilabel>Download</guilabel> van het menu. De download-voortgand zal verschijnen in de <link linkend="downloads-bar">Downloads zijbalk</link>.</para>
+      </sect2>
+      <sect2 id="downloads-bar">
+         <title>Downloads zijbalk</title>
+         <para>De <guilabel>Downloads zijbalk</guilabel> zal de voortgang laten zien voor de verschillende downloads die je aan hebt gezet. Als een download klaar is, dan zal de regel verdwijnen uit de lijst.</para>
+         <para>Actieve downloads komen met een groene achtergrond, mislukte komen met een rode achtergrond.</para>
+         <para>Zolang dat een download <guilabel>Wachtend</guilabel> is, kun je hem annuleren door <guilabel>Annuleer</guilabel> te selecteren in het menu dat verschijnt als je er rechts op klikt. Vanaf het moment dat een download gestart is, kan hij niet meer geannuleerd worden.</para>
+         <para>Als het downloaden van een bestand mislukt is, dan kun je met de rechtermuisknop kiezen of je de download opnieuw wilt proberen, of dat je hem wilt annuleren.</para>
+      </sect2>
+   </sect1>
+</chapter>

@@ -1,0 +1,99 @@
+#! /usr/bin/python
+# -*- coding=utf-8 -*-
+
+"""
+    This file is part of Torrent Search.
+    
+    Torrent Search is free software: you can redistribute it and/or modify
+    it under the terms of the GNU General Public License as published by
+    the Free Software Foundation, either version 3 of the License, or
+    (at your option) any later version.
+
+    Torrent Search is distributed in the hope that it will be useful,
+    but WITHOUT ANY WARRANTY; without even the implied warranty of
+    MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+    GNU General Public License for more details.
+
+    You should have received a copy of the GNU General Public License
+    along with this program.  If not, see <http://www.gnu.org/licenses/>.
+"""
+
+import os, gnomevfs, gettext, gconf, gtk, sys
+
+PATH=os.path.abspath(os.path.split(__file__)[0])
+
+def walk_sources(res,path,files):
+   for i in files:
+      filename=path+"/"+i
+      try:
+         mime=gnomevfs.get_mime_type(filename)
+         if mime=="text/x-python" and filename!=__file__:
+            res.append(filename)
+      except:
+         pass
+
+def list_sources():
+   res=[]
+   os.path.walk(PATH,walk_sources,res)
+   return res
+
+def list_keys_for_file(filename,res):
+   i=0
+   f=open(filename)
+   data=f.read()
+   f.close()
+   while i<len(data):
+      if data[i:i+3] in ["_(\"","_('"]:
+         j=data[i+3:].index(data[i+2])+i+3
+         if not "\n" in data[i+3:j] and not data[i+3:j] in res:
+            res.append(data[i+3:j])
+         i=j+1
+      else:
+         i+=1
+
+def list_keys():
+   l=list_sources()
+   res=[]
+   for i in l:
+      list_keys_for_file(i,res)
+   return res
+   
+def list_langs():
+   path=PATH+"/po files"
+   res=[]
+   for i in os.listdir(path):
+      if i[-3:]==".po":
+         res.append(i[:-3])
+   return res
+
+def compute_po_file(lang):
+   src=PATH+"/po files/%s.po"%lang
+   destpath=PATH+"/share/locale/%s/LC_MESSAGES/"%lang
+   dest=destpath+"torrent-search.mo"
+   if not os.path.exists(destpath):
+      os.system('mkdir -p "%s"'%destpath)
+   os.system('msgfmt "%s" -o "%s"'%(src,dest))
+   
+if __name__=="__main__":
+   keys=list_keys()
+   lang=sys.argv[1]
+   os.system('rm "%s/share/locale/%s/LC_MESSAGES/torrent-search.mo"'%(PATH,lang))
+   compute_po_file(lang)
+   try:
+      t=gettext.translation("torrent-search",PATH+"/share/locale",[lang])
+      add_all=False
+   except:
+      add_all=True
+   ent=gettext.translation("torrent-search",PATH+"/share/locale",["en"])
+   add_values=[]
+   for j in keys:
+      if add_all or t.gettext(j)==j:
+         value=ent.gettext(j)
+         if value:
+            add_values.append((j,value))
+   if add_values:
+      add_data=""
+      for j,k in add_values:
+         add_data+="msgid \"%s\"\nmsgstr \"%s\"\n\n"%(j,k.replace('"','\\"'))
+      print add_data
+   

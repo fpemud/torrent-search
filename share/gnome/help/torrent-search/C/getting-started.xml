@@ -1,0 +1,192 @@
+<chapter id="getting-started">
+	<title>Getting started with Torrent Search</title>
+   <sect1 id="installation">
+      <title>Installation</title>
+      <para>The way to install &app; on your system depends on your operating system&nbsp;:</para>
+      <variablelist>
+         <varlistentry>
+            <term>On Debian/Ubuntu</term>
+            <listitem><para>Download the debian package (.deb) and double-click on the downloaded file : the package manager will be launched and installation will start once you click on <guilabel>Install this package</guilabel>.</para>
+            <para>You can also use the command line : <command>gdebi <filename>/path/to/file</filename></command>.</para></listitem>
+         </varlistentry>
+         <varlistentry>
+            <term>Other Linux distributions</term>
+            <listitem><para>Download the source tarball (.tar.gz) and extract it. Then, from the command line, run the following commands&nbsp;:</para>
+            <para><command>cd <filename>/path/to/extracted/files</filename></command></para>
+            <para><command>python <filename>setup.py</filename> install</command></para></listitem>
+         </varlistentry>
+      </variablelist>
+   </sect1>
+   <sect1 id="starting">
+      <title>Launching the application</title>
+      <sect2 id="quickstart">
+         <title>Quick start</title>
+         <para>
+            You can start &app; in the following ways:
+         </para>
+         <variablelist>
+            <varlistentry>
+               <term>Applications menu</term>
+               <listitem>
+                     <para>Choose 
+                     <menuchoice>
+                        <guisubmenu>
+                           Internet
+                        </guisubmenu>
+                        <guimenuitem>
+                           Torrent Search
+                        </guimenuitem>
+                     </menuchoice></para>
+               </listitem>
+            </varlistentry>
+            <varlistentry>
+               <term>Command line</term>
+               <listitem>
+                     <para>Type <command>torrent-search</command>, then press
+                     <keycap>Return</keycap>.</para>
+               </listitem>
+            </varlistentry>
+         </variablelist>
+      </sect2>
+      <sect2 id="command-line">
+         <title>Command line arguments</title>
+         <para>Here is a description of the arguments that can be used when launching &app; from the command line.</para>
+         <sect3 id="command-line-basic">
+            <title>Basic options</title>
+            <variablelist>
+               <varlistentry>
+                  <term>-h, --help</term>
+                  <listitem>
+                     <para>Show help message and exit</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>-v, --version</term>
+                  <listitem>
+                     <para>Show version number and exit</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>-s, --search</term>
+                  <listitem>
+                     <para>Run a search on startup</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>--no-plugins-check</term>
+                  <listitem>
+                     <para>Do not check for plugins updates</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="command-line-advanced">
+            <title>Advanced options</title>
+            <para>These options should be used by developers only.</para>
+            <variablelist>
+               <varlistentry>
+                  <term>--share-dir</term>
+                  <listitem>
+                     <para>Set path to the <filename>share</filename> folder</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>--add-plugin</term>
+                  <listitem>
+                     <para>Load a plugin from a specific path</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+      </sect2>
+   </sect1>
+   <sect1 id="main-window">
+      <title>The main window</title>
+      <figure id="figure-mainwindow">
+         <title>Torrent Search window</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/mainwindow.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <sect2 id="mainmenu">
+         <title>Main menu</title>
+         <sect3 id="filemenu">
+            <title>File menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Quit</term>
+                  <listitem>
+                     <para>Quit the application</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="editmenu">
+            <title>Edit menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Preferences</term>
+                  <listitem>
+                     <para>Show the <link linkend="preferences-dialog">preferences dialog</link></para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+         <sect3 id="helpmenu">
+            <title>Help menu</title>
+            <variablelist>
+               <varlistentry>
+                  <term>Help</term>
+                  <listitem>
+                     <para>Show this documentation, focusing of the section correponding to the active widget, if possible</para>
+                  </listitem>
+               </varlistentry>
+               <varlistentry>
+                  <term>About</term>
+                  <listitem>
+                     <para>Show the "About" dialog</para>
+                  </listitem>
+               </varlistentry>
+            </variablelist>
+         </sect3>
+      </sect2>
+      <sect2 id="searchbar">
+         <title>Searchbar</title>
+         <para>To start searching for torrents, simply enter your search query in the searchbar entry, then press <keycap>Return</keycap> or click on <guibutton>Find</guibutton>. Your search results will appear in the <link linkend="results-list">results list</link> in the <guilabel>Search results</guilabel> box.</para>
+      </sect2>
+      <sect2 id="search-options">
+         <title>Search options</title>
+         <para>To modify search options, click on the <guilabel>Search options</guilabel> expander under the searchbar. You will see the following box appear:</para>
+         <figure id="figure-search-options">
+            <title>Search options box</title>
+            <screenshot>
+               <mediaobject>
+                  <imageobject>
+                     <imagedata fileref="figures/search-options.png" format="PNG"/>
+                  </imageobject>
+               </mediaobject>
+            </screenshot>
+         </figure>
+         <para>You can set some filters to view only the results you are interested in. You don't have to rerun the search when you modify options, as the filters are applied immediatly.</para>
+         <warning>
+            <para>Some plugins might not handle the <guilabel>Filter duplicates</guilabel> filter.</para>
+         </warning>
+      </sect2>
+      <sect2 id="results-list">
+         <title>Results list</title>
+         <para>When you run a search, the torrents matching your criterias will appear in the results list. The number of results indicated in the <guilabel>Search results</guilabel> box title is the total number of results : if you selected some filters in the <link linkend="search-options">Search options</link>, the number of results displayed will not be the same as the one in the title.</para>
+         <para>To download a torrent file, double-click on the line of the corresponding result or right-click on the line and select <guilabel>Download</guilabel> from the menu. The download progress will appear in the <link linkend="downloads-bar">Downloads sidebar</link>.</para>
+      </sect2>
+      <sect2 id="downloads-bar">
+         <title>Downloads sidebar</title>
+         <para>The <guilabel>Downloads sidebar</guilabel> will show the progress for the different downloads you requested. Once a download is completed, the line is removed from the list.</para>
+         <para>Active downloads appear with a green background, failed ones with a red background.</para>
+         <para>While a download is in <guilabel>Waiting</guilabel> state, you can cancel it by selecting <guilabel>Cancel</guilabel> in the menu accessible by a right-click. Once it has started, a download can no longer be canceled.</para>
+         <para>When a file fails to download, you can choose to retry or cancel the download by right-clicking on the line.</para>
+      </sect2>
+   </sect1>
+</chapter>

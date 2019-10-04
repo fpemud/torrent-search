@@ -1,0 +1,13 @@
+<chapter id="contacts">
+   <title>Contact</title>
+   <sect1 id="contacts-request-plugin">
+      <title>Om een nieuwe plugin vragen.</title>
+      <para>Ken je een torrent-website waarvoor je graag een plugin zou willen hebben in &app;, ga dan naar de <ulink url="http://sourceforge.net/tracker/?group_id=337561&amp;atid=1414046">"Feature Requests" tracker</ulink> op Sourceforge, of plaats een bericht op de <ulink url="http://sourceforge.net/projects/torrent-search/forums/forum/1189107/topic/3793391">"Suggest new search websites" thread</ulink> op het forum.</para>
+      <para>Je kunt ook een e-mail sturen naar <ulink url="mailto:gwendal.lebihan.dev@gmail.com">gwendal.lebihan.dev@gmail.com</ulink>.</para>
+   </sect1>
+   <sect1 id="reporting-bugs">
+      <title>Bugs doorgeven</title>
+      <para>Om een bug door te geven, ga naar de <ulink url="http://sourceforge.net/tracker/?func=add&amp;group_id=337561&amp;atid=1414043">bugs tracker</ulink> op Sourceforge. Probeer zo veel mogelijk informatie te geven over de bug, en geef eventuele terminal-output mee als je die hebt.</para>
+      <para>Je kunt hier ook gewoon een e-mail sturen naar <ulink url="mailto:gwendal.lebihan.dev@gmail.com">gwendal.lebihan.dev@gmail.com</ulink>, als je bijvoorbeeld geen account hebt op Sourceforge.</para>
+   </sect1>
+</chapter>

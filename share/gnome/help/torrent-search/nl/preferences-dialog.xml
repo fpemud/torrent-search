@@ -1,0 +1,39 @@
+<chapter id="preferences-dialog">
+   <title>Voorkeuren scherm</title>
+   <sect1 id="preferences-general">
+      <title>Standaard opties</title>
+      <figure id="figure-preferences-general">
+         <title>"Standaard options" tab van het opties scherm</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-general.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <sect2 id="preferences-general-torrent-files">
+         <title>Het "Torrent bestandes" vak</title>
+         <para>Het het <guilabel>Torrent bestanden</guilabel> vak kun je kiezen wat je met je gedownloade torrent bestanden wilt doen. Je kunt je opslaan in een bepaalde map, je kunt ze openen met een programma dat torrent bestanden ondersteunt of je kunt zelf een programma instellen om ze mee te openen.</para>
+      </sect2>
+      <sect2 id="preferences-general-plugins-updates">
+         <title>Het "Plugin updates" vak</title>
+         <para>Hier kun je kiezen of je &app; wilt laten zoeken voor updates voor je plugins bij het opstarten. Dit is aanbevolen, maar als je kiest het uit te schakelen, dan kun je handmatig zoeken door op de <guibutton>Controleer nu</guibutton> knop te klikken.</para>
+      </sect2>
+   </sect1>
+   <sect1 id="preferences-plugins">
+      <title>Zoek-plugins</title>
+      <figure id="figure-preferences-plugins">
+         <title>"Plugins" tab van het voorkeuren scherm</title>
+         <screenshot>
+            <mediaobject>
+               <imageobject>
+                  <imagedata fileref="figures/prefs-plugins.png" format="PNG"/>
+               </imageobject>
+            </mediaobject>
+         </screenshot>
+      </figure>
+      <para>In deze tab zie je een lijst van beschikbare zoek-plugins. Als je vindt dat een plugin het werk niet goed of slechte resultaten oplevert, dan kun je hem uitschekelen door op het checkbox te klikken in de <guilabel>Inschakelen</guilabel> kolom.</para>
+      <para>Als je een bug/fout tegenkomt. Bekijk de <link linkend="reporting-bugs">Reporting bugs</link> sectie voor meer informatie over het doorgeven van bugs.</para>
+   </sect1>
+</chapter>

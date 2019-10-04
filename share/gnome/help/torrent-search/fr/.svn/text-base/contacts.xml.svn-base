@@ -1,0 +1,13 @@
+<chapter id="contacts">
+   <title>Contacts</title>
+   <sect1 id="contacts-request-plugin">
+      <title>Demander un nouveau plugin</title>
+      <para>Si vous pensez que l'ajout d'un plugin pour un site que vous connaissez serait un plus pour &app;, veuillez vous rendre sur le <ulink url="http://sourceforge.net/tracker/?group_id=337561&amp;atid=1414046">traqueur "Feature Requests"</ulink> sur Sourceforge, ou postez un message sur le <ulink url="http://sourceforge.net/projects/torrent-search/forums/forum/1189107/topic/3793391">forum</ulink>.</para>
+      <para>Vous pouvez aussi envoyer un mail &agrave; <ulink url="mailto:gwendal.lebihan.dev@gmail.com">gwendal.lebihan.dev@gmail.com</ulink>.</para>
+   </sect1>
+   <sect1 id="reporting-bugs">
+      <title>Signaler un bug</title>
+      <para>Pour signaler un bug, veuillez vous rendre sur le <ulink url="http://sourceforge.net/tracker/?func=add&amp;group_id=337561&amp;atid=1414043">traqueur de bugs</ulink> sur Sourceforge. Merci d'&ecirc;tre aussi pr&eacute;cis que possible, et de joindre la sortie de console si disponible.</para>
+      <para>Vous pouvez aussi envoyer un mail &agrave; <ulink url="mailto:gwendal.lebihan.dev@gmail.com">gwendal.lebihan.dev@gmail.com</ulink>.</para>
+   </sect1>
+</chapter>
