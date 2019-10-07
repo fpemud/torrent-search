@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,7 +18,7 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk, thread, gobject, httplib2, urllib
+import gtk, _thread, gobject, httplib2, urllib.request, urllib.parse, urllib.error
 
 class VersionNoFilesDialog(gtk.Dialog):
    def __init__(self,app,url):
@@ -88,7 +88,7 @@ class VersionDownloadDialog(gtk.Dialog):
       self.src=url
       self.dest=dest
       self.filesize=size
-      self.progress_lock=thread.allocate_lock()
+      self.progress_lock=_thread.allocate_lock()      # FIXME
       self.progress=0
       self.set_has_separator(False)
       self.set_deletable(False)
@@ -120,7 +120,7 @@ class VersionDownloadDialog(gtk.Dialog):
          size=eval(filesize)
          read_length=0
          bufsize=size/50
-         fsrc=urllib.urlopen(src)
+         fsrc=urllib.request.urlopen(src)
          fdest=open(dest,"wb")
          data=fsrc.read(bufsize)
          while data:
@@ -153,7 +153,7 @@ class VersionDownloadDialog(gtk.Dialog):
    def run(self):
       self.show_all()
       gobject.timeout_add(50,self.watch_progress)
-      thread.start_new_thread(self.do_download,(self.src,self.dest,self.filesize))
+      _thread.start_new_thread(self.do_download,(self.src,self.dest,self.filesize))    # FIXME
       res=gtk.Dialog.run(self)
       self.hide()
       return res==gtk.RESPONSE_OK
@@ -178,8 +178,8 @@ class VersionDestinationDialog(gtk.FileChooserDialog):
 class VersionAvailableFilesDialog(gtk.Dialog):
    def __init__(self,app,files):
       gtk.Dialog.__init__(self,_("PLEASE_WAIT"),app)
-      self.available_files_lock=thread.allocate_lock()
-      self.urls_lock=thread.allocate_lock()
+      self.available_files_lock=_thread.allocate_lock()    # FIXME
+      self.urls_lock=_thread.allocate_lock()    # FIXME
       self.add_button(gtk.STOCK_CANCEL,gtk.RESPONSE_CANCEL)
       self.urls=files
       self.total_urls=len(self.urls)
@@ -249,7 +249,7 @@ class VersionAvailableFilesDialog(gtk.Dialog):
    def run(self):
       timer=gobject.timeout_add(50,self.check_available_files)
       self.show_all()
-      thread.start_new_thread(self.list_new_files,())
+      _thread.start_new_thread(self.list_new_files,())    # FIXME
       res=gtk.Dialog.run(self)
       self.hide()
       if res==gtk.RESPONSE_OK:

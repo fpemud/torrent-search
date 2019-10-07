@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,40 +18,51 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os, sys
+import os
+import sys
+
 
 class PluginException(Exception):
-   def __init__(self,mesg):
-      Exception.__init__(self,mesg)
-      self._mesg=mesg
-   def handle(self):
-      sys.stderr.write(self._mesg+"\n")
-      
+    def __init__(self, mesg):
+        Exception.__init__(self, mesg)
+        self._mesg = mesg
+
+    def handle(self):
+        sys.stderr.write(self._mesg+"\n")
+
+
 class PluginFileNotFound(PluginException):
-   def __init__(self,metafile):
-      try:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_FOUND")%metafile)
-      except:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_FOUND"))
+    def __init__(self, metafile):
+        try:
+            PluginException.__init__(
+                self, _("PLUGIN_FILE_NOT_FOUND") % metafile)
+        except:
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_FOUND"))
+
 
 class PluginFileNotFile(PluginException):
-   def __init__(self,metafile):
-      try:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_FILE")%metafile)
-      except:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_FILE"))
+    def __init__(self, metafile):
+        try:
+            PluginException.__init__(
+                self, _("PLUGIN_FILE_NOT_FILE") % metafile)
+        except:
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_FILE"))
+
 
 class PluginFileNotReadable(PluginException):
-   def __init__(self,metafile):
-      try:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_READABLE")%metafile)
-      except:
-         PluginException.__init__(self,_("PLUGIN_FILE_NOT_READABLE"))
+    def __init__(self, metafile):
+        try:
+            PluginException.__init__(
+                self, _("PLUGIN_FILE_NOT_READABLE") % metafile)
+        except:
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_READABLE"))
+
 
 class IncorrectPluginMetaFile(PluginException):
-   def __init__(self,filename,msg):
-      PluginException.__init__(self,filename+": "+msg)
-      
+    def __init__(self, filename, msg):
+        PluginException.__init__(self, filename+": "+msg)
+
+
 class PluginSyntaxError(PluginException):
-   def __init__(self,filename):
-      PluginException.__init__(self,filename+": "+_("SYNTAX_ERROR"))
+    def __init__(self, filename):
+        PluginException.__init__(self, filename+": "+_("SYNTAX_ERROR"))

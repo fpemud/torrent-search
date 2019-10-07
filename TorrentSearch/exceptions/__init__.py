@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,4 +18,4 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from plugins import *
+from .plugins import *

@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,38 +18,45 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os, sys
+import os
+import sys
 
-DOWNLOAD_TORRENT_STATUS_WAITING, DOWNLOAD_TORRENT_STATUS_GETTING_LINK, DOWNLOAD_TORRENT_STATUS_DOWNLOADING, DOWNLOAD_TORRENT_STATUS_FINISHED, DOWNLOAD_TORRENT_STATUS_FAILED=range(5)
+DOWNLOAD_TORRENT_STATUS_WAITING = 0
+DOWNLOAD_TORRENT_STATUS_GETTING_LINK = 1
+DOWNLOAD_TORRENT_STATUS_DOWNLOADING = 2
+DOWNLOAD_TORRENT_STATUS_FINISHED = 3
+DOWNLOAD_TORRENT_STATUS_FAILED = 4
 
-LOGIN_STATUS_WAITING, LOGIN_STATUS_OK, LOGIN_STATUS_FAILED=range(3)
+LOGIN_STATUS_WAITING = 0
+LOGIN_STATUS_OK = 1
+LOGIN_STATUS_FAILED = 2
 
 if os.getenv('APPDATA'):
-   APPDATA_PATH=os.path.join(os.getenv('APPDATA'),"torrent-search")
+    APPDATA_PATH = os.path.join(os.getenv('APPDATA'), "torrent-search")
 else:
-   APPDATA_PATH=os.path.join(os.getenv('HOME'),".torrent-search")
+    APPDATA_PATH = os.path.join(os.getenv('HOME'), ".torrent-search")
 
 if os.path.exists("/usr"):
-   try:
-      i=__file__.index("/lib/")
-      DEFAULT_SHARE_PATH=__file__[:i]+'/share'
-   except:
-      DEFAULT_SHARE_PATH="/usr/share"
-   PLATFORM="unix"
+    try:
+        i = __file__.index("/lib/")
+        DEFAULT_SHARE_PATH = __file__[:i]+'/share'
+    except:
+        DEFAULT_SHARE_PATH = "/usr/share"
+    PLATFORM = "unix"
 else:
-   DEFAULT_SHARE_PATH=os.path.join(os.path.split(sys.argv[0])[0],"share")
-   PLATFORM="windows"
+    DEFAULT_SHARE_PATH = os.path.join(os.path.split(sys.argv[0])[0], "share")
+    PLATFORM = "windows"
 
-BUG_REPORT_PAGE="http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414043"
-FEATURE_REQUEST_PAGE="http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414046"
+BUG_REPORT_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414043"
+FEATURE_REQUEST_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414046"
 
-AVAILABLE_LANGUAGES=[
-('Deutsch','de'),
-('English','en'),
-('Français','fr'),
-('Nederlands','nl'),
-('Polski','pl'),
-('Русский','ru'),
-('Română','ro'),
-('Svenska','sv'),
+AVAILABLE_LANGUAGES = [
+    ('Deutsch', 'de'),
+    ('English', 'en'),
+    ('Français', 'fr'),
+    ('Nederlands', 'nl'),
+    ('Polski', 'pl'),
+    ('Русский', 'ru'),
+    ('Română', 'ro'),
+    ('Svenska', 'sv'),
 ]

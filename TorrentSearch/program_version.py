@@ -1,7 +1,9 @@
-#!/usr/bin/env python
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 # This code was written by Krzysztof Kowalczyk (http://blog.kowalczyk.info)
 # and is placed in public domain.
+
 
 def v2fhelper(v, suff, version, weight):
     parts = v.split(suff)
@@ -13,11 +15,13 @@ def v2fhelper(v, suff, version, weight):
 
 # Convert a Mozilla-style version string into a floating-point number
 #   1.2.3.4, 1.2a5, 2.3.4b1pre, 3.0rc2, etc
+
+
 def version2float(v):
     version = [
-        0, 0, 0, 0, # 4-part numerical revision
-        4, # Alpha, beta, RC or (default) final
-        0, # Alpha, beta, or RC version revision
+        0, 0, 0, 0,  # 4-part numerical revision
+        4,  # Alpha, beta, RC or (default) final
+        0,  # Alpha, beta, or RC version revision
         1  # Pre or (default) final
     ]
     parts = v.split("pre")
@@ -30,7 +34,7 @@ def version2float(v):
     v = v2fhelper(v, "rc", version, 3)
 
     parts = v.split(".")[:4]
-    for (p, i) in zip(parts, range(len(parts))):
+    for (p, i) in zip(parts, list(range(len(parts)))):
         version[i] = p
     ver = float(version[0])
     ver += float(version[1]) / 100.
@@ -49,6 +53,7 @@ def ProgramVersionGreater(ver1, ver2):
     v2f = version2float(ver2)
     return v1f > v2f
 
+
 def tests():
     assert ProgramVersionGreater("1", "0.9")
     assert ProgramVersionGreater("0.0.0.2", "0.0.0.1")
@@ -66,6 +71,7 @@ def tests():
     assert ProgramVersionGreater("88", "88a12")
     assert ProgramVersionGreater("0.0.33", "0.0.33rc23")
     print("All tests passed")
+
 
 if __name__ == "__main__":
     tests()

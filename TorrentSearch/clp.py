@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,19 +18,29 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import optparse, os, sys
-from informations import *
-from constants import DEFAULT_SHARE_PATH
+import optparse
+import os
+import sys
+from .informations import *
+from .constants import DEFAULT_SHARE_PATH
+
 
 class OptionParser(optparse.OptionParser):
-   def __init__(self):
-      optparse.OptionParser.__init__(self,add_help_option=False)
-      self.version=VERSION
-      basic_group=self.add_option_group(_("BASIC_OPTIONS"))
-      basic_group.add_option("-h","--help",dest="show_help",action="store_true",help=_("SHOW_THIS_HELP_AND_EXIT"))
-      basic_group.add_option("-v","--version",action="store_true",dest="show_version",help=_("HELP_SHOW_VERSION"))
-      basic_group.add_option("--search","-s",dest="search_pattern",default="",help=_("RUN_SEARCH_ON_STARTUP"))
-      basic_group.add_option("--no-plugins-check",dest="no_plugins_check",action="store_true",help=_("HELP_NO_PLUGIN_CHECK"))
-      advanced_group=self.add_option_group(_("ADVANCED_OPTIONS"))
-      advanced_group.add_option("--share-dir",dest="share_dir",default=DEFAULT_SHARE_PATH,help=_("PATH_TO_SHARE"))
-      advanced_group.add_option("--add-plugin",dest="add_plugin",default="",help=_("HELP_ADD_PLUGIN"))
+
+    def __init__(self):
+        optparse.OptionParser.__init__(self, add_help_option=False)
+        self.version = VERSION
+        basic_group = self.add_option_group(_("BASIC_OPTIONS"))
+        basic_group.add_option("-h", "--help", dest="show_help",
+                               action="store_true", help=_("SHOW_THIS_HELP_AND_EXIT"))
+        basic_group.add_option("-v", "--version", action="store_true",
+                               dest="show_version", help=_("HELP_SHOW_VERSION"))
+        basic_group.add_option("--search", "-s", dest="search_pattern",
+                               default="", help=_("RUN_SEARCH_ON_STARTUP"))
+        basic_group.add_option("--no-plugins-check", dest="no_plugins_check",
+                               action="store_true", help=_("HELP_NO_PLUGIN_CHECK"))
+        advanced_group = self.add_option_group(_("ADVANCED_OPTIONS"))
+        advanced_group.add_option("--share-dir", dest="share_dir",
+                                  default=DEFAULT_SHARE_PATH, help=_("PATH_TO_SHARE"))
+        advanced_group.add_option("--add-plugin", dest="add_plugin", default="",
+                                  help=_("HELP_ADD_PLUGIN"))

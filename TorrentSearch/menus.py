@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,48 +18,57 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk, gtk.keysyms, webbrowser
-from constants import *
+import gtk
+import gtk.keysyms
+import webbrowser
+from .constants import *
+
 
 class HelpMenu(gtk.MenuItem):
-   def __init__(self,app):
-      gtk.MenuItem.__init__(self,_("HELP_MENU_LABEL"))
-      menu=gtk.Menu()
-      self.set_submenu(menu)
-      item=gtk.ImageMenuItem(gtk.STOCK_HELP)
-      menu.add(item)
-      item.connect('activate',lambda w:app.show_help())
-      app.add_accelerator(item,"activate",gtk.keysyms.F1,0,gtk.ACCEL_VISIBLE)
-      item=gtk.MenuItem(_("CONTACT"))
-      menu.add(item)
-      submenu=gtk.Menu()
-      item.set_submenu(submenu)
-      item=gtk.MenuItem(_("REPORT_BUG"))
-      submenu.add(item)
-      item.connect('activate',lambda w:webbrowser.open(BUG_REPORT_PAGE))
-      item=gtk.MenuItem(_("REQUEST_FEATURE"))
-      submenu.add(item)
-      item.connect('activate',lambda w:webbrowser.open(FEATURE_REQUEST_PAGE))
-      item=gtk.ImageMenuItem(gtk.STOCK_ABOUT)
-      menu.add(item)
-      item.connect('activate',lambda w:app.show_about_dialog())
+    def __init__(self, app):
+        gtk.MenuItem.__init__(self, _("HELP_MENU_LABEL"))
+        menu = gtk.Menu()
+        self.set_submenu(menu)
+        item = gtk.ImageMenuItem(gtk.STOCK_HELP)
+        menu.add(item)
+        item.connect('activate', lambda w: app.show_help())
+        app.add_accelerator(
+            item, "activate", gtk.keysyms.F1, 0, gtk.ACCEL_VISIBLE)
+        item = gtk.MenuItem(_("CONTACT"))
+        menu.add(item)
+        submenu = gtk.Menu()
+        item.set_submenu(submenu)
+        item = gtk.MenuItem(_("REPORT_BUG"))
+        submenu.add(item)
+        item.connect('activate', lambda w: webbrowser.open(BUG_REPORT_PAGE))
+        item = gtk.MenuItem(_("REQUEST_FEATURE"))
+        submenu.add(item)
+        item.connect('activate', lambda w: webbrowser.open(
+            FEATURE_REQUEST_PAGE))
+        item = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+        menu.add(item)
+        item.connect('activate', lambda w: app.show_about_dialog())
+
 
 class FileMenu(gtk.MenuItem):
-   def __init__(self,app):
-      gtk.MenuItem.__init__(self,_("FILE_MENU_LABEL"))
-      menu=gtk.Menu()
-      self.set_submenu(menu)
-      item=gtk.ImageMenuItem(gtk.STOCK_QUIT)
-      menu.add(item)
-      item.connect('activate',lambda w:app.quit())
-      app.add_accelerator(item,"activate",ord('q'),gtk.gdk.CONTROL_MASK,gtk.ACCEL_VISIBLE)
-      
+    def __init__(self, app):
+        gtk.MenuItem.__init__(self, _("FILE_MENU_LABEL"))
+        menu = gtk.Menu()
+        self.set_submenu(menu)
+        item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        menu.add(item)
+        item.connect('activate', lambda w: app.quit())
+        app.add_accelerator(item, "activate", ord(
+            'q'), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+
+
 class EditMenu(gtk.MenuItem):
-   def __init__(self,app):
-      gtk.MenuItem.__init__(self,_("EDIT_MENU_LABEL"))
-      menu=gtk.Menu()
-      self.set_submenu(menu)
-      item=gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
-      menu.add(item)
-      item.connect('activate',lambda w:app.show_preferences_dialog())
-      app.add_accelerator(item,"activate",ord('p'),gtk.gdk.CONTROL_MASK,gtk.ACCEL_VISIBLE)
+    def __init__(self, app):
+        gtk.MenuItem.__init__(self, _("EDIT_MENU_LABEL"))
+        menu = gtk.Menu()
+        self.set_submenu(menu)
+        item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+        menu.add(item)
+        item.connect('activate', lambda w: app.show_preferences_dialog())
+        app.add_accelerator(item, "activate", ord(
+            'p'), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)

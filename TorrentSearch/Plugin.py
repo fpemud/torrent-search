@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,10 +18,10 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk, gobject, thread, os, libxml2, imp, httplib2, time, urllib
-from exceptions import *
-from informations import *
-from constants import *
+import gtk, gobject, _thread, os, libxml2, imp, httplib2, time, urllib.request, urllib.parse, urllib.error
+from .exceptions import *
+from .informations import *
+from .constants import *
 
 class TorrentResultComment(object):
    def __init__(self, content, comment_date=None, user_name="", user_url=""):
@@ -40,10 +40,10 @@ class FileList(list):
 class PluginsUpdatesChecker(gtk.Dialog):
    def __init__(self,app):
       self._app=app
-      self.plugins_list_lock=thread.allocate_lock()
-      self.status_lock=thread.allocate_lock()
-      self.submesg_lock=thread.allocate_lock()
-      self.progress_lock=thread.allocate_lock()
+      self.plugins_list_lock=_thread.allocate_lock()    # FIXME
+      self.status_lock=_thread.allocate_lock()    # FIXME
+      self.submesg_lock=_thread.allocate_lock()    # FIXME
+      self.progress_lock=_thread.allocate_lock()    # FIXME
       self.submesg=""
       self.progress=None
       self._status=0
@@ -216,7 +216,7 @@ class PluginsUpdatesChecker(gtk.Dialog):
       while child:
          if child.type=="element":
             res[child.name]=child.getContent()
-         child=child.next
+         child=child.__next__           # FIXME
       return res
    def parse_list(self,tree):
       root=tree.getRootElement()
@@ -225,11 +225,11 @@ class PluginsUpdatesChecker(gtk.Dialog):
       while child:
          if child.name=="plugin":
             res.append(self.parse_plugin(child))
-         child=child.next
+         child=child.__next__           # FIXME
       return res
    def retrieve_list(self,threaded=False):
       if not threaded:
-         thread.start_new_thread(self.retrieve_list,(True,))
+         _thread.start_new_thread(self.retrieve_list,(True,))    # FIXME
          return
       c=httplib2.Http()
       resp,content=c.request("http://torrent-search.sourceforge.net/plugins-db/"+VERSION)
@@ -278,11 +278,11 @@ class PluginResult(object):
       self._filelist_loaded = False
       self._poster_loaded = False
       self._poster_pix_loaded = False
-      self.comments_loaded_lock = thread.allocate_lock()
-      self.filelist_loaded_lock = thread.allocate_lock()
-      self.poster_loaded_lock = thread.allocate_lock()
-      self.poster_pix_loaded_lock = thread.allocate_lock()
-      self.comments_loading_progress_lock = thread.allocate_lock()
+      self.comments_loaded_lock = _thread.allocate_lock()    # FIXME
+      self.filelist_loaded_lock = _thread.allocate_lock()    # FIXME
+      self.poster_loaded_lock = _thread.allocate_lock()    # FIXME
+      self.poster_pix_loaded_lock = _thread.allocate_lock()    # FIXME
+      self.comments_loading_progress_lock = _thread.allocate_lock()    # FIXME
       self._comments_loading_progress = 0
       if magnet_link:
          self.magnet_link=magnet_link.lower()
@@ -295,12 +295,12 @@ class PluginResult(object):
          self.magnet_link=None
       self.orig_url = orig_url
    def load_poster_pix(self):
-      thread.start_new_thread(self._do_load_poster_pix, ())
+      _thread.start_new_thread(self._do_load_poster_pix, ())    # FIXME
    def _do_load_poster_pix(self):
       res = None
       if self.poster:
          try:
-            filename, msg = urllib.urlretrieve(self.poster)
+            filename, msg = urllib.request.urlretrieve(self.poster)
             res = gtk.gdk.pixbuf_new_from_file_at_size(filename, 300, 300)
             os.unlink(filename)
          except:
@@ -358,7 +358,7 @@ class PluginResult(object):
       self.poster_pix_loaded_lock.release()
    poster_pix_loaded = property(_get_poster_pix_loaded, _set_poster_pix_loaded)
    def load_comments(self):
-      thread.start_new_thread(self._load_comments, ())
+      _thread.start_new_thread(self._load_comments, ())    # FIXME
    def _load_comments(self):
       try:
          self.comments = self._do_load_comments()
@@ -368,7 +368,7 @@ class PluginResult(object):
    def _do_load_comments(self):
       return CommentsList()
    def load_filelist(self):
-      thread.start_new_thread(self._load_filelist, ())
+      _thread.start_new_thread(self._load_filelist, ())    # FIXME
    def _load_filelist(self):
       try:
          self.filelist = self._do_load_filelist()
@@ -378,7 +378,7 @@ class PluginResult(object):
    def _do_load_filelist(self):
       return FileList()
    def load_poster(self):
-      thread.start_new_thread(self._load_poster, ())
+      _thread.start_new_thread(self._load_poster, ())    # FIXME
    def _load_poster(self):
       try:
          self.poster = self._do_load_poster()
@@ -410,7 +410,7 @@ class PluginResult(object):
 class ResultsList(object):
    def __init__(self):
       self._list=[]
-      self._lock=thread.allocate_lock()
+      self._lock=_thread.allocate_lock()    # FIXME
    def append(self,item):
       self._lock.acquire()
       self._list.append(item)
@@ -445,13 +445,13 @@ class Plugin(object):
    RELEASED_TIME=""
    def __init__(self,app):
       self._app=app
-      self.search_finished_lock=thread.allocate_lock()
-      self.stop_search_lock=thread.allocate_lock()
-      self.results_count_lock=thread.allocate_lock()
-      self.icon_lock=thread.allocate_lock()
-      self.credentials_lock=thread.allocate_lock()
-      self.login_cookie_lock=thread.allocate_lock()
-      self.login_status_lock=thread.allocate_lock()
+      self.search_finished_lock=_thread.allocate_lock()    # FIXME
+      self.stop_search_lock=_thread.allocate_lock()    # FIXME
+      self.results_count_lock=_thread.allocate_lock()    # FIXME
+      self.icon_lock=_thread.allocate_lock()    # FIXME
+      self.credentials_lock=_thread.allocate_lock()    # FIXME
+      self.login_cookie_lock=_thread.allocate_lock()    # FIXME
+      self.login_status_lock=_thread.allocate_lock()    # FIXME
       self._login_cookie=None
       self._credentials=None
       self._search_finished=True
@@ -483,7 +483,7 @@ class Plugin(object):
    credentials=property(_get_credentials,_set_credentials)
    def _set_icon_url(self,url):
       if url:
-         thread.start_new_thread(self._try_load_icon,(url,))
+         _thread.start_new_thread(self._try_load_icon,(url,))    # FIXME
          gobject.timeout_add(100,self._watch_load_icon)
    icon_url=property(None,_set_icon_url)
    def _watch_load_icon(self):
@@ -495,7 +495,7 @@ class Plugin(object):
       return res
    def _try_load_icon(self,url):
       try:
-         filename,msg=urllib.urlretrieve(url)
+         filename,msg=urllib.request.urlretrieve(url)
          self.icon=gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
          os.unlink(filename)
       except:
@@ -584,7 +584,7 @@ class Plugin(object):
       self.results_count=-1
       self.results_loaded = 0
       self.login_status=LOGIN_STATUS_WAITING
-      thread.start_new_thread(self._do_search,(pattern,))
+      _thread.start_new_thread(self._do_search,(pattern,))    # FIXME
       gobject.timeout_add(200,self._check_results)
       gobject.timeout_add(50,self._check_login_status)
    def _check_login_status(self):
@@ -656,7 +656,7 @@ def parse_metadata(app,filename):
          res["default_disable"]=(child.getContent()=="true")
       elif child.type=="element":
          res[child.name]=child.getContent()
-      child=child.next
+      child=child.__next__    # FIXME
    return res
 
 def load_plugin(app,path):

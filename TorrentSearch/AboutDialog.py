@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,36 +18,41 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk, webbrowser
-from informations import *
+import gtk
+import webbrowser
+from .informations import *
 
-def on_url_activated(dialog,url,data):
-   webbrowser.open(url)
 
-def on_email_activated(dialog,link,data):
-   if link[:7]=="http://":
-      on_url_activated(dialog, link, data)
-   else:
-      webbrowser.open("mailto:"+link)
+def on_url_activated(dialog, url, data):
+    webbrowser.open(url)
+
+
+def on_email_activated(dialog, link, data):
+    if link[:7] == "http://":
+        on_url_activated(dialog, link, data)
+    else:
+        webbrowser.open("mailto:"+link)
+
 
 class AboutDialog(gtk.AboutDialog):
-   def __init__(self,app):
-      gtk.about_dialog_set_url_hook(on_url_activated,None)
-      gtk.about_dialog_set_email_hook(on_email_activated,None)
-      gtk.AboutDialog.__init__(self)
-      self.set_transient_for(app)
-      self.set_program_name(APPNAME)
-      self.set_version(VERSION)
-      self.set_authors(AUTHORS)
-      self.set_documenters(DOCUMENTERS)
-      self.set_translator_credits(TRANSLATOR_CREDITS)
-      self.set_website(WEBSITE)
-      self.set_copyright(COPYRIGHT)
-      self.set_license(LICENSE)
-      self.set_artists(ARTISTS)
-      self.set_logo_icon_name("torrent-search")
-      self.set_comments(_("ABOUT_DIALOG_COMMENTS"))
-   def run(self):
-      self.show_all()
-      gtk.AboutDialog.run(self)
-      self.hide()
+    def __init__(self, app):
+        gtk.about_dialog_set_url_hook(on_url_activated, None)
+        gtk.about_dialog_set_email_hook(on_email_activated, None)
+        gtk.AboutDialog.__init__(self)
+        self.set_transient_for(app)
+        self.set_program_name(APPNAME)
+        self.set_version(VERSION)
+        self.set_authors(AUTHORS)
+        self.set_documenters(DOCUMENTERS)
+        self.set_translator_credits(TRANSLATOR_CREDITS)
+        self.set_website(WEBSITE)
+        self.set_copyright(COPYRIGHT)
+        self.set_license(LICENSE)
+        self.set_artists(ARTISTS)
+        self.set_logo_icon_name("torrent-search")
+        self.set_comments(_("ABOUT_DIALOG_COMMENTS"))
+
+    def run(self):
+        self.show_all()
+        gtk.AboutDialog.run(self)
+        self.hide()

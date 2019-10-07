@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-# -*- coding=utf-8 -*-
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -37,7 +37,7 @@ def _walk_lib_files(res, path, files):
 
 def list_lib_files():
     res = []
-    os.path.walk("lib", _walk_lib_files, res)
+    os.walk("lib", _walk_lib_files, res)
     return res
 
 
@@ -55,7 +55,7 @@ def _walk_share_files(res, path, files):
 
 def list_share_files():
     res = []
-    os.path.walk("share", _walk_share_files, res)
+    os.walk("share", _walk_share_files, res)
     return res
 
 

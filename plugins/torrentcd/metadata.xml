@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<plugin id="000032_torrentcd" version="0.1.3">
+  <title>Torrent.CD</title>
+  <released_time>2012-01-13 18:10:28</released_time>
+  <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>
+  <filename>torrentcd.py</filename>
+  <classname>TorrentCDPlugin</classname>
+  <download_url>http://torrent-search.sourceforge.net/download-plugin/000032_torrentcd/0.1.3/</download_url>
+  <website_url>http://torrent.cd/</website_url>
+  <icon_url>http://torrent.cd/favicon.ico</icon_url>
+  <require_auth>false</require_auth>
+  <default_disable>false</default_disable>
+</plugin>

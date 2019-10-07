@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -18,19 +18,20 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-def find_elements(node,elname=None,maxdepth=-1,**params):
-   res=[]
-   if elname==None or node.name==elname:
-      add=True
-      for i in params:
-         if node.prop(i)!=params[i]:
-            add=False
-            break
-      if add:
-         res.append(node)
-   if maxdepth!=0:
-      child=node.children
-      while child:
-         res+=find_elements(child,elname,maxdepth-1,**params)
-         child=child.next
-   return res
+
+def find_elements(node, elname=None, maxdepth=-1, **params):
+    res = []
+    if elname == None or node.name == elname:
+        add = True
+        for i in params:
+            if node.prop(i) != params[i]:
+                add = False
+                break
+        if add:
+            res.append(node)
+    if maxdepth != 0:
+        child = node.children
+        while child:
+            res += find_elements(child, elname, maxdepth-1, **params)
+            child = child.__next__    # FIXME
+    return res
