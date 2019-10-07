@@ -27,7 +27,7 @@ import http.client
 import urllib.request
 import urllib.parse
 import urllib.error
-import torrentApps
+from . import torrentApps
 import os
 import gzip
 from .constants import *

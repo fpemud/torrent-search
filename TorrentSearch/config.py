@@ -23,7 +23,7 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import os
 import time
-import torrentApps
+from . import torrentApps
 import libxml2
 import webbrowser
 import _codecs

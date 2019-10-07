@@ -21,7 +21,6 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from gi.repository import Gtk.keysyms
 import webbrowser
 from .constants import *
 
@@ -34,8 +33,7 @@ class HelpMenu(Gtk.MenuItem):
         item = Gtk.ImageMenuItem(Gtk.STOCK_HELP)
         menu.add(item)
         item.connect('activate', lambda w: app.show_help())
-        app.add_accelerator(
-            item, "activate", Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
+        app.add_accelerator(item, "activate", Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
         item = Gtk.MenuItem(_("CONTACT"))
         menu.add(item)
         submenu = Gtk.Menu()
@@ -45,8 +43,7 @@ class HelpMenu(Gtk.MenuItem):
         item.connect('activate', lambda w: webbrowser.open(BUG_REPORT_PAGE))
         item = Gtk.MenuItem(_("REQUEST_FEATURE"))
         submenu.add(item)
-        item.connect('activate', lambda w: webbrowser.open(
-            FEATURE_REQUEST_PAGE))
+        item.connect('activate', lambda w: webbrowser.open(FEATURE_REQUEST_PAGE))
         item = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT)
         menu.add(item)
         item.connect('activate', lambda w: app.show_about_dialog())

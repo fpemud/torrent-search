@@ -28,25 +28,22 @@ import datetime
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
-from . import lang
-import AboutDialog
-import menus
+from . import AboutDialog
+from . import menus
 import gobject
-import config
-import imp
-import Plugin
-import TorrentSearch
+from . import config
+from . import Plugin
 import _thread
 import urllib.request
 import urllib.parse
 import urllib.error
 import httplib2
-import downloads
-import icontheme
+from . import downloads
+from . import icontheme
 import locale
-import auth
-import categories
-import HttpQueue
+from . import auth
+from . import categories
+from . import HttpQueue
 import webbrowser
 from .informations import *
 from .constants import *
@@ -1198,8 +1195,8 @@ class Application(Gtk.Window):
         if os.fork() == 0:
             try:
                 os.execvp("gnome-help", ("", url))
-                finally:
-                    exit(0)
+            finally:
+               exit(0)
 
     def _on_window_configure_event(self, window, event):
         if not self._maximized:
