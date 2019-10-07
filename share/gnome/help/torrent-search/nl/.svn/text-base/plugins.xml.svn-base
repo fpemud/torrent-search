@@ -1,7 +1,0 @@
-<chapter id="plugins">
-   <title>Plugins</title>
-   <para>&app; gebruikt plugins om te zoeken naar torrent bestanden op verschillende websites. Op deze manier kunnen nieuwe websites gemakkelijk toegevoegd worden zonder een nieuwe versie van de software te installerene.</para>
-   <para>De plugins worden bij upgedate worden elke keer dat &app; opgestart wordt, tenzij je deze functie hebt uitgeschakeld hebt in het <link linkend="preferences-general-plugins-updates">voorkeuren venster</link>.</para>
-   <para>Als je graag wilt dat een nieuwe website ook als een plugin toegevoegd wordt, leer dan meer in de <link linkend="contacts-request-plugin">Nieuwe plugin vragen</link> sectie.</para>
-   <para>Als je  mee wilt helpen met het ontwikkelen van ieuwe plugins, ga dan naar de <link linkend="developing-plugins">Plugins ontwikkelen</link> sectie.</para>
-</chapter>

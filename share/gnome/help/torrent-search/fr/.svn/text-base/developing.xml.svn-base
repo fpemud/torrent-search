@@ -1,7 +1,0 @@
-<chapter id="developing">
-   <title>D&eacute;velopper Torrent Search</title>
-   <sect1 id="developing-plugins">
-      <title>D&eacute;velopper des plugins</title>
-      <para>Si vous souhaitez d&eacute;velopper des plugins, veuillez vous r&eacute;ferer au guide "Torrent Search plugin development guide" (en anglais), qui peut &ecirc;tre trouv&eacute; dans la <ulink url="http://torrent-search.sourceforge.net/documentation">section documentation</ulink> du site web de &app;.</para>
-   </sect1>
-</chapter>

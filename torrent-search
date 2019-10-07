@@ -32,8 +32,6 @@ from TorrentSearch.constants import APPDATA_PATH
 sys.stderr = open(tempfile.mktemp(), "w")
 
 if __name__ == '__main__':
-    gettext.translation("torrent-search", fallback=True).install()
-
     optparser = optparse.OptionParser()
     options, args = optparser.parse_args()
     if options.show_help:

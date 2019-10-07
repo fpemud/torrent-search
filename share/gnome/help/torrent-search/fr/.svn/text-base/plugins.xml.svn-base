@@ -1,7 +1,0 @@
-<chapter id="plugins">
-   <title>Plugins</title>
-   <para>&app; utilise des plugins pour effectuer des recherches sur diff&eacute;rents sites web. Ainsi, de nouveaux sites peuvent &ecirc;tre tr&egrave;s facilement ajout&eacute;s sans n&eacute;cessiter l'installation d'une nouvelle version de l'application.</para>
-   <para>Les plugins seront mis &agrave; jour &agrave; chaque d&eacute;marrage de &app;, sauf si vous avez d&eacute;sactiv&eacute; cette option dans le <link linkend="preferences-general-plugins-updates">dialogue de pr&eacute;f&eacute;rences</link>.</para>
-   <para>Si vous souhaitez voir un nouveau site ajout&eacute;, veuillez vous r&eacute;f&eacute;rer &agrave; la section <link linkend="contacts-request-plugin">Demander un nouveau plugin</link>.</para>
-   <para>Si vous voulez d&eacute;velopper de nouveaux plugins, consultez la section <link linkend="developing-plugins">D&eacute;velopper des plugins</link>.</para>
-</chapter>

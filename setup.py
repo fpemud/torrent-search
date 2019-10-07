@@ -38,6 +38,7 @@ def _walk_lib_files(res, path, files):
 def list_lib_files():
     res = []
     os.walk("lib", _walk_lib_files, res)
+    print(res)
     return res
 
 
@@ -55,8 +56,18 @@ def _walk_share_files(res, path, files):
 
 def list_share_files():
     res = []
-    os.walk("share", _walk_share_files, res)
-    return res
+    for path, dirs, files in os.walk("share"):
+        if ".git" in path:
+            continue
+        files2 = []
+        for i in files:
+            if os.path.isfile(os.path.join(path, i)):
+                if i[-1] != "~" and i[-4:] != ".bak":
+                    files2.append(os.path.join(path, i))
+        if files2 != []:
+            res.append((os.path.join("share", path), files2))
+    print(res)
+    return []
 
 
 setup(name="torrent-search",
