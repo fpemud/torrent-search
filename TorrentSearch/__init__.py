@@ -784,7 +784,7 @@ class SearchOptionsBox(Gtk.Expander):
 class ConfirmPluginsDialog(Gtk.Dialog):
     def __init__(self, app, plugins):
         Gtk.Dialog.__init__(self, _("AUTH_REQUIRED_FOR_NEW_PLUGINS"), app)
-        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         hbox = Gtk.HBox()
         self.child.add(hbox)
         hbox.set_border_width(5)
@@ -1372,7 +1372,7 @@ class Application(Gtk.Window):
     def error_mesg(self, mesg, submesg=""):
         d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_ERROR)
         d.set_title(_("ERROR"))
-        d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        d.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
         if submesg:
             d.format_secondary_text(submesg)
@@ -1383,7 +1383,7 @@ class Application(Gtk.Window):
     def info_mesg(self, mesg, submesg=""):
         d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_INFO)
         d.set_title(_("INFORMATION"))
-        d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        d.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
         if submesg:
             d.format_secondary_text(submesg)

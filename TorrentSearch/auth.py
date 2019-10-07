@@ -30,7 +30,7 @@ class AuthDialog(Gtk.Dialog):
 
     def __init__(self, app):
         Gtk.Dialog.__init__(self, _("AUTHENTICATION"), app)
-        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
         vbox = Gtk.VBox()
         vbox.set_border_width(5)
@@ -63,7 +63,7 @@ class AuthDialog(Gtk.Dialog):
         self.remember = Gtk.CheckButton(_("REMEMBER_AUTH"))
         vbox.pack_start(self.remember, False, False)
         self.username.connect("activate", lambda w: self.password.grab_focus())
-        self.password.connect("activate", lambda w: self.response(Gtk.RESPONSE_OK))
+        self.password.connect("activate", lambda w: self.response(Gtk.ResponseType.OK))
 
     def run(self, plugin, failed=False):
         self.username.set_text("")
@@ -74,7 +74,7 @@ class AuthDialog(Gtk.Dialog):
             self.mesg_label.set_markup("<b>%s</b>" % (_("AUTH_REQUIRED_FOR_PLUGIN") % plugin.TITLE))
         self.username.grab_focus()
         self.show_all()
-        if Gtk.Dialog.run(self) == Gtk.RESPONSE_OK:
+        if Gtk.Dialog.run(self) == Gtk.ResponseType.OK:
             res = self.username.get_text(), self.password.get_text(), self.remember.get_active()
         else:
             res = None

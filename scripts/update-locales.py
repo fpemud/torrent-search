@@ -100,7 +100,7 @@ class TranslateDialog(Gtk.Dialog):
     def __init__(self):
         Gtk.Dialog.__init__(self, "Translation")
         self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
-        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         table = Gtk.Table()
         self.child.add(table)
         table.set_border_width(5)
@@ -133,7 +133,7 @@ class TranslateDialog(Gtk.Dialog):
         self.key.set_text(key)
         self.translation.get_buffer().set_text("")
         self.show_all()
-        if Gtk.Dialog.run(self) == Gtk.RESPONSE_OK:
+        if Gtk.Dialog.run(self) == Gtk.ResponseType.OK:
             siter = self.translation.get_buffer().get_start_iter()
             eiter = self.translation.get_buffer().get_end_iter()
             res = self.translation.get_buffer().get_text(siter, eiter)
@@ -175,5 +175,5 @@ if __name__ == '__main__':
         compute_po_file(i)
     d = Gtk.MessageDialog()
     d.set_markup("<span size='large'><b>Done.</b></span>")
-    d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+    d.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
     d.run()
