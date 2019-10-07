@@ -1,10 +1,9 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import os
 """
     This file is part of Torrent Search.
-    
+
     Torrent Search is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -19,18 +18,11 @@ import os
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-MODE_GNOMEVFS, MODE_WINREG = list(range(2))
-
-try:
-    import winreg
-    MODE = MODE_WINREG
-except:
-    MODE = MODE_GNOMEVFS
+import os
 
 
 def mime_get_all_applications(mimetype):
-    paths = os.getenv(
-        "XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(":")
+    paths = os.getenv("XDG_DATA_DIRS", "/usr/local/share:/usr/share").split(":")
     paths += os.getenv("XDG_DATA_HOME", "~/.local/share").split(":")
     list_files = []
     for i in paths:
@@ -49,15 +41,15 @@ def mime_get_all_applications(mimetype):
                 mtype, ds = j.split("=")
                 if mtype == mimetype:
                     for k in ds.split(";"):
-                        if k and not k in desktops:
-                            if not k in desktops:
+                        if k and k not in desktops:
+                            if k not in desktops:
                                 filename = os.path.join(os.path.split(i)[0], k)
                                 if os.path.exists(filename):
                                     desktops[k] = filename
                                 elif "-" in k:
-                                    l = k.index("-")
+                                    tl = k.index("-")
                                     filename = os.path.join(
-                                        os.path.split(i)[0], k[:l], k[l+1:])
+                                        os.path.split(i)[0], k[:tl], k[tl+1:])
                                     if os.path.exists(filename):
                                         desktops[k] = filename
             except:
@@ -88,46 +80,11 @@ def mime_get_all_applications(mimetype):
     return res
 
 
-def listGnomeVFSApps():
-    res = []
-    for i in mime_get_all_applications("application/x-bittorrent"):
-        res.append(i[:3])
-    return res
-
-
-def listWinRegApps():
-    classesReg = winreg.ConnectRegistry(None, winreg.HKEY_CLASSES_ROOT)
-    regKey = winreg.OpenKey(classesReg, ".torrent")
-    n_subkey, n_values, modtime = winreg.QueryInfoKey(regKey)
-    progIDS = []
-    progIDSKey = winreg.OpenKey(regKey, "OpenWithProgids")
-    n_subkey, n_values, modtime = winreg.QueryInfoKey(progIDSKey)
-    for i in range(n_values):
-        key, value, vtype = winreg.EnumValue(progIDSKey, i)
-        progIDS.append(key)
-    winreg.CloseKey(progIDSKey)
-    winreg.CloseKey(regKey)
-    res = []
-    for i in progIDS:
-        try:
-            progKey = winreg.OpenKey(classesReg, i+"\\shell\\open\\command")
-            n_subkey, n_values, modtime = winreg.QueryInfoKey(progKey)
-            for j in range(n_values):
-                command = winreg.EnumValue(progKey, j)[1].replace("%1", "%f")
-                res.append((i, i, command))
-            winreg.CloseKey(progKey)
-        except:
-            pass
-    winreg.CloseKey(classesReg)
-    return res
-
-
 def listApps():
     try:
-        if MODE == MODE_GNOMEVFS:
-            res = listGnomeVFSApps()
-        else:
-            res = listWinRegApps()
-    except:
         res = []
-    return res
+        for i in mime_get_all_applications("application/x-bittorrent"):
+            res.append(i[:3])
+        return res
+    except:
+        return []
