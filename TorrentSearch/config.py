@@ -448,8 +448,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.add_accel_group(self._accel_group)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
-        self.help_button.add_accelerator(
-            "clicked", self._accel_group, Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
+        self.help_button.add_accelerator("clicked", self._accel_group, Gtk.keysyms.F1, 0, Gtk.AccelFlags.VISIBLE)
         self.action_area.add(self.help_button)
         self.action_area.set_child_secondary(self.help_button, True)
         self.set_icon_name("gtk-preferences")

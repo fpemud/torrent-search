@@ -33,7 +33,7 @@ class HelpMenu(Gtk.MenuItem):
         item = Gtk.ImageMenuItem(Gtk.STOCK_HELP)
         menu.add(item)
         item.connect('activate', lambda w: app.show_help())
-        app.add_accelerator(item, "activate", Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
+        app.add_accelerator(item, "activate", Gtk.keysyms.F1, 0, Gtk.AccelFlags.VISIBLE)
         item = Gtk.MenuItem(_("CONTACT"))
         menu.add(item)
         submenu = Gtk.Menu()
@@ -57,8 +57,8 @@ class FileMenu(Gtk.MenuItem):
         item = Gtk.ImageMenuItem(Gtk.STOCK_QUIT)
         menu.add(item)
         item.connect('activate', lambda w: app.quit())
-        app.add_accelerator(item, "activate", ord(
-            'q'), Gtk.gdk.CONTROL_MASK, Gtk.ACCEL_VISIBLE)
+        key, mod = Gtk.accelerator_parse("<Control>Q")
+        app.add_accelerator(item, "activate", key, mod, Gtk.AccelFlags.VISIBLE)
 
 
 class EditMenu(Gtk.MenuItem):
@@ -69,5 +69,5 @@ class EditMenu(Gtk.MenuItem):
         item = Gtk.ImageMenuItem(Gtk.STOCK_PREFERENCES)
         menu.add(item)
         item.connect('activate', lambda w: app.show_preferences_dialog())
-        app.add_accelerator(item, "activate", ord(
-            'p'), Gtk.gdk.CONTROL_MASK, Gtk.ACCEL_VISIBLE)
+        key, mod = Gtk.accelerator_parse("<Control>P")
+        app.add_accelerator(item, "activate", key, mod, Gtk.AccelFlags.VISIBLE)
