@@ -123,7 +123,7 @@ class TranslateDialog(Gtk.Dialog):
         table.attach(l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL)
         self.translation = Gtk.TextView()
         scw = Gtk.ScrolledWindow()
-        scw.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         scw.add(self.translation)
         scw.set_size_request(400, 300)
         table.attach(scw, 1, 2, 2, 3, yoptions=0)

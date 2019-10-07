@@ -71,7 +71,7 @@ class DownloadManager(Gtk.VBox):
         self._app = app
         scw = Gtk.ScrolledWindow()
         self.pack_start(scw)
-        scw.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        scw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.tv = Gtk.TreeView()
         self.tv.connect('button_press_event', self.on_tv_button_press_event)
         scw.add(self.tv)

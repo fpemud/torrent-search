@@ -254,7 +254,7 @@ class GeneralPreferencesPage(Gtk.VBox):
             "toggled", self.on_check_plugins_updates_toggled)
         b = Gtk.Button(_("CHECK_NOW"))
         img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.ICON_SIZE_BUTTON)
+        img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.BUTTON)
         b.set_image(img)
         vbox.pack_start(b, False, False, 0)
         b.connect('clicked', lambda w: self._app.check_plugin_updates())
@@ -322,7 +322,7 @@ class GeneralPreferencesPage(Gtk.VBox):
 class PluginsPreferencesPage(Gtk.ScrolledWindow):
     def __init__(self, app):
         Gtk.ScrolledWindow.__init__(self)
-        self.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.tv = Gtk.TreeView()
         self.tv.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
         self.add(self.tv)
@@ -448,7 +448,8 @@ class PreferencesDialog(Gtk.Dialog):
         self.add_accel_group(self._accel_group)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
-        self.help_button.add_accelerator("clicked", self._accel_group, Gtk.keysyms.F1, 0, Gtk.AccelFlags.VISIBLE)
+        key, mod = Gtk.accelerator_parse("F1")
+        self.help_button.add_accelerator("clicked", self._accel_group, key, mod, Gtk.AccelFlags.VISIBLE)
         self.action_area.add(self.help_button)
         self.action_area.set_child_secondary(self.help_button, True)
         self.set_icon_name("gtk-preferences")
