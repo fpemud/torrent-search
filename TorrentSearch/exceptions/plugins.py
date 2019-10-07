@@ -3,7 +3,7 @@
 
 """
     This file is part of Torrent Search.
-    
+
     Torrent Search is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -18,11 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import os
 import sys
 
 
 class PluginException(Exception):
+
     def __init__(self, mesg):
         Exception.__init__(self, mesg)
         self._mesg = mesg
@@ -32,37 +32,39 @@ class PluginException(Exception):
 
 
 class PluginFileNotFound(PluginException):
+
     def __init__(self, metafile):
         try:
-            PluginException.__init__(
-                self, _("PLUGIN_FILE_NOT_FOUND") % metafile)
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_FOUND") % metafile)
         except:
             PluginException.__init__(self, _("PLUGIN_FILE_NOT_FOUND"))
 
 
 class PluginFileNotFile(PluginException):
+
     def __init__(self, metafile):
         try:
-            PluginException.__init__(
-                self, _("PLUGIN_FILE_NOT_FILE") % metafile)
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_FILE") % metafile)
         except:
             PluginException.__init__(self, _("PLUGIN_FILE_NOT_FILE"))
 
 
 class PluginFileNotReadable(PluginException):
+
     def __init__(self, metafile):
         try:
-            PluginException.__init__(
-                self, _("PLUGIN_FILE_NOT_READABLE") % metafile)
+            PluginException.__init__(self, _("PLUGIN_FILE_NOT_READABLE") % metafile)
         except:
             PluginException.__init__(self, _("PLUGIN_FILE_NOT_READABLE"))
 
 
 class IncorrectPluginMetaFile(PluginException):
+
     def __init__(self, filename, msg):
-        PluginException.__init__(self, filename+": "+msg)
+        PluginException.__init__(self, filename + ": " + msg)
 
 
 class PluginSyntaxError(PluginException):
+
     def __init__(self, filename):
-        PluginException.__init__(self, filename+": "+_("SYNTAX_ERROR"))
+        PluginException.__init__(self, filename + ": " + _("SYNTAX_ERROR"))
