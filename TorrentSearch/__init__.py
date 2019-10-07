@@ -575,6 +575,15 @@ class SearchOptionsBox(Gtk.Expander):
         self.set_expanded(app.config["search_options_expanded"])
         self.connect("notify::expanded", self.on_expand_toggled)
         self._app = app
+
+        lb = Gtk.ListStore(str)
+        iter = lb.append()
+        lb.set(iter, 0, "KB")
+        lb.append(iter)
+        lb.set(iter, 0, "MB")
+        lb.append(iter)
+        lb.set(iter, 0, "GB")
+
         mainbox = Gtk.VBox()
         self.add(mainbox)
         mainbox.set_border_width(5)
@@ -655,7 +664,7 @@ class SearchOptionsBox(Gtk.Expander):
         self.min_size_value.set_range(1, 1023)
         self.min_size_value.set_increments(10, 100)
         hbox.pack_start(self.min_size_value, False, False, 0)
-        self.min_size_unit = Gtk.ComboBox.new_with_model_and_entry()
+        self.min_size_unit = Gtk.ComboBox.new_with_model_and_entry(lb)
         hbox.pack_start(self.min_size_unit, False, False, 0)
         self.max_size_enable = Gtk.CheckButton(_("MAX_SIZE"))
         hbox.pack_start(self.max_size_enable, False, False, 0)
@@ -664,15 +673,12 @@ class SearchOptionsBox(Gtk.Expander):
         self.max_size_value.set_range(1, 1023)
         self.max_size_value.set_increments(10, 100)
         hbox.pack_start(self.max_size_value, False, False, 0)
-        self.max_size_unit = Gtk.ComboBox.new_with_model_and_entry()
+        self.max_size_unit = Gtk.ComboBox.new_with_model_and_entry(lb)
         hbox.pack_start(self.max_size_unit, False, False, 0)
-        units = ["KB", "MB", "GB"]
         self.min_size_unit.connect('changed', self.on_min_size_unit_changed)
         self.max_size_unit.connect('changed', self.on_max_size_unit_changed)
         for i in range(len(units)):
             unit = units[i]
-            self.min_size_unit.append_text(unit)
-            self.max_size_unit.append_text(unit)
             if unit == app.config["min_size_unit"]:
                 self.min_size_unit.set_active(i)
             if unit == app.config["max_size_unit"]:
