@@ -31,7 +31,7 @@ def _walk_lib_files(res, path, files):
             if i[-1] != "~" and i[-4:] != ".bak":
                 tl.append(os.path.join(path, i))
     if tl != []:
-        res.append((os.path.join("lib", path[4:]), l))
+        res.append((os.path.join("lib", path[4:]), tl))
 
 
 def list_lib_files():
@@ -49,7 +49,7 @@ def _walk_share_files(res, path, files):
             if i[-1] != "~" and i[-4:] != ".bak":
                 tl.append(os.path.join(path, i))
     if tl != []:
-        res.append((os.path.join("share", path[6:]), l))
+        res.append((os.path.join("share", path[6:]), tl))
 
 
 def list_share_files():
