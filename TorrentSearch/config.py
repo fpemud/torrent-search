@@ -25,11 +25,6 @@ import torrentApps
 import libxml2
 import webbrowser
 import _codecs
-try:
-    import gconf
-    GCONF_SUPPORT = True
-except:
-    GCONF_SUPPORT = False
 from .informations import *
 from .constants import *
 
@@ -88,29 +83,7 @@ class AppConfig(object):
         for key in CONFIG_KEYS:
             real_key, keytype, default = CONFIG_KEYS[key]
             self._values[key] = default
-        if GCONF_SUPPORT and not self._values["converted_from_gconf"]:
-            self._convert_from_gconf()
         self._load()
-
-    def _convert_from_gconf(self):
-        gclient = gconf.client_get_default()
-        for key in CONFIG_KEYS:
-            real_key, keytype, default = CONFIG_KEYS[key]
-            value = gclient.get_without_default("/apps/%s/%s" % (UNIXNAME, real_key))
-            if value == None:
-                self._values[key] = default
-            else:
-                if keytype == "int":
-                    self._values[key] = value.get_int()
-                if keytype == "string":
-                    self._values[key] = value.get_string()
-                if keytype == "bool":
-                    self._values[key] = value.get_bool()
-                if keytype == "string_list":
-                    res = list(value.get_list(gconf.VALUE_STRING))
-                    for i in range(len(res)):
-                        res[i] = res[i].get_string()
-                    self._values[key] = res
 
     def _notify(self, key):
         for i in self._listeners:

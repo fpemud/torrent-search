@@ -21,7 +21,6 @@
 import os
 import gnomevfs
 import gettext
-import gconf
 import gtk
 import libxml2
 from TorrentSearch import htmltools
