@@ -172,7 +172,7 @@ class GeneralPreferencesPage(Gtk.VBox):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("TORRENT_FILES"))
         f.set_label_widget(l)
-        self.pack_start(f, False, False)
+        self.pack_start(f, False, False, 0)
         table = Gtk.Table()
         table.set_border_width(5)
         table.set_col_spacings(10)
@@ -181,7 +181,7 @@ class GeneralPreferencesPage(Gtk.VBox):
         self.torrent_save_in_folder_rb = Gtk.RadioButton(
             None, _("SAVE_IN_FOLDER"))
         table.attach(self.torrent_save_in_folder_rb, 0, 1,
-                     0, 1, xoptions=Gtk.FILL, yoptions=0)
+                     0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.torrent_save_in_folder_fs = Gtk.FileChooserButton(
             _("SELECT_FOLDER"))
         self.torrent_save_in_folder_fs.set_action(
@@ -191,7 +191,7 @@ class GeneralPreferencesPage(Gtk.VBox):
         self.torrent_use_standard_app_rb = Gtk.RadioButton(
             self.torrent_save_in_folder_rb, _("USE_STANDARD_APP"))
         table.attach(self.torrent_use_standard_app_rb, 0,
-                     1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
+                     1, 1, 2, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.torrent_use_standard_app_cb = Gtk.ComboBox()
         table.attach(self.torrent_use_standard_app_cb, 1, 2, 1, 2, yoptions=0)
         self.torrent_use_standard_app_cb_ls = Gtk.ListStore(str, str)
@@ -209,10 +209,10 @@ class GeneralPreferencesPage(Gtk.VBox):
         self.torrent_use_custom_app_rb = Gtk.RadioButton(
             self.torrent_save_in_folder_rb, _("USE_CUSTOM_APP"))
         table.attach(self.torrent_use_custom_app_rb, 0, 1,
-                     2, 3, xoptions=Gtk.FILL, yoptions=0)
+                     2, 3, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.torrent_use_custom_app_entry = Gtk.Entry()
         table.attach(self.torrent_use_custom_app_entry, 1,
-                     2, 2, 3, xoptions=Gtk.FILL, yoptions=0)
+                     2, 2, 3, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.torrent_use_custom_app_entry.set_text(
             app.config['torrent_custom_app'])
         self.torrent_use_custom_app_entry.set_sensitive(False)
@@ -240,14 +240,14 @@ class GeneralPreferencesPage(Gtk.VBox):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("PLUGINS_UPDATES"))
         f.set_label_widget(l)
-        self.pack_start(f, False, False)
+        self.pack_start(f, False, False, 0)
         vbox = Gtk.VBox()
         f.add(vbox)
         vbox.set_border_width(5)
         vbox.set_spacing(10)
         self.check_plugins_updates = Gtk.CheckButton(
             _("CHECK_PLUGINS_UPDATES"))
-        vbox.pack_start(self.check_plugins_updates, False, False)
+        vbox.pack_start(self.check_plugins_updates, False, False, 0)
         self.check_plugins_updates.set_active(
             app.config["check_plugins_updates"])
         self.check_plugins_updates.connect(
@@ -256,13 +256,13 @@ class GeneralPreferencesPage(Gtk.VBox):
         img = Gtk.Image()
         img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.ICON_SIZE_BUTTON)
         b.set_image(img)
-        vbox.pack_start(b, False, False)
+        vbox.pack_start(b, False, False, 0)
         b.connect('clicked', lambda w: self._app.check_plugin_updates())
         f = Gtk.Frame()
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SEARCH_OPTIONS"))
         f.set_label_widget(l)
-        self.pack_start(f, False, False)
+        self.pack_start(f, False, False, 0)
         table = Gtk.Table()
         f.add(table)
         table.set_border_width(5)
@@ -273,7 +273,7 @@ class GeneralPreferencesPage(Gtk.VBox):
         self.stop_search_when_nb_results_reaches_cb.set_active(
             app.config["stop_search_when_nb_results_reaches_enabled"])
         table.attach(self.stop_search_when_nb_results_reaches_cb,
-                     0, 1, 0, 1, xoptions=Gtk.FILL, yoptions=0)
+                     0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.stop_search_when_nb_results_reaches_nb = Gtk.SpinButton()
         self.stop_search_when_nb_results_reaches_nb.set_range(10, 10000)
         self.stop_search_when_nb_results_reaches_nb.set_increments(10, 100)
@@ -446,7 +446,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.resize(app.config['config_dialog_width'],
                     app.config['config_dialog_height'])
         self.add_accel_group(self._accel_group)
-        self.add_button(Gtk.STOCK_CLOSE, Gtk.RESPONSE_CLOSE)
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
         self.help_button.add_accelerator(
             "clicked", self._accel_group, Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
@@ -455,7 +455,7 @@ class PreferencesDialog(Gtk.Dialog):
         self.set_icon_name("gtk-preferences")
         notebook = Gtk.Notebook()
         notebook.set_border_width(5)
-        self.child.add(notebook)
+        self.add(notebook)
         self.general_page = GeneralPreferencesPage(app)
         notebook.append_page(
             self.general_page, Gtk.Label(_('GENERAL_OPTIONS')))

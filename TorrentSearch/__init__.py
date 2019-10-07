@@ -626,7 +626,7 @@ class SearchOptionsBox(Gtk.Expander):
         table.set_row_spacings(10)
         l = Gtk.Label(_("NAME_CONTAINS"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 0, 1, xoptions=Gtk.FILL)
+        table.attach(l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL)
         self.name_contains = Gtk.Entry()
         self.name_contains.set_property(
             "secondary-icon-stock", Gtk.STOCK_CLEAR)
@@ -636,7 +636,7 @@ class SearchOptionsBox(Gtk.Expander):
         self.name_contains.connect("changed", self.on_name_contains_changed)
         l = Gtk.Label(_("NAME_DOES_NOT_CONTAIN"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.FILL)
+        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL)
         self.name_does_not_contain = Gtk.Entry()
         self.name_does_not_contain.set_property(
             "secondary-icon-stock", Gtk.STOCK_CLEAR)
@@ -786,11 +786,11 @@ class ConfirmPluginsDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self, _("AUTH_REQUIRED_FOR_NEW_PLUGINS"), app)
         self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         hbox = Gtk.HBox()
-        self.child.add(hbox)
+        self.add(hbox)
         hbox.set_border_width(5)
         hbox.set_spacing(10)
         img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.ICON_SIZE_DIALOG)
+        img.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.DIALOG)
         hbox.pack_start(img, False, False)
         vbox = Gtk.VBox()
         hbox.pack_start(vbox)
@@ -824,10 +824,10 @@ class TorrentInfosDialog(Gtk.Dialog):
         Gtk.Dialog.__init__(self)
         self.set_size_request(650, 600)
         self.set_title(_("TORRENT_DETAILS"))
-        self.add_button(Gtk.STOCK_CLOSE, Gtk.RESPONSE_CLOSE)
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.set_transient_for(app)
         self.notebook = Gtk.Notebook()
-        self.child.add(self.notebook)
+        self.add(self.notebook)
         self.notebook.set_border_width(5)
         self.general_informations_page = Gtk.Table()
         self.general_informations_page.set_border_width(5)
@@ -838,7 +838,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("NAME"))
         self.general_informations_page.attach(
-            l, 0, 1, 0, 1, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_name_label = Gtk.Label()
         self.torrent_name_label.set_alignment(0, 0.5)
@@ -847,7 +847,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("DATE"))
         self.general_informations_page.attach(
-            l, 0, 1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_date_label = Gtk.Label()
         self.torrent_date_label.set_alignment(0, 0.5)
@@ -856,7 +856,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("CATEGORY"))
         self.general_informations_page.attach(
-            l, 0, 1, 2, 3, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_category_label = Gtk.Label()
         self.torrent_category_label.set_alignment(0, 0.5)
@@ -865,7 +865,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SIZE"))
         self.general_informations_page.attach(
-            l, 0, 1, 3, 4, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 3, 4, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_size_label = Gtk.Label()
         self.torrent_size_label.set_alignment(0, 0.5)
@@ -874,7 +874,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SEEDERS"))
         self.general_informations_page.attach(
-            l, 0, 1, 4, 5, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 4, 5, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_seeders_label = Gtk.Label()
         self.torrent_seeders_label.set_alignment(0, 0.5)
@@ -883,7 +883,7 @@ class TorrentInfosDialog(Gtk.Dialog):
         l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("LEECHERS"))
         self.general_informations_page.attach(
-            l, 0, 1, 5, 6, xoptions=Gtk.FILL, yoptions=0)
+            l, 0, 1, 5, 6, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
         self.torrent_leechers_label = Gtk.Label()
         self.torrent_leechers_label.set_alignment(0, 0.5)
@@ -990,7 +990,7 @@ class TorrentDetailsLoadingDialog(Gtk.Window):
 
 class Application(Gtk.Window):
     def __init__(self, options):
-        Gtk.Window.__init__(self)
+        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
         self.options = options
         self.categories = categories.CategoriesList(os.path.join(options.share_dir, UNIXNAME, "categories.xml"))
         self._plugins_credentials = {}
@@ -1008,7 +1008,7 @@ class Application(Gtk.Window):
         self.config["name_contains"] = ""
         self.config.register_listener(self.on_config_changed)
         icontheme.load_icons(options.share_dir)
-        Gtk.window_set_default_icon_name("torrent-search")
+        self.set_icon_name("torrent-search")
         self.load_search_plugins()
 #        Gtk.Window.__init__(self)
         self._accel_group = Gtk.AccelGroup()

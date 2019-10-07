@@ -54,10 +54,10 @@ class PluginsUpdatesChecker(Gtk.Dialog):
       Gtk.Dialog.__init__(self,_("CHECKING_PLUGIN_UPDATES"),app)
       self.set_position(Gtk.WIN_POS_CENTER_ON_PARENT)
       self.set_deletable(False)
-      self.child.set_border_width(0)
+      self.set_border_width(0)
       self.connect('key_press_event',self.on_key_press_event)
       vbox=Gtk.VBox()
-      self.child.add(vbox)
+      self.add(vbox)
       vbox.set_border_width(5)
       vbox.set_spacing(10)
       self.main_mesg=Gtk.Label()
@@ -74,7 +74,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
       self.action_area.pack_start(self.cancel_button)
    def cancel(self):
       self.status=-2
-      self.response(Gtk.RESPONSE_CANCEL)
+      self.response(Gtk.ResponseType.CANCEL)
    def _get_submesg(self):
       self.submesg_lock.acquire()
       res=self._submesg
@@ -134,20 +134,20 @@ class PluginsUpdatesChecker(Gtk.Dialog):
          self.set_main_mesg(_("DONE"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,Gtk.RESPONSE_CLOSE)
+         gobject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
          return False
       if self.status==4:
          self.pb.set_fraction(1)
          self.set_main_mesg(_("DONE"))
          self.set_sub_mesg("")
-         self.response(Gtk.RESPONSE_CLOSE)
+         self.response(Gtk.ResponseType.CLOSE)
          return False
       if self.status==-1:
          self.pb.set_fraction(1)
          self.set_main_mesg(_("FAILED"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,Gtk.RESPONSE_CLOSE)
+         gobject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
          return False
       if self.status==-2:
          return False

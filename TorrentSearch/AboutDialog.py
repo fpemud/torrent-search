@@ -38,8 +38,8 @@ def on_email_activated(dialog, link, data):
 
 class AboutDialog(Gtk.AboutDialog):
     def __init__(self, app):
-        Gtk.about_dialog_set_url_hook(on_url_activated, None)
-        Gtk.about_dialog_set_email_hook(on_email_activated, None)
+        #Gtk.about_dialog_set_url_hook(on_url_activated, None)       # FIXME, use activate-link?
+        #Gtk.about_dialog_set_email_hook(on_email_activated, None)   # FIXME, use activate-link?
         Gtk.AboutDialog.__init__(self)
         self.set_transient_for(app)
         self.set_program_name(APPNAME)
