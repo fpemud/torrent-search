@@ -23,6 +23,6 @@ import os
 PATH = os.path.split(__file__)[0]
 
 if __name__ == "__main__":
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "gen-manpages"), os.path.join(PATH, "share"))
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "package-manpages", os.path.join(PATH, "share"))
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "update-locales", os.path.join(PATH, "share"))
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "gen-manpages"), os.path.join(PATH, "share")))
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "package-manpages"), os.path.join(PATH, "share")))
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "update-locales"), os.path.join(PATH, "share")))
