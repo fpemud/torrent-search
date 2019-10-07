@@ -1,5 +1,5 @@
-#! /usr/bin/python
-# -*- coding=utf-8 -*-
+#!/usr/bin/env python3
+# -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 """
     This file is part of Torrent Search.
@@ -20,9 +20,9 @@
 
 import os
 
-PATH=os.path.split(__file__)[0]
+PATH = os.path.split(__file__)[0]
 
-if __name__=="__main__":
-   os.system('python "%s" --share-dir "%s"'%(PATH+"/gen-manpages",PATH+"/share"))
-   os.system('python "%s" --share-dir "%s"'%(PATH+"/package-manpages",PATH+"/share"))
-   os.system('python "%s" --share-dir "%s"'%(PATH+"/update-locales",PATH+"/share"))
+if __name__ == "__main__":
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "gen-manpages"), os.path.join(PATH, "share"))
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "package-manpages", os.path.join(PATH, "share"))
+    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "update-locales", os.path.join(PATH, "share"))
