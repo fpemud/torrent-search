@@ -140,7 +140,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self._stars_icons = {0: None}
         for i in range(1, 6):
             try:
-                self._stars_icons[i] = Gtk.gdk.pixbuf_new_from_file(os.path.join(
+                self._stars_icons[i] = Gtk.Image.new_from_file(os.path.join(
                     app.options.share_dir, "torrent-search", "icons", "stars", "%d.png" % i))
             except:
                 self._stars_icons[i] = None
@@ -149,8 +149,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self._hide_zero_seeders = app.config["hide_zero_seeders"]
         self.tv = Gtk.TreeView()
         self.add(self.tv)
-        self.lb = Gtk.ListStore(
-            object, str, str, str, int, int, str, int, Gtk.gdk.Pixbuf, str, str, float)
+        self.lb = Gtk.ListStore(object, str, str, str, int, int, str, int, Gtk.Image, str, str, float)
         self.filter_lb = self.lb.filter_new()
         self.filter_lb.set_visible_func(self.get_must_show)
         self.duplicates_filter = self.filter_lb.filter_new()
@@ -158,10 +157,10 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self.tv.set_model(self.duplicates_filter)
         col = Gtk.TreeViewColumn(_("NAME"))
         r = Gtk.CellRendererPixbuf()
-        col.pack_start(r)
+        col.pack_start(r, False)
         col.add_attribute(r, "pixbuf", 8)
         r = Gtk.CellRendererText()
-        col.pack_start(r)
+        col.pack_start(r, False)
         col.add_attribute(r, "text", 1)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 1)
@@ -219,7 +218,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self.lb.set_sort_func(3, self.size_cmp_func, 3)
         self.lb.set_sort_func(10, self.nb_comments_cmp_func, 10)
         self.tv.connect('button_press_event', self.on_tv_button_press_event)
-        self.tv.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
+        self.tv.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         if app.config["sort_column"] != -1:
             cid = app.config["sort_column"]
             if cid == 1:
@@ -571,7 +570,8 @@ class DateSelectionEntry(Gtk.Entry):
 
 class SearchOptionsBox(Gtk.Expander):
     def __init__(self, app):
-        Gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
+#        Gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
+        Gtk.Expander.__init__(self)
         self.set_expanded(app.config["search_options_expanded"])
         self.connect("notify::expanded", self.on_expand_toggled)
         self._app = app
@@ -581,47 +581,45 @@ class SearchOptionsBox(Gtk.Expander):
         mainbox.set_spacing(10)
         hbox = Gtk.HBox()
         hbox.set_spacing(10)
-        mainbox.pack_start(hbox, False, False)
+        mainbox.pack_start(hbox, False, False, 0)
         self.hide_zero_seeders = Gtk.CheckButton(_("HIDE_ZERO_SEEDERS"))
         self.hide_zero_seeders.set_active(app.config["hide_zero_seeders"])
-        self.hide_zero_seeders.connect(
-            "toggled", self.on_hide_zero_seeders_toggled)
-        hbox.pack_start(self.hide_zero_seeders, False, False)
+        self.hide_zero_seeders.connect("toggled", self.on_hide_zero_seeders_toggled)
+        hbox.pack_start(self.hide_zero_seeders, False, False, 0)
         self.filter_duplicates = Gtk.CheckButton(_("FILTER_DUPLICATES"))
         self.filter_duplicates.set_active(app.config["filter_duplicates"])
-        self.filter_duplicates.connect(
-            "toggled", self.on_filter_duplicates_toggled)
-        hbox.pack_start(self.filter_duplicates, False, False)
+        self.filter_duplicates.connect("toggled", self.on_filter_duplicates_toggled)
+        hbox.pack_start(self.filter_duplicates, False, False, 0)
         hbox = Gtk.HBox()
-        mainbox.pack_start(hbox, False, False)
+        mainbox.pack_start(hbox, False, False, 0)
         hbox.set_spacing(10)
         self.only_exact_phrase = Gtk.CheckButton(_("ONLY_EXACT_PHRASE"))
-        hbox.pack_start(self.only_exact_phrase, False, False)
+        hbox.pack_start(self.only_exact_phrase, False, False, 0)
         self.only_exact_phrase.set_active(app.config["only_exact_phrase"])
         self.only_exact_phrase.connect(
             "toggled", self.on_only_exact_phrase_toggled)
         self.only_all_words = Gtk.CheckButton(_("ONLY_ALL_WORDS"))
-        hbox.pack_start(self.only_all_words, False, False)
+        hbox.pack_start(self.only_all_words, False, False, 0)
         self.only_all_words.set_active(app.config["only_all_words"])
         self.only_all_words.connect("toggled", self.on_only_all_words_toggled)
         hbox = Gtk.HBox()
-        mainbox.pack_start(hbox)
+        mainbox.pack_start(hbox, False, False, 0)
         hbox.set_spacing(10)
-        hbox.pack_start(Gtk.Label(_("CATEGORY")), False, False)
+        hbox.pack_start(Gtk.Label(_("CATEGORY")), False, False, 0)
         self.category = Gtk.ComboBox()
-        hbox.pack_start(self.category, False, False)
+        hbox.pack_start(self.category, False, False, 0)
         self.category_ls = Gtk.ListStore(object, str)
         self.category.set_model(self.category_ls)
         self.category_ls.append([None, _("ANY")])
         r = Gtk.CellRendererText()
-        self.category.pack_start(r)
+        self.category.pack_start(r, False)
         self.category.add_attribute(r, "text", 1)
         for i in self._app.categories.all():
             self.category_ls.append([i, str(i)])
         self.category.connect("changed", self.on_category_changed)
         self.category.set_active(0)
         table = Gtk.Table()
-        mainbox.pack_start(table)
+        mainbox.pack_start(table, False, False, 0)
         table.set_col_spacings(10)
         table.set_row_spacings(10)
         l = Gtk.Label(_("NAME_CONTAINS"))
@@ -648,26 +646,26 @@ class SearchOptionsBox(Gtk.Expander):
         self.name_does_not_contain.connect(
             "changed", self.on_name_does_not_contain_changed)
         hbox = Gtk.HBox()
-        mainbox.pack_start(hbox, False, False)
+        mainbox.pack_start(hbox, False, False, 0)
         hbox.set_spacing(10)
         self.min_size_enable = Gtk.CheckButton(_("MIN_SIZE"))
-        hbox.pack_start(self.min_size_enable, False, False)
+        hbox.pack_start(self.min_size_enable, False, False, 0)
         self.min_size_value = Gtk.SpinButton()
         self.min_size_value.set_width_chars(4)
         self.min_size_value.set_range(1, 1023)
         self.min_size_value.set_increments(10, 100)
-        hbox.pack_start(self.min_size_value, False, False)
-        self.min_size_unit = Gtk.combo_box_new_text()
-        hbox.pack_start(self.min_size_unit, False, False)
+        hbox.pack_start(self.min_size_value, False, False, 0)
+        self.min_size_unit = Gtk.ComboBox.new_with_model_and_entry()
+        hbox.pack_start(self.min_size_unit, False, False, 0)
         self.max_size_enable = Gtk.CheckButton(_("MAX_SIZE"))
-        hbox.pack_start(self.max_size_enable, False, False)
+        hbox.pack_start(self.max_size_enable, False, False, 0)
         self.max_size_value = Gtk.SpinButton()
         self.max_size_value.set_width_chars(4)
         self.max_size_value.set_range(1, 1023)
         self.max_size_value.set_increments(10, 100)
-        hbox.pack_start(self.max_size_value, False, False)
-        self.max_size_unit = Gtk.combo_box_new_text()
-        hbox.pack_start(self.max_size_unit, False, False)
+        hbox.pack_start(self.max_size_value, False, False, 0)
+        self.max_size_unit = Gtk.ComboBox.new_with_model_and_entry()
+        hbox.pack_start(self.max_size_unit, False, False, 0)
         units = ["KB", "MB", "GB"]
         self.min_size_unit.connect('changed', self.on_min_size_unit_changed)
         self.max_size_unit.connect('changed', self.on_max_size_unit_changed)
@@ -1161,7 +1159,7 @@ class Application(Gtk.Window):
             plugin.icon.save(icon_filename, "png")
         else:
             try:
-                plugin.icon = Gtk.gdk.pixbuf_new_from_file(icon_filename)
+                plugin.icon = Gtk.Image.new_from_file(icon_filename)
             except:
                 pass
         self.results_widget.notify_plugin_icon(plugin)

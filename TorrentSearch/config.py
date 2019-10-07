@@ -324,7 +324,7 @@ class PluginsPreferencesPage(Gtk.ScrolledWindow):
         Gtk.ScrolledWindow.__init__(self)
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.tv = Gtk.TreeView()
-        self.tv.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
+        self.tv.get_selection().set_mode(Gtk.SelectionMode.MULTIPLE)
         self.add(self.tv)
         self.lb = Gtk.ListStore(object, str)
         self.tv.set_model(self.lb)

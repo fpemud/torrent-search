@@ -35,7 +35,7 @@ def load_icons(share_dir):
                     fullfilename = os.path.join(sizepath, filename)
                     iconname, ext = filename.split(".")
                     if ext == "png":
-                        gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.gdk.pixbuf_new_from_file(fullfilename))
+                        gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.Image.new_from_file(fullfilename))
                 except:
                     pass
         except:

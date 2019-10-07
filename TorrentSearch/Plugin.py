@@ -305,7 +305,8 @@ class PluginResult(object):
       if self.poster:
          try:
             filename, msg = urllib.request.urlretrieve(self.poster)
-            res = Gtk.gdk.pixbuf_new_from_file_at_size(filename, 300, 300)
+#            res = Gtk.Image.new_from_file_at_size(filename, 300, 300)
+            res = Gtk.Image.new_from_file(filename)
             os.unlink(filename)
          except:
             res = None
@@ -500,7 +501,8 @@ class Plugin(object):
    def _try_load_icon(self,url):
       try:
          filename,msg=urllib.request.urlretrieve(url)
-         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
+#         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
+         self.icon=Gtk.Image_new_from_file(filename)
          os.unlink(filename)
       except:
          self.icon=None
