@@ -544,7 +544,7 @@ class DateSelectionEntry(Gtk.Entry):
         Gtk.Entry.__init__(self)
         self.set_editable(False)
         self.calendar = DateSelectionDialog(self)
-        self.unset_flags(Gtk.CAN_FOCUS)
+        # self.unset_flags(Gtk.CAN_FOCUS)           # FIXME
         self.connect('button_press_event', self.on_click)
         self.set_date(self.calendar.get_date())
 
@@ -576,13 +576,14 @@ class SearchOptionsBox(Gtk.Expander):
         self.connect("notify::expanded", self.on_expand_toggled)
         self._app = app
 
-        lb = Gtk.ListStore(str)
-        iter = lb.append()
-        lb.set(iter, 0, "KB")
-        lb.append(iter)
-        lb.set(iter, 0, "MB")
-        lb.append(iter)
-        lb.set(iter, 0, "GB")
+        units = ["KB", "MB", "GB"]
+        self.lb = Gtk.ListStore(str)
+        iter = self.lb.append()
+        self.lb.set(iter, 0, "KB")
+        iter = self.lb.append()
+        self.lb.set(iter, 0, "MB")
+        iter = self.lb.append()
+        self.lb.set(iter, 0, "GB")
 
         mainbox = Gtk.VBox()
         self.add(mainbox)
@@ -664,7 +665,7 @@ class SearchOptionsBox(Gtk.Expander):
         self.min_size_value.set_range(1, 1023)
         self.min_size_value.set_increments(10, 100)
         hbox.pack_start(self.min_size_value, False, False, 0)
-        self.min_size_unit = Gtk.ComboBox.new_with_model_and_entry(lb)
+        self.min_size_unit = Gtk.ComboBox.new_with_model_and_entry(self.lb)
         hbox.pack_start(self.min_size_unit, False, False, 0)
         self.max_size_enable = Gtk.CheckButton(_("MAX_SIZE"))
         hbox.pack_start(self.max_size_enable, False, False, 0)
@@ -673,7 +674,7 @@ class SearchOptionsBox(Gtk.Expander):
         self.max_size_value.set_range(1, 1023)
         self.max_size_value.set_increments(10, 100)
         hbox.pack_start(self.max_size_value, False, False, 0)
-        self.max_size_unit = Gtk.ComboBox.new_with_model_and_entry(lb)
+        self.max_size_unit = Gtk.ComboBox.new_with_model_and_entry(self.lb)
         hbox.pack_start(self.max_size_unit, False, False, 0)
         self.min_size_unit.connect('changed', self.on_min_size_unit_changed)
         self.max_size_unit.connect('changed', self.on_max_size_unit_changed)
@@ -701,25 +702,21 @@ class SearchOptionsBox(Gtk.Expander):
         self.max_size_value.set_value(app.config["max_size_value"])
         hbox = Gtk.HBox()
         hbox.set_spacing(10)
-        mainbox.pack_start(hbox, False, False)
+        mainbox.pack_start(hbox, False, False, 0)
         self.after_date_enable = Gtk.CheckButton(_("AFTER"))
-        hbox.pack_start(self.after_date_enable, False, False)
+        hbox.pack_start(self.after_date_enable, False, False, 0)
         self.after_date = DateSelectionEntry()
-        hbox.pack_start(self.after_date, False, False)
+        hbox.pack_start(self.after_date, False, False, 0)
         self.before_date_enable = Gtk.CheckButton(_("BEFORE"))
-        hbox.pack_start(self.before_date_enable, False, False)
+        hbox.pack_start(self.before_date_enable, False, False, 0)
         self.before_date = DateSelectionEntry()
-        hbox.pack_start(self.before_date, False, False)
-        self.after_date_enable.connect(
-            'toggled', self.on_after_date_enable_toggled)
-        self.before_date_enable.connect(
-            'toggled', self.on_before_date_enable_toggled)
+        hbox.pack_start(self.before_date, False, False, 0)
+        self.after_date_enable.connect('toggled', self.on_after_date_enable_toggled)
+        self.before_date_enable.connect('toggled', self.on_before_date_enable_toggled)
         self.after_date.connect('changed', self.on_after_date_changed)
         self.before_date.connect('changed', self.on_before_date_changed)
-        self._app.config["after_date"] = self.after_date.get_date().strftime(
-            "%Y-%m-%d")
-        self._app.config["before_date"] = self.before_date.get_date().strftime(
-            "%Y-%m-%d")
+        self._app.config["after_date"] = self.after_date.get_date().strftime("%Y-%m-%d")
+        self._app.config["before_date"] = self.before_date.get_date().strftime("%Y-%m-%d")
         self._app.config["after_date_enable"] = False
         self._app.config["before_date_enable"] = False
 
@@ -755,10 +752,12 @@ class SearchOptionsBox(Gtk.Expander):
         self._app.config["name_contains"] = widget.get_text()
 
     def on_min_size_unit_changed(self, widget):
-        self._app.config["min_size_unit"] = widget.get_active_text()
+        iter = widget.get_active_iter()
+        self._app.config["min_size_unit"] = self.lb.get_value(iter, 0)
 
     def on_max_size_unit_changed(self, widget):
-        self._app.config["max_size_unit"] = widget.get_active_text()
+        iter = widget.get_active_iter()
+        self._app.config["max_size_unit"] = self.lb.get_value(iter, 0)
 
     def on_min_size_value_changed(self, widget):
         self._app.config["min_size_value"] = int(widget.get_value())
@@ -1040,8 +1039,8 @@ class Application(Gtk.Window):
         hbox = Gtk.HBox()
         hbox = Gtk.HPaned()
         f = Gtk.Frame()
-        mainbox.pack_start(hbox)
-        hbox.pack1(f, True, False, 0)
+        mainbox.pack_start(hbox, False, False, 0)
+        hbox.pack1(f, True, False)
         self.search_results_label = Gtk.Label()
         self.search_results_label.set_markup("<b>%s</b>" % _("SEARCH_RESULTS"))
         f.set_label_widget(self.search_results_label)

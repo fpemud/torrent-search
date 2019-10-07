@@ -21,8 +21,9 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from gi.repository import GObject
 
-import gobject, _thread, os, libxml2, imp, httplib2, time, urllib.request, urllib.parse, urllib.error
+import _thread, os, libxml2, imp, httplib2, time, urllib.request, urllib.parse, urllib.error
 from .exceptions import *
 from .informations import *
 from .constants import *
@@ -52,7 +53,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
       self.progress=None
       self._status=0
       Gtk.Dialog.__init__(self,_("CHECKING_PLUGIN_UPDATES"),app)
-      self.set_position(Gtk.WIN_POS_CENTER_ON_PARENT)
+      self.set_position(Gtk.WindowPosition.CENTER_ON_PARENT)
       self.set_deletable(False)
       self.set_border_width(0)
       self.connect('key_press_event',self.on_key_press_event)
@@ -63,15 +64,15 @@ class PluginsUpdatesChecker(Gtk.Dialog):
       self.main_mesg=Gtk.Label()
       self.main_mesg.set_width_chars(50)
       self.main_mesg.set_alignment(0,0.5)
-      vbox.pack_start(self.main_mesg)
+      vbox.pack_start(self.main_mesg, False, False, 0)
       self.pb=Gtk.ProgressBar()
-      vbox.pack_start(self.pb)
+      vbox.pack_start(self.pb, False, False, 0)
       self.sub_mesg=Gtk.Label()
       self.sub_mesg.set_alignment(0,0.5)
-      vbox.pack_start(self.sub_mesg)
+      vbox.pack_start(self.sub_mesg, False, False, 0)
       self.cancel_button=Gtk.Button(stock=Gtk.STOCK_CANCEL)
       self.cancel_button.connect('clicked',lambda w:self.cancel())
-      self.action_area.pack_start(self.cancel_button)
+      self.action_area.pack_start(self.cancel_button, False, False, 0)
    def cancel(self):
       self.status=-2
       self.response(Gtk.ResponseType.CANCEL)
@@ -134,7 +135,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
          self.set_main_mesg(_("DONE"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
+         GObject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
          return False
       if self.status==4:
          self.pb.set_fraction(1)
@@ -147,7 +148,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
          self.set_main_mesg(_("FAILED"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
+         GObject.timeout_add_seconds(1,self.response,Gtk.ResponseType.CLOSE)
          return False
       if self.status==-2:
          return False
@@ -261,12 +262,12 @@ class PluginsUpdatesChecker(Gtk.Dialog):
    def run(self):
       self.status=0
       self.show_all()
-      self.pulse_timer=gobject.timeout_add(50,self.check_status)
+      self.pulse_timer=GObject.timeout_add(50,self.check_status)
       self.set_main_mesg(_("GETTING_PLUGINS_LIST"))
       self.retrieve_list()
       Gtk.Dialog.run(self)
       self.destroy()
-      gobject.source_remove(self.pulse_timer)
+      GObject.source_remove(self.pulse_timer)
       return self.status==4
 
 class PluginResult(object):
@@ -489,7 +490,7 @@ class Plugin(object):
    def _set_icon_url(self,url):
       if url:
          _thread.start_new_thread(self._try_load_icon,(url,))    # FIXME
-         gobject.timeout_add(100,self._watch_load_icon)
+         GObject.timeout_add(100,self._watch_load_icon)
    icon_url=property(None,_set_icon_url)
    def _watch_load_icon(self):
       self.icon_lock.acquire()
@@ -591,8 +592,8 @@ class Plugin(object):
       self.results_loaded = 0
       self.login_status=LOGIN_STATUS_WAITING
       _thread.start_new_thread(self._do_search,(pattern,))    # FIXME
-      gobject.timeout_add(200,self._check_results)
-      gobject.timeout_add(50,self._check_login_status)
+      GObject.timeout_add(200,self._check_results)
+      GObject.timeout_add(50,self._check_login_status)
    def _check_login_status(self):
       if self.login_status==LOGIN_STATUS_WAITING:
          return True

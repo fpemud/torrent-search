@@ -2,7 +2,7 @@
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 import httplib2
-import gobject
+from gi.repository import GObject
 import _thread
 
 
@@ -75,7 +75,7 @@ class HttpQueueClient(object):
         self._request_id = request_id
         self.result = None
         self.finished = False
-        gobject.timeout_add(100, self._check_finished)
+        GObject.timeout_add(100, self._check_finished)
         _thread.start_new_thread(self._do_run, request)          # FIXME
 
 
@@ -126,12 +126,12 @@ class HttpQueue(object):
         return res
 
     def start(self):
-        self._timer = gobject.timeout_add(100, self._check_queue)
+        self._timer = GObject.timeout_add(100, self._check_queue)
         self._running = True
 
     def stop(self):
         if self._timer:
-            gobject.source_remove(self._timer)
+            GObject.source_remove(self._timer)
         self._timer = None
         self._running = False
 

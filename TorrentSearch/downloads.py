@@ -21,8 +21,8 @@
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from gi.repository import GObject
 import _thread
-import gobject
 import http.client
 import urllib.request
 import urllib.parse
@@ -70,7 +70,7 @@ class DownloadManager(Gtk.VBox):
         self.connect("size_allocate", self.on_size_allocate)
         self._app = app
         scw = Gtk.ScrolledWindow()
-        self.pack_start(scw)
+        self.pack_start(scw, False, False, 0)
         scw.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
         self.tv = Gtk.TreeView()
         self.tv.connect('button_press_event', self.on_tv_button_press_event)
@@ -90,7 +90,7 @@ class DownloadManager(Gtk.VBox):
         col.pack_start(r, False)
         r = Gtk.CellRendererText()
         col.pack_start(r, False)
-        gobject.timeout_add(50, self._check)
+        GObject.timeout_add(50, self._check)
 
     def on_size_allocate(self, widget, rect):
         self._app.config["download_manager_width"] = rect.width
