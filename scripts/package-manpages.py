@@ -20,9 +20,19 @@
 
 import os
 
-PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), "scripts"))
+PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+SRCPATH = os.path.join(PATH, "manpages")
+DESTPATH = os.path.join(PATH, "share", "man")
 
 if __name__ == "__main__":
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "gen-manpages.py"), os.path.join(PATH, "share")))
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "package-manpages.py"), os.path.join(PATH, "share")))
-    os.system('python3 "%s" --share-dir "%s"' % (os.path.join(PATH, "update-locales.py"), os.path.join(PATH, "share")))
+    os.chdir(SRCPATH)
+    for i in os.listdir(SRCPATH):
+        if i[-1] != "~" and i[0] != '.':
+            prg, lang, ext = i.split('.')
+            if lang == "en":
+                path = os.path.join(DESTPATH, "man1")
+            else:
+                path = os.path.join(DESTPATH, lang, "man1")
+            if not os.path.exists(path):
+                os.system('mkdir -p "%s"' % path)
+            os.system('gzip -c "%s" > "%s"' % (i, os.path.join(path, "torrent-search.1.gz")))
