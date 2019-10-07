@@ -50,7 +50,6 @@ import webbrowser
 from .informations import *
 from .constants import *
 from .exceptions import *
-from .new_versions import *
 
 DOWNLOAD_URI = "http://sourceforge.net/projects/torrent-search/files/"
 
@@ -1551,38 +1550,8 @@ class Application(gtk.Window):
         self.last_version_lock.acquire()
         self._last_version_files = value
         self.last_version_lock.release()
-    last_version_files = property(
-        _get_last_version_files, _set_last_version_files)
 
-    def watch_new_version(self):
-        if self.last_version == None:
-            return True
-        if self.last_version != "" and program_version.ProgramVersionGreater(self.last_version, VERSION):
-            if self.must_notify_version(self.last_version):
-                self.notify_version(self.last_version)
-        return False
-
-    def notify_version(self, version):
-        self.config["last_version_notified"] = version
-        if VersionNotifierDialog(self).run(version):
-            files = VersionAvailableFilesDialog(
-                self, self.last_version_files).run()
-            if files:
-                url, filename, size = VersionFileSelectorDialog(
-                    self, files).run()
-                dest = VersionDestinationDialog(self, filename).run()
-                if dest:
-                    if VersionDownloadDialog(self, url, filename, size, dest).run():
-                        self.info_mesg(_("DOWNLOAD_SUCCESSFUL"))
-                    else:
-                        VersionDownloadErrorDialog(self, DOWNLOAD_URI).run()
-            elif files != None:
-                VersionNoFilesDialog(self, DOWNLOAD_URI).run()
-
-    def must_notify_version(self, version):
-        if not self.config["dont_show_new_version_again"]:
-            return True
-        return version != self.config["last_version_notified"]
+    last_version_files = property(_get_last_version_files, _set_last_version_files)
 
     def check_plugin_updates(self):
         # TODO!: Handle the possibility of removing deprecated plugins
@@ -1607,7 +1576,6 @@ class Application(gtk.Window):
             self.run_search(self.options.search_pattern)
             self.searchbar.set_pattern(self.options.search_pattern)
         self.last_version = None
-        gobject.timeout_add(100, self.watch_new_version)
         _thread.start_new_thread(self.check_new_version, ())      # FIXME
         self.searchbar.focus_entry()
         gtk.main()

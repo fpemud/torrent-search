@@ -56,8 +56,6 @@ CONFIG_KEYS = {
     "max_size_unit": ("max_size_unit", "string", "MB"),
     "only_exact_phrase": ("only_exact_phrase", "bool", False),
     "only_all_words": ("only_all_words", "bool", False),
-    "dont_show_new_version_again": ("dont_show_new_version_again", "bool", False),
-    "last_version_notified": ("last_version_notified", "string", ""),
     "name_does_not_contain": ("name_does_not_contain", "string", ""),
     "name_contains": ("name_contains", "string", ""),
     "download_manager_width": ("download_manager_width", "int", 450),
