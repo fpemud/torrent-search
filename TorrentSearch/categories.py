@@ -64,9 +64,8 @@ class CategoriesList(object):
         child = node.children
         while child:
             if child.name == "category":
-                res.append(Category(child.prop('id'), _(child.prop(
-                    'description')), self._load_categories(child)))
-            child = child.__next__       # FIXME
+                res.append(Category(child.prop('id'), _(child.prop('description')), self._load_categories(child)))
+            child = child.next       # FIXME
         return res
 
     def _load(self, filename):

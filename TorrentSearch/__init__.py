@@ -28,6 +28,7 @@ import datetime
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 
+from . import lang
 from . import AboutDialog
 from . import menus
 import gobject
@@ -989,9 +990,9 @@ class TorrentDetailsLoadingDialog(Gtk.Window):
 
 class Application(Gtk.Window):
     def __init__(self, options):
+        Gtk.Window.__init__(self)
         self.options = options
-        self.categories = categories.CategoriesList(
-            os.path.join(options.share_dir, UNIXNAME, "categories.xml"))
+        self.categories = categories.CategoriesList(os.path.join(options.share_dir, UNIXNAME, "categories.xml"))
         self._plugins_credentials = {}
         self.cleanup_timer = None
         self._tempfiles = []
@@ -1009,7 +1010,7 @@ class Application(Gtk.Window):
         icontheme.load_icons(options.share_dir)
         Gtk.window_set_default_icon_name("torrent-search")
         self.load_search_plugins()
-        Gtk.Window.__init__(self)
+#        Gtk.Window.__init__(self)
         self._accel_group = Gtk.AccelGroup()
         self.add_accel_group(self._accel_group)
         self._maximized = False

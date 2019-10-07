@@ -27,7 +27,6 @@ from TorrentSearch import clp
 from TorrentSearch import Application
 from TorrentSearch.DBusHandler import *
 
-sys.stderr = open(tempfile.mktemp(), "w")
 
 if __name__ == '__main__':
     optparser = clp.OptionParser()
@@ -43,6 +42,6 @@ if __name__ == '__main__':
         exit(1)
     bus = init_dbus()
     if not try_dbus_connection(bus, options.search_pattern):
-        app = TorrentSearch.Application(options)
+        app = Application(options)
         open_dbus_controller(bus, app)
         app.run()

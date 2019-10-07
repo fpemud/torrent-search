@@ -27,6 +27,7 @@ from .constants import *
 
 
 class AuthDialog(Gtk.Dialog):
+
     def __init__(self, app):
         Gtk.Dialog.__init__(self, _("AUTHENTICATION"), app)
         self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
