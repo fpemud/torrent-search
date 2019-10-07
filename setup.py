@@ -23,51 +23,30 @@ import sys
 from distutils.core import setup
 
 
-def _walk_lib_files(res, path, files):
-    if ".git" in path:
-        return
-    tl = []
-    for i in files:
-        if os.path.isfile(os.path.join(path, i)):
-            if i[-1] != "~" and i[-4:] != ".bak":
-                tl.append(os.path.join(path, i))
-    if tl != []:
-        res.append((os.path.join("lib", path[4:]), tl))
-
-
 def list_lib_files():
     res = []
-    os.walk("lib", _walk_lib_files, res)
-    print(res)
-    return res
-
-
-def _walk_share_files(res, path, files):
-    if ".git" in path:
-        return
-    tl = []
-    for i in files:
-        if os.path.isfile(os.path.join(path, i)):
-            if i[-1] != "~" and i[-4:] != ".bak":
-                tl.append(os.path.join(path, i))
-    if tl != []:
-        res.append((os.path.join("share", path[6:]), tl))
-
-
-def list_share_files():
-    res = []
-    for path, dirs, files in os.walk("share"):
-        if ".git" in path:
-            continue
+    for path, dirs, files in os.walk("lib"):
         files2 = []
         for i in files:
             if os.path.isfile(os.path.join(path, i)):
                 if i[-1] != "~" and i[-4:] != ".bak":
                     files2.append(os.path.join(path, i))
         if files2 != []:
-            res.append((os.path.join("share", path), files2))
-    print(res)
-    return []
+            res.append((path, files2))
+    return []           # FIXME
+
+
+def list_share_files():
+    res = []
+    for path, dirs, files in os.walk("share"):
+        files2 = []
+        for i in files:
+            if os.path.isfile(os.path.join(path, i)):
+                if i[-1] != "~" and i[-4:] != ".bak":
+                    files2.append(os.path.join(path, i))
+        if files2 != []:
+            res.append((path, files2))
+    return res
 
 
 setup(name="torrent-search",
@@ -79,7 +58,7 @@ setup(name="torrent-search",
       description="Search for torrents on different websites",
       scripts=["torrent-search", "torrent-search-gnomeapplet"],
       packages=["TorrentSearch", "TorrentSearch.exceptions"],
-      data_files=list_share_files()+list_lib_files(),
+      data_files=list_lib_files()+list_share_files(),
       url="http://torrent-search.sourceforge.net",
       download_url="http://sourceforge.net/projects/torrent-search/files/",
       )
