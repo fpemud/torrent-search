@@ -18,7 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import os
 
 
@@ -33,8 +35,7 @@ def load_icons(share_dir):
                     fullfilename = os.path.join(sizepath, filename)
                     iconname, ext = filename.split(".")
                     if ext == "png":
-                        gtk.icon_theme_add_builtin_icon(
-                            iconname, size, gtk.gdk.pixbuf_new_from_file(fullfilename))
+                        gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.gdk.pixbuf_new_from_file(fullfilename))
                 except:
                     pass
         except:

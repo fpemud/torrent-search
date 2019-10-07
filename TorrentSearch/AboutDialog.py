@@ -18,7 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import webbrowser
 from .informations import *
 
@@ -34,11 +36,11 @@ def on_email_activated(dialog, link, data):
         webbrowser.open("mailto:"+link)
 
 
-class AboutDialog(gtk.AboutDialog):
+class AboutDialog(Gtk.AboutDialog):
     def __init__(self, app):
-        gtk.about_dialog_set_url_hook(on_url_activated, None)
-        gtk.about_dialog_set_email_hook(on_email_activated, None)
-        gtk.AboutDialog.__init__(self)
+        Gtk.about_dialog_set_url_hook(on_url_activated, None)
+        Gtk.about_dialog_set_email_hook(on_email_activated, None)
+        Gtk.AboutDialog.__init__(self)
         self.set_transient_for(app)
         self.set_program_name(APPNAME)
         self.set_version(VERSION)
@@ -54,5 +56,5 @@ class AboutDialog(gtk.AboutDialog):
 
     def run(self):
         self.show_all()
-        gtk.AboutDialog.run(self)
+        Gtk.AboutDialog.run(self)
         self.hide()

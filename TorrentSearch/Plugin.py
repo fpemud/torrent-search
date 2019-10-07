@@ -18,7 +18,11 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk, gobject, _thread, os, libxml2, imp, httplib2, time, urllib.request, urllib.parse, urllib.error
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
+import gobject, _thread, os, libxml2, imp, httplib2, time, urllib.request, urllib.parse, urllib.error
 from .exceptions import *
 from .informations import *
 from .constants import *
@@ -37,7 +41,7 @@ class FileList(list):
    def append(self, filename, size):
       list.append(self, (filename,size))
 
-class PluginsUpdatesChecker(gtk.Dialog):
+class PluginsUpdatesChecker(Gtk.Dialog):
    def __init__(self,app):
       self._app=app
       self.plugins_list_lock=_thread.allocate_lock()    # FIXME
@@ -47,30 +51,30 @@ class PluginsUpdatesChecker(gtk.Dialog):
       self.submesg=""
       self.progress=None
       self._status=0
-      gtk.Dialog.__init__(self,_("CHECKING_PLUGIN_UPDATES"),app)
-      self.set_position(gtk.WIN_POS_CENTER_ON_PARENT)
+      Gtk.Dialog.__init__(self,_("CHECKING_PLUGIN_UPDATES"),app)
+      self.set_position(Gtk.WIN_POS_CENTER_ON_PARENT)
       self.set_deletable(False)
       self.child.set_border_width(0)
       self.connect('key_press_event',self.on_key_press_event)
-      vbox=gtk.VBox()
+      vbox=Gtk.VBox()
       self.child.add(vbox)
       vbox.set_border_width(5)
       vbox.set_spacing(10)
-      self.main_mesg=gtk.Label()
+      self.main_mesg=Gtk.Label()
       self.main_mesg.set_width_chars(50)
       self.main_mesg.set_alignment(0,0.5)
       vbox.pack_start(self.main_mesg)
-      self.pb=gtk.ProgressBar()
+      self.pb=Gtk.ProgressBar()
       vbox.pack_start(self.pb)
-      self.sub_mesg=gtk.Label()
+      self.sub_mesg=Gtk.Label()
       self.sub_mesg.set_alignment(0,0.5)
       vbox.pack_start(self.sub_mesg)
-      self.cancel_button=gtk.Button(stock=gtk.STOCK_CANCEL)
+      self.cancel_button=Gtk.Button(stock=Gtk.STOCK_CANCEL)
       self.cancel_button.connect('clicked',lambda w:self.cancel())
       self.action_area.pack_start(self.cancel_button)
    def cancel(self):
       self.status=-2
-      self.response(gtk.RESPONSE_CANCEL)
+      self.response(Gtk.RESPONSE_CANCEL)
    def _get_submesg(self):
       self.submesg_lock.acquire()
       res=self._submesg
@@ -130,20 +134,20 @@ class PluginsUpdatesChecker(gtk.Dialog):
          self.set_main_mesg(_("DONE"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,gtk.RESPONSE_CLOSE)
+         gobject.timeout_add_seconds(1,self.response,Gtk.RESPONSE_CLOSE)
          return False
       if self.status==4:
          self.pb.set_fraction(1)
          self.set_main_mesg(_("DONE"))
          self.set_sub_mesg("")
-         self.response(gtk.RESPONSE_CLOSE)
+         self.response(Gtk.RESPONSE_CLOSE)
          return False
       if self.status==-1:
          self.pb.set_fraction(1)
          self.set_main_mesg(_("FAILED"))
          self.set_sub_mesg("")
          self.cancel_button.set_sensitive(False)
-         gobject.timeout_add_seconds(1,self.response,gtk.RESPONSE_CLOSE)
+         gobject.timeout_add_seconds(1,self.response,Gtk.RESPONSE_CLOSE)
          return False
       if self.status==-2:
          return False
@@ -260,7 +264,7 @@ class PluginsUpdatesChecker(gtk.Dialog):
       self.pulse_timer=gobject.timeout_add(50,self.check_status)
       self.set_main_mesg(_("GETTING_PLUGINS_LIST"))
       self.retrieve_list()
-      gtk.Dialog.run(self)
+      Gtk.Dialog.run(self)
       self.destroy()
       gobject.source_remove(self.pulse_timer)
       return self.status==4
@@ -301,7 +305,7 @@ class PluginResult(object):
       if self.poster:
          try:
             filename, msg = urllib.request.urlretrieve(self.poster)
-            res = gtk.gdk.pixbuf_new_from_file_at_size(filename, 300, 300)
+            res = Gtk.gdk.pixbuf_new_from_file_at_size(filename, 300, 300)
             os.unlink(filename)
          except:
             res = None
@@ -496,7 +500,7 @@ class Plugin(object):
    def _try_load_icon(self,url):
       try:
          filename,msg=urllib.request.urlretrieve(url)
-         self.icon=gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
+         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
          os.unlink(filename)
       except:
          self.icon=None

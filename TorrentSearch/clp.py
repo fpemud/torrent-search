@@ -19,8 +19,6 @@
 """
 
 import optparse
-import os
-import sys
 from .informations import *
 from .constants import DEFAULT_SHARE_PATH
 
@@ -30,6 +28,7 @@ class OptionParser(optparse.OptionParser):
     def __init__(self):
         optparse.OptionParser.__init__(self, add_help_option=False)
         self.version = VERSION
+
         basic_group = self.add_option_group(_("BASIC_OPTIONS"))
         basic_group.add_option("-h", "--help", dest="show_help",
                                action="store_true", help=_("SHOW_THIS_HELP_AND_EXIT"))
@@ -39,6 +38,7 @@ class OptionParser(optparse.OptionParser):
                                default="", help=_("RUN_SEARCH_ON_STARTUP"))
         basic_group.add_option("--no-plugins-check", dest="no_plugins_check",
                                action="store_true", help=_("HELP_NO_PLUGIN_CHECK"))
+
         advanced_group = self.add_option_group(_("ADVANCED_OPTIONS"))
         advanced_group.add_option("--share-dir", dest="share_dir",
                                   default=DEFAULT_SHARE_PATH, help=_("PATH_TO_SHARE"))

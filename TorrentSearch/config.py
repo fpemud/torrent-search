@@ -18,7 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import os
 import time
 import torrentApps
@@ -160,42 +162,42 @@ class AppConfig(object):
             pass
 
 
-class GeneralPreferencesPage(gtk.VBox):
+class GeneralPreferencesPage(Gtk.VBox):
     def __init__(self, app):
         self._app = app
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_border_width(5)
         self.set_spacing(10)
-        f = gtk.Frame()
-        l = gtk.Label()
+        f = Gtk.Frame()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("TORRENT_FILES"))
         f.set_label_widget(l)
         self.pack_start(f, False, False)
-        table = gtk.Table()
+        table = Gtk.Table()
         table.set_border_width(5)
         table.set_col_spacings(10)
         table.set_row_spacings(10)
         f.add(table)
-        self.torrent_save_in_folder_rb = gtk.RadioButton(
+        self.torrent_save_in_folder_rb = Gtk.RadioButton(
             None, _("SAVE_IN_FOLDER"))
         table.attach(self.torrent_save_in_folder_rb, 0, 1,
-                     0, 1, xoptions=gtk.FILL, yoptions=0)
-        self.torrent_save_in_folder_fs = gtk.FileChooserButton(
+                     0, 1, xoptions=Gtk.FILL, yoptions=0)
+        self.torrent_save_in_folder_fs = Gtk.FileChooserButton(
             _("SELECT_FOLDER"))
         self.torrent_save_in_folder_fs.set_action(
-            gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+            Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
         table.attach(self.torrent_save_in_folder_fs, 1, 2, 0, 1, yoptions=0)
         self.torrent_save_in_folder_fs.set_sensitive(False)
-        self.torrent_use_standard_app_rb = gtk.RadioButton(
+        self.torrent_use_standard_app_rb = Gtk.RadioButton(
             self.torrent_save_in_folder_rb, _("USE_STANDARD_APP"))
         table.attach(self.torrent_use_standard_app_rb, 0,
-                     1, 1, 2, xoptions=gtk.FILL, yoptions=0)
-        self.torrent_use_standard_app_cb = gtk.ComboBox()
+                     1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
+        self.torrent_use_standard_app_cb = Gtk.ComboBox()
         table.attach(self.torrent_use_standard_app_cb, 1, 2, 1, 2, yoptions=0)
-        self.torrent_use_standard_app_cb_ls = gtk.ListStore(str, str)
+        self.torrent_use_standard_app_cb_ls = Gtk.ListStore(str, str)
         self.torrent_use_standard_app_cb.set_model(
             self.torrent_use_standard_app_cb_ls)
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         self.torrent_use_standard_app_cb.pack_start(r)
         self.torrent_use_standard_app_cb.add_attribute(r, "text", 1)
         self.torrent_use_standard_app_cb.set_sensitive(False)
@@ -204,13 +206,13 @@ class GeneralPreferencesPage(gtk.VBox):
         for i in range(len(self.torrent_use_standard_app_cb_ls)):
             if self.torrent_use_standard_app_cb_ls[i][0] == app.config["torrent_standard_app"]:
                 self.torrent_use_standard_app_cb.set_active(i)
-        self.torrent_use_custom_app_rb = gtk.RadioButton(
+        self.torrent_use_custom_app_rb = Gtk.RadioButton(
             self.torrent_save_in_folder_rb, _("USE_CUSTOM_APP"))
         table.attach(self.torrent_use_custom_app_rb, 0, 1,
-                     2, 3, xoptions=gtk.FILL, yoptions=0)
-        self.torrent_use_custom_app_entry = gtk.Entry()
+                     2, 3, xoptions=Gtk.FILL, yoptions=0)
+        self.torrent_use_custom_app_entry = Gtk.Entry()
         table.attach(self.torrent_use_custom_app_entry, 1,
-                     2, 2, 3, xoptions=gtk.FILL, yoptions=0)
+                     2, 2, 3, xoptions=Gtk.FILL, yoptions=0)
         self.torrent_use_custom_app_entry.set_text(
             app.config['torrent_custom_app'])
         self.torrent_use_custom_app_entry.set_sensitive(False)
@@ -234,45 +236,45 @@ class GeneralPreferencesPage(gtk.VBox):
         else:
             self.torrent_save_in_folder_fs.set_current_folder(os.getenv('HOME'))
             app.config['torrent_save_folder'] = os.getenv('HOME')
-        f = gtk.Frame()
-        l = gtk.Label()
+        f = Gtk.Frame()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("PLUGINS_UPDATES"))
         f.set_label_widget(l)
         self.pack_start(f, False, False)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         f.add(vbox)
         vbox.set_border_width(5)
         vbox.set_spacing(10)
-        self.check_plugins_updates = gtk.CheckButton(
+        self.check_plugins_updates = Gtk.CheckButton(
             _("CHECK_PLUGINS_UPDATES"))
         vbox.pack_start(self.check_plugins_updates, False, False)
         self.check_plugins_updates.set_active(
             app.config["check_plugins_updates"])
         self.check_plugins_updates.connect(
             "toggled", self.on_check_plugins_updates_toggled)
-        b = gtk.Button(_("CHECK_NOW"))
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_REFRESH, gtk.ICON_SIZE_BUTTON)
+        b = Gtk.Button(_("CHECK_NOW"))
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.ICON_SIZE_BUTTON)
         b.set_image(img)
         vbox.pack_start(b, False, False)
         b.connect('clicked', lambda w: self._app.check_plugin_updates())
-        f = gtk.Frame()
-        l = gtk.Label()
+        f = Gtk.Frame()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SEARCH_OPTIONS"))
         f.set_label_widget(l)
         self.pack_start(f, False, False)
-        table = gtk.Table()
+        table = Gtk.Table()
         f.add(table)
         table.set_border_width(5)
         table.set_col_spacings(10)
         table.set_row_spacings(10)
-        self.stop_search_when_nb_results_reaches_cb = gtk.CheckButton(
+        self.stop_search_when_nb_results_reaches_cb = Gtk.CheckButton(
             _("STOP_SEARCH_WHEN_NB_RESULTS_REACHES"))
         self.stop_search_when_nb_results_reaches_cb.set_active(
             app.config["stop_search_when_nb_results_reaches_enabled"])
         table.attach(self.stop_search_when_nb_results_reaches_cb,
-                     0, 1, 0, 1, xoptions=gtk.FILL, yoptions=0)
-        self.stop_search_when_nb_results_reaches_nb = gtk.SpinButton()
+                     0, 1, 0, 1, xoptions=Gtk.FILL, yoptions=0)
+        self.stop_search_when_nb_results_reaches_nb = Gtk.SpinButton()
         self.stop_search_when_nb_results_reaches_nb.set_range(10, 10000)
         self.stop_search_when_nb_results_reaches_nb.set_increments(10, 100)
         table.attach(self.stop_search_when_nb_results_reaches_nb,
@@ -317,34 +319,34 @@ class GeneralPreferencesPage(gtk.VBox):
             self.torrent_use_custom_app_entry.set_sensitive(True)
 
 
-class PluginsPreferencesPage(gtk.ScrolledWindow):
+class PluginsPreferencesPage(Gtk.ScrolledWindow):
     def __init__(self, app):
-        gtk.ScrolledWindow.__init__(self)
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.tv = gtk.TreeView()
-        self.tv.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        Gtk.ScrolledWindow.__init__(self)
+        self.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        self.tv = Gtk.TreeView()
+        self.tv.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
         self.add(self.tv)
-        self.lb = gtk.ListStore(object, str)
+        self.lb = Gtk.ListStore(object, str)
         self.tv.set_model(self.lb)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("PLUGIN_NAME"), r, text=1)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("PLUGIN_NAME"), r, text=1)
         self.tv.append_column(col)
-        r = gtk.CellRendererToggle()
-        col = gtk.TreeViewColumn(_("ENABLE"), r)
+        r = Gtk.CellRendererToggle()
+        col = Gtk.TreeViewColumn(_("ENABLE"), r)
         self.tv.append_column(col)
         r.set_property("activatable", True)
         r.connect('toggled', self._on_enabled_toggled)
         col.set_cell_data_func(r, self._enabled_data_func)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("LAST_UPDATE"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("LAST_UPDATE"), r)
         self.tv.append_column(col)
         col.set_cell_data_func(r, self._last_update_data_func)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("URL"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("URL"), r)
         self.tv.append_column(col)
         col.set_cell_data_func(r, self._url_data_func)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("AUTHOR"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("AUTHOR"), r)
         self.tv.append_column(col)
         col.set_cell_data_func(r, self._author_data_func)
         l = []
@@ -361,9 +363,9 @@ class PluginsPreferencesPage(gtk.ScrolledWindow):
         if data:
             path, column, x, y = data
             if column.get_property('title') == _("URL"):
-                self.tv.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.HAND2))
+                self.tv.window.set_cursor(Gtk.gdk.Cursor(Gtk.gdk.HAND2))
                 return
-        self.tv.window.set_cursor(gtk.gdk.Cursor(gtk.gdk.ARROW))
+        self.tv.window.set_cursor(Gtk.gdk.Cursor(Gtk.gdk.ARROW))
 
     def _url_data_func(self, column, cell, model, iter):
         plugin = model.get_value(iter, 0)
@@ -401,12 +403,12 @@ class PluginsPreferencesPage(gtk.ScrolledWindow):
                 else:
                     sel = [path[0]]
                 if sel:
-                    m = gtk.Menu()
-                    item = gtk.MenuItem(_("ENABLE"))
+                    m = Gtk.Menu()
+                    item = Gtk.MenuItem(_("ENABLE"))
                     m.add(item)
                     item.connect('activate', lambda w,
                                  s: self.enable_items(s), sel)
-                    item = gtk.MenuItem(_("DISABLE"))
+                    item = Gtk.MenuItem(_("DISABLE"))
                     m.add(item)
                     item.connect('activate', lambda w,
                                  s: self.disable_items(s), sel)
@@ -436,29 +438,29 @@ class PluginsPreferencesPage(gtk.ScrolledWindow):
         cell.set_property('active', plugin.enabled)
 
 
-class PreferencesDialog(gtk.Dialog):
+class PreferencesDialog(Gtk.Dialog):
     def __init__(self, app):
         self._app = app
-        self._accel_group = gtk.AccelGroup()
-        gtk.Dialog.__init__(self, _("PREFERENCES"), app)
+        self._accel_group = Gtk.AccelGroup()
+        Gtk.Dialog.__init__(self, _("PREFERENCES"), app)
         self.resize(app.config['config_dialog_width'],
                     app.config['config_dialog_height'])
         self.add_accel_group(self._accel_group)
-        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
-        self.help_button = gtk.Button(stock=gtk.STOCK_HELP)
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.RESPONSE_CLOSE)
+        self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
         self.help_button.add_accelerator(
-            "clicked", self._accel_group, gtk.keysyms.F1, 0, gtk.ACCEL_VISIBLE)
+            "clicked", self._accel_group, Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
         self.action_area.add(self.help_button)
         self.action_area.set_child_secondary(self.help_button, True)
         self.set_icon_name("gtk-preferences")
-        notebook = gtk.Notebook()
+        notebook = Gtk.Notebook()
         notebook.set_border_width(5)
         self.child.add(notebook)
         self.general_page = GeneralPreferencesPage(app)
         notebook.append_page(
-            self.general_page, gtk.Label(_('GENERAL_OPTIONS')))
+            self.general_page, Gtk.Label(_('GENERAL_OPTIONS')))
         notebook.append_page(PluginsPreferencesPage(
-            app), gtk.Label(_('SEARCH_PLUGINS')))
+            app), Gtk.Label(_('SEARCH_PLUGINS')))
         self.help_button.connect(
             "clicked", lambda w, n: self.show_help(n), notebook)
         self.connect('configure_event', self._on_configure_event)
@@ -475,6 +477,6 @@ class PreferencesDialog(gtk.Dialog):
 
     def run(self):
         self.show_all()
-        gtk.Dialog.run(self)
+        Gtk.Dialog.run(self)
         self._app.config['torrent_save_folder'] = self.general_page.torrent_save_in_folder_fs.get_filename()
         self.hide()

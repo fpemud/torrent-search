@@ -49,8 +49,7 @@ def init_dbus():
 
 def try_dbus_connection(bus, search_pattern):
     try:
-        proxy_obj = bus.get_object(
-            'org.freedesktop.TorrentSearch', '/org/freedesktop/TorrentSearchObject')
+        proxy_obj = bus.get_object('org.freedesktop.TorrentSearch', '/org/freedesktop/TorrentSearchObject')
         iface = dbus.Interface(proxy_obj, 'org.freedesktop.TorrentSearchIFace')
         iface.run_search(search_pattern)
         return True
@@ -61,7 +60,6 @@ def try_dbus_connection(bus, search_pattern):
 def open_dbus_controller(bus, app):
     try:
         bus_name = dbus.service.BusName('org.freedesktop.TorrentSearch', bus)
-        dbusControler = DbusControler(
-            app, bus_name, '/org/freedesktop/TorrentSearchObject')
+        dbusControler = DbusControler(app, bus_name, '/org/freedesktop/TorrentSearchObject')
     except:
         pass

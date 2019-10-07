@@ -18,40 +18,33 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-try:
-   import _winreg, locale
-   locale.setlocale(locale.LC_ALL, "")
-   lang_code=locale.getlocale()[0][:2].lower()
-   key=_winreg.OpenKey(_winreg.HKEY_LOCAL_MACHINE, "SYSTEM\\CurrentControlSet\\Control\\Session Manager\\Environment", 0, _winreg.KEY_SET_VALUE)
-   _winreg.SetValueEx(key, "LANGUAGE", 0, _winreg.REG_SZ, lang_code)
-   _winreg.FlushKey(key)
-   _winreg.CloseKey(key)
-except:
-   pass
 
 from TorrentSearch import clp as optparse
 from TorrentSearch import Application
 from TorrentSearch.informations import *
 from TorrentSearch.DBusHandler import *
-import sys, os, tempfile, locale
+import sys
+import os
+import tempfile
+import locale
 from TorrentSearch.constants import APPDATA_PATH
 
 sys.stderr = open(tempfile.mktemp(), "w")
 
-if __name__=='__main__':
-   optparser=optparse.OptionParser()
-   options,args=optparser.parse_args()
-   if options.show_help:
-      optparser.print_help()
-      exit(0)
-   if options.show_version:
-      optparser.print_version()
-      exit(0)
-   if args:
-      optparser.print_help()
-      exit(1)
-   bus=init_dbus()
-   if not try_dbus_connection(bus, options.search_pattern):
-      app=Application(options)
-      open_dbus_controller(bus,app)
-      app.run()
+if __name__ == '__main__':
+    optparser = optparse.OptionParser()
+    options, args = optparser.parse_args()
+    if options.show_help:
+        optparser.print_help()
+        exit(0)
+    if options.show_version:
+        optparser.print_version()
+        exit(0)
+    if args:
+        optparser.print_help()
+        exit(1)
+    bus = init_dbus()
+    if not try_dbus_connection(bus, options.search_pattern):
+        app = Application(options)
+        open_dbus_controller(bus, app)
+        app.run()

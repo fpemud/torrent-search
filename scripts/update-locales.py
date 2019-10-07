@@ -21,7 +21,9 @@
 import os
 import gnomevfs
 import gettext
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import libxml2
 from TorrentSearch import htmltools
 
@@ -94,34 +96,34 @@ def compute_po_file(lang):
     os.system('msgfmt "%s" -o "%s"' % (src, dest))
 
 
-class TranslateDialog(gtk.Dialog):
+class TranslateDialog(Gtk.Dialog):
     def __init__(self):
-        gtk.Dialog.__init__(self, "Translation")
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        table = gtk.Table()
+        Gtk.Dialog.__init__(self, "Translation")
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        table = Gtk.Table()
         self.child.add(table)
         table.set_border_width(5)
         table.set_col_spacings(10)
         table.set_row_spacings(10)
-        l = gtk.Label('Language')
+        l = Gtk.Label('Language')
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=0)
-        self.language = gtk.Label()
+        table.attach(l, 0, 1, 0, 1, xoptions=Gtk.FILL, yoptions=0)
+        self.language = Gtk.Label()
         table.attach(self.language, 1, 2, 0, 1, yoptions=0)
         self.language.set_alignment(0, 0.5)
-        l = gtk.Label('Key')
+        l = Gtk.Label('Key')
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=0)
-        self.key = gtk.Label()
+        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
+        self.key = Gtk.Label()
         self.key.set_alignment(0, 0.5)
         table.attach(self.key, 1, 2, 1, 2, yoptions=0)
-        l = gtk.Label('Translation')
+        l = Gtk.Label('Translation')
         l.set_alignment(0, 0)
-        table.attach(l, 0, 1, 2, 3, xoptions=gtk.FILL)
-        self.translation = gtk.TextView()
-        scw = gtk.ScrolledWindow()
-        scw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        table.attach(l, 0, 1, 2, 3, xoptions=Gtk.FILL)
+        self.translation = Gtk.TextView()
+        scw = Gtk.ScrolledWindow()
+        scw.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
         scw.add(self.translation)
         scw.set_size_request(400, 300)
         table.attach(scw, 1, 2, 2, 3, yoptions=0)
@@ -131,7 +133,7 @@ class TranslateDialog(gtk.Dialog):
         self.key.set_text(key)
         self.translation.get_buffer().set_text("")
         self.show_all()
-        if gtk.Dialog.run(self) == gtk.RESPONSE_OK:
+        if Gtk.Dialog.run(self) == Gtk.RESPONSE_OK:
             siter = self.translation.get_buffer().get_start_iter()
             eiter = self.translation.get_buffer().get_end_iter()
             res = self.translation.get_buffer().get_text(siter, eiter)
@@ -171,7 +173,7 @@ if __name__ == '__main__':
             f.write(add_data)
             f.close()
         compute_po_file(i)
-    d = gtk.MessageDialog()
+    d = Gtk.MessageDialog()
     d.set_markup("<span size='large'><b>Done.</b></span>")
-    d.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+    d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
     d.run()

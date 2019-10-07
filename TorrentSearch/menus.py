@@ -18,57 +18,59 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk
-import gtk.keysyms
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+from gi.repository import Gtk.keysyms
 import webbrowser
 from .constants import *
 
 
-class HelpMenu(gtk.MenuItem):
+class HelpMenu(Gtk.MenuItem):
     def __init__(self, app):
-        gtk.MenuItem.__init__(self, _("HELP_MENU_LABEL"))
-        menu = gtk.Menu()
+        Gtk.MenuItem.__init__(self, _("HELP_MENU_LABEL"))
+        menu = Gtk.Menu()
         self.set_submenu(menu)
-        item = gtk.ImageMenuItem(gtk.STOCK_HELP)
+        item = Gtk.ImageMenuItem(Gtk.STOCK_HELP)
         menu.add(item)
         item.connect('activate', lambda w: app.show_help())
         app.add_accelerator(
-            item, "activate", gtk.keysyms.F1, 0, gtk.ACCEL_VISIBLE)
-        item = gtk.MenuItem(_("CONTACT"))
+            item, "activate", Gtk.keysyms.F1, 0, Gtk.ACCEL_VISIBLE)
+        item = Gtk.MenuItem(_("CONTACT"))
         menu.add(item)
-        submenu = gtk.Menu()
+        submenu = Gtk.Menu()
         item.set_submenu(submenu)
-        item = gtk.MenuItem(_("REPORT_BUG"))
+        item = Gtk.MenuItem(_("REPORT_BUG"))
         submenu.add(item)
         item.connect('activate', lambda w: webbrowser.open(BUG_REPORT_PAGE))
-        item = gtk.MenuItem(_("REQUEST_FEATURE"))
+        item = Gtk.MenuItem(_("REQUEST_FEATURE"))
         submenu.add(item)
         item.connect('activate', lambda w: webbrowser.open(
             FEATURE_REQUEST_PAGE))
-        item = gtk.ImageMenuItem(gtk.STOCK_ABOUT)
+        item = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT)
         menu.add(item)
         item.connect('activate', lambda w: app.show_about_dialog())
 
 
-class FileMenu(gtk.MenuItem):
+class FileMenu(Gtk.MenuItem):
     def __init__(self, app):
-        gtk.MenuItem.__init__(self, _("FILE_MENU_LABEL"))
-        menu = gtk.Menu()
+        Gtk.MenuItem.__init__(self, _("FILE_MENU_LABEL"))
+        menu = Gtk.Menu()
         self.set_submenu(menu)
-        item = gtk.ImageMenuItem(gtk.STOCK_QUIT)
+        item = Gtk.ImageMenuItem(Gtk.STOCK_QUIT)
         menu.add(item)
         item.connect('activate', lambda w: app.quit())
         app.add_accelerator(item, "activate", ord(
-            'q'), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+            'q'), Gtk.gdk.CONTROL_MASK, Gtk.ACCEL_VISIBLE)
 
 
-class EditMenu(gtk.MenuItem):
+class EditMenu(Gtk.MenuItem):
     def __init__(self, app):
-        gtk.MenuItem.__init__(self, _("EDIT_MENU_LABEL"))
-        menu = gtk.Menu()
+        Gtk.MenuItem.__init__(self, _("EDIT_MENU_LABEL"))
+        menu = Gtk.Menu()
         self.set_submenu(menu)
-        item = gtk.ImageMenuItem(gtk.STOCK_PREFERENCES)
+        item = Gtk.ImageMenuItem(Gtk.STOCK_PREFERENCES)
         menu.add(item)
         item.connect('activate', lambda w: app.show_preferences_dialog())
         app.add_accelerator(item, "activate", ord(
-            'p'), gtk.gdk.CONTROL_MASK, gtk.ACCEL_VISIBLE)
+            'p'), Gtk.gdk.CONTROL_MASK, Gtk.ACCEL_VISIBLE)

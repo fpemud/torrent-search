@@ -18,7 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import _thread
 import gobject
 import http.client
@@ -61,32 +63,32 @@ class DownloadItem(object):
     status_label = property(_get_status_label)
 
 
-class DownloadManager(gtk.VBox):
+class DownloadManager(Gtk.VBox):
     def __init__(self, app):
-        gtk.VBox.__init__(self)
+        Gtk.VBox.__init__(self)
         self.set_size_request(app.config["download_manager_width"], 1)
         self.connect("size_allocate", self.on_size_allocate)
         self._app = app
-        scw = gtk.ScrolledWindow()
+        scw = Gtk.ScrolledWindow()
         self.pack_start(scw)
-        scw.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
-        self.tv = gtk.TreeView()
+        scw.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
+        self.tv = Gtk.TreeView()
         self.tv.connect('button_press_event', self.on_tv_button_press_event)
         scw.add(self.tv)
-        self.lb = gtk.ListStore(object, int)
+        self.lb = Gtk.ListStore(object, int)
         self.tv.set_model(self.lb)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("TITLE"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("TITLE"), r)
         col.set_cell_data_func(r, self.title_data_func)
         self.tv.append_column(col)
-        col = gtk.TreeViewColumn(_("STATUS"))
+        col = Gtk.TreeViewColumn(_("STATUS"))
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         col.pack_start(r, False)
         col.set_cell_data_func(r, self.status_data_func)
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         col.pack_start(r, False)
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         col.pack_start(r, False)
         gobject.timeout_add(50, self._check)
 
@@ -105,50 +107,50 @@ class DownloadManager(gtk.VBox):
 
     def on_tv_button_press_event(self, widget, event):
         if event.button == 3:
-            m = gtk.Menu()
+            m = Gtk.Menu()
             data = widget.get_path_at_pos(int(event.x), int(event.y))
             if data:
                 path, column, x, y = data
                 item = self.lb.get_value(self.lb.get_iter(path), 0)
                 if item.status == DOWNLOAD_TORRENT_STATUS_FAILED:
-                    i = gtk.ImageMenuItem(gtk.STOCK_REMOVE)
+                    i = Gtk.ImageMenuItem(Gtk.STOCK_REMOVE)
                     m.add(i)
                     i.connect("activate", lambda w,
                               p: self.remove_at_path(p), path)
-                    i = gtk.ImageMenuItem(_("RETRY_MENU_ITEM"))
-                    img = gtk.Image()
-                    img.set_from_stock(gtk.STOCK_REDO, gtk.ICON_SIZE_MENU)
+                    i = Gtk.ImageMenuItem(_("RETRY_MENU_ITEM"))
+                    img = Gtk.Image()
+                    img.set_from_stock(Gtk.STOCK_REDO, Gtk.ICON_SIZE_MENU)
                     i.set_image(img)
                     m.add(i)
                     i.connect("activate", lambda w,
                               p: self.redo_at_path(p), path)
                 if item.status == DOWNLOAD_TORRENT_STATUS_WAITING:
-                    i = gtk.ImageMenuItem(gtk.STOCK_CANCEL)
+                    i = Gtk.ImageMenuItem(Gtk.STOCK_CANCEL)
                     m.add(i)
                     i.connect('activate', lambda w,
                               p: self.cancel_at_path(p), path)
             if m.get_children():
-                m.add(gtk.SeparatorMenuItem())
-            i = gtk.ImageMenuItem(_("RETRY_ALL_FAILED"))
-            img = gtk.Image()
-            img.set_from_stock(gtk.STOCK_REDO, gtk.ICON_SIZE_MENU)
+                m.add(Gtk.SeparatorMenuItem())
+            i = Gtk.ImageMenuItem(_("RETRY_ALL_FAILED"))
+            img = Gtk.Image()
+            img.set_from_stock(Gtk.STOCK_REDO, Gtk.ICON_SIZE_MENU)
             i.set_image(img)
             i.connect('activate', lambda w: self.retry_all())
             m.add(i)
-            i = gtk.ImageMenuItem(_("CANCEL_ALL_FAILED"))
-            img = gtk.Image()
-            img.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_MENU)
+            i = Gtk.ImageMenuItem(_("CANCEL_ALL_FAILED"))
+            img = Gtk.Image()
+            img.set_from_stock(Gtk.STOCK_CANCEL, Gtk.ICON_SIZE_MENU)
             i.set_image(img)
             i.connect('activate', lambda w: self.cancel_all_failed())
             m.add(i)
-            i = gtk.ImageMenuItem(_("CANCEL_ALL"))
-            img = gtk.Image()
-            img.set_from_stock(gtk.STOCK_CANCEL, gtk.ICON_SIZE_MENU)
+            i = Gtk.ImageMenuItem(_("CANCEL_ALL"))
+            img = Gtk.Image()
+            img.set_from_stock(Gtk.STOCK_CANCEL, Gtk.ICON_SIZE_MENU)
             i.set_image(img)
             i.connect('activate', lambda w: self.cancel_all())
             m.add(i)
-            m.add(gtk.SeparatorMenuItem())
-            i = gtk.ImageMenuItem(gtk.STOCK_HELP)
+            m.add(Gtk.SeparatorMenuItem())
+            i = Gtk.ImageMenuItem(Gtk.STOCK_HELP)
             m.add(i)
             i.connect('activate', lambda w: self.show_help())
             m.show_all()

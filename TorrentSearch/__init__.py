@@ -18,13 +18,21 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import re
+import gi
+import sys
+import time
+import tempfile
+import datetime
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
+
 from . import lang
-import gtk
 import AboutDialog
 import menus
 import gobject
 import config
-import os
 import imp
 import Plugin
 import TorrentSearch
@@ -33,51 +41,42 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import httplib2
-import tempfile
-import sys
 import downloads
 import icontheme
-import re
 import locale
 import auth
-import program_version
-import datetime
-import time
 import categories
 import HttpQueue
-import _codecs
 import webbrowser
 from .informations import *
 from .constants import *
 from .exceptions import *
 
-DOWNLOAD_URI = "http://sourceforge.net/projects/torrent-search/files/"
 
-
-class MainMenu(gtk.MenuBar):
+class MainMenu(Gtk.MenuBar):
     def __init__(self, app):
-        gtk.MenuBar.__init__(self)
+        Gtk.MenuBar.__init__(self)
         self.add(menus.FileMenu(app))
         self.add(menus.EditMenu(app))
         self.add(menus.HelpMenu(app))
 
 
-class Searchbar(gtk.HBox):
+class Searchbar(Gtk.HBox):
     def __init__(self, app):
-        gtk.HBox.__init__(self)
+        Gtk.HBox.__init__(self)
         self._app = app
         self.set_spacing(10)
-        self.pack_start(gtk.Label(_("SEARCH")), False, False)
-        self.search_entry = gtk.Entry()
+        self.pack_start(Gtk.Label(_("SEARCH")), False, False)
+        self.search_entry = Gtk.Entry()
         self.pack_start(self.search_entry)
-        self.search_button = gtk.Button(stock=gtk.STOCK_FIND)
+        self.search_button = Gtk.Button(stock=Gtk.STOCK_FIND)
         self.pack_start(self.search_button, False, False)
-        self.stop_button = gtk.Button(stock=gtk.STOCK_STOP)
+        self.stop_button = Gtk.Button(stock=Gtk.STOCK_STOP)
         self.pack_start(self.stop_button, False, False)
         self.stop_button.set_sensitive(False)
-        self.clear_button = gtk.Button(_("CLEAR_HISTORY"))
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_CLEAR, gtk.ICON_SIZE_BUTTON)
+        self.clear_button = Gtk.Button(_("CLEAR_HISTORY"))
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_CLEAR, Gtk.ICON_SIZE_BUTTON)
         self.clear_button.set_image(img)
         self.pack_start(self.clear_button, False, False)
         self.clear_button.connect("clicked", lambda w: self.clear_history())
@@ -85,9 +84,9 @@ class Searchbar(gtk.HBox):
         self.search_entry.connect('activate', lambda w: self.run_search())
         self.stop_button.connect(
             'clicked', lambda w, a: a.stop_search(a.search_plugins), app)
-        self.search_completion = gtk.EntryCompletion()
+        self.search_completion = Gtk.EntryCompletion()
         self.search_entry.set_completion(self.search_completion)
-        self.completion_lb = gtk.ListStore(str)
+        self.completion_lb = Gtk.ListStore(str)
         self.search_completion.set_model(self.completion_lb)
         self.search_completion.set_text_column(0)
         self.update_completion()
@@ -135,84 +134,84 @@ class Searchbar(gtk.HBox):
             self.update_completion()
 
 
-class ResultsWidget(gtk.ScrolledWindow):
+class ResultsWidget(Gtk.ScrolledWindow):
     def __init__(self, app):
-        gtk.ScrolledWindow.__init__(self)
+        Gtk.ScrolledWindow.__init__(self)
         self._sort_column = None
         self._sort_order = None
         self._stars_icons = {0: None}
         for i in range(1, 6):
             try:
-                self._stars_icons[i] = gtk.gdk.pixbuf_new_from_file(os.path.join(
+                self._stars_icons[i] = Gtk.gdk.pixbuf_new_from_file(os.path.join(
                     app.options.share_dir, "torrent-search", "icons", "stars", "%d.png" % i))
             except:
                 self._stars_icons[i] = None
-        self.set_policy(gtk.POLICY_AUTOMATIC, gtk.POLICY_AUTOMATIC)
+        self.set_policy(Gtk.POLICY_AUTOMATIC, Gtk.POLICY_AUTOMATIC)
         self._app = app
         self._hide_zero_seeders = app.config["hide_zero_seeders"]
-        self.tv = gtk.TreeView()
+        self.tv = Gtk.TreeView()
         self.add(self.tv)
-        self.lb = gtk.ListStore(
-            object, str, str, str, int, int, str, int, gtk.gdk.Pixbuf, str, str, float)
+        self.lb = Gtk.ListStore(
+            object, str, str, str, int, int, str, int, Gtk.gdk.Pixbuf, str, str, float)
         self.filter_lb = self.lb.filter_new()
         self.filter_lb.set_visible_func(self.get_must_show)
         self.duplicates_filter = self.filter_lb.filter_new()
         self.duplicates_filter.set_visible_func(self.has_no_better_duplicate)
         self.tv.set_model(self.duplicates_filter)
-        col = gtk.TreeViewColumn(_("NAME"))
-        r = gtk.CellRendererPixbuf()
+        col = Gtk.TreeViewColumn(_("NAME"))
+        r = Gtk.CellRendererPixbuf()
         col.pack_start(r)
         col.add_attribute(r, "pixbuf", 8)
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         col.pack_start(r)
         col.add_attribute(r, "text", 1)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 1)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("CATEGORY"), r, text=9)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("CATEGORY"), r, text=9)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 9)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("DATE"), r, text=2)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("DATE"), r, text=2)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 2)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("SIZE"), r, text=3)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("SIZE"), r, text=3)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 3)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("SEEDERS"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("SEEDERS"), r)
         col.set_cell_data_func(r, self.seeders_data_func)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 4)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("LEECHERS"), r)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("LEECHERS"), r)
         col.set_cell_data_func(r, self.leechers_data_func)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 5)
         self.tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("COMMENTS"), r, text=10)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("COMMENTS"), r, text=10)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 10)
         self.tv.append_column(col)
-        """r=gtk.CellRendererPixbuf()
-      col=gtk.TreeViewColumn(_("RATE"),r)
+        """r=Gtk.CellRendererPixbuf()
+      col=Gtk.TreeViewColumn(_("RATE"),r)
       col.set_resizable(True)
       col.set_cell_data_func(r,self.rate_data_func)
       col.connect("clicked",self.on_col_clicked,11)
       self.tv.append_column(col)"""
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("PLUGIN"), r, text=6)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("PLUGIN"), r, text=6)
         col.set_resizable(True)
         col.connect("clicked", self.on_col_clicked, 6)
         self.tv.append_column(col)
-        col = gtk.TreeViewColumn()
+        col = Gtk.TreeViewColumn()
         self.tv.append_column(col)
         self.tv.connect('row_activated', self.on_tv_row_activated)
         self.tv.set_headers_clickable(True)
@@ -222,7 +221,7 @@ class ResultsWidget(gtk.ScrolledWindow):
         self.lb.set_sort_func(3, self.size_cmp_func, 3)
         self.lb.set_sort_func(10, self.nb_comments_cmp_func, 10)
         self.tv.connect('button_press_event', self.on_tv_button_press_event)
-        self.tv.get_selection().set_mode(gtk.SELECTION_MULTIPLE)
+        self.tv.get_selection().set_mode(Gtk.SELECTION_MULTIPLE)
         if app.config["sort_column"] != -1:
             cid = app.config["sort_column"]
             if cid == 1:
@@ -237,9 +236,9 @@ class ResultsWidget(gtk.ScrolledWindow):
                 cindex = cid
             self._sort_column = self.tv.get_column(cindex)
             if app.config["sort_desc"]:
-                self._sort_order = gtk.SORT_DESCENDING
+                self._sort_order = Gtk.SORT_DESCENDING
             else:
-                self._sort_order = gtk.SORT_ASCENDING
+                self._sort_order = Gtk.SORT_ASCENDING
             self.lb.set_sort_column_id(cid, self._sort_order)
             self._sort_column.set_sort_order(self._sort_order)
             self._sort_column.set_sort_indicator(True)
@@ -278,7 +277,7 @@ class ResultsWidget(gtk.ScrolledWindow):
 
     def on_tv_button_press_event(self, widget, event):
         if event.button == 3:
-            m = gtk.Menu()
+            m = Gtk.Menu()
             data = widget.get_path_at_pos(int(event.x), int(event.y))
             sel = []
             for i in self.tv.get_selection().get_selected_rows()[1]:
@@ -296,26 +295,26 @@ class ResultsWidget(gtk.ScrolledWindow):
                 else:
                     sel = []
             if sel:
-                i = gtk.ImageMenuItem(_("DOWNLOAD_MENU_ITEM"))
+                i = Gtk.ImageMenuItem(_("DOWNLOAD_MENU_ITEM"))
                 m.add(i)
-                img = gtk.Image()
+                img = Gtk.Image()
                 img.set_from_icon_name(
-                    "torrent-search-download", gtk.ICON_SIZE_MENU)
+                    "torrent-search-download", Gtk.ICON_SIZE_MENU)
                 i.set_image(img)
                 i.connect('activate', lambda w, s: self.download_sel(s), sel)
                 if len(sel) == 1:
-                    i = gtk.ImageMenuItem(gtk.STOCK_INFO)
+                    i = Gtk.ImageMenuItem(Gtk.STOCK_INFO)
                     m.add(i)
                     i.connect('activate', lambda w,
                               s: self.show_torrent_infos(s), sel)
                     if self.lb[sel[0]][0].orig_url:
-                        i = gtk.ImageMenuItem(_("OPEN_WEB_PAGE"))
+                        i = Gtk.ImageMenuItem(_("OPEN_WEB_PAGE"))
                         m.add(i)
                         i.connect('activate', lambda w, u: self.open_web_page(
                             u), self.lb[sel[0]][0].orig_url)
             if m.get_children():
-                m.add(gtk.SeparatorMenuItem())
-            i = gtk.ImageMenuItem(gtk.STOCK_HELP)
+                m.add(Gtk.SeparatorMenuItem())
+            i = Gtk.ImageMenuItem(Gtk.STOCK_HELP)
             m.add(i)
             i.connect('activate', lambda w: self.show_help())
             m.show_all()
@@ -453,27 +452,27 @@ class ResultsWidget(gtk.ScrolledWindow):
         if self._sort_column:
             self._sort_column.set_sort_indicator(False)
         if column == self._sort_column:
-            if self._sort_order == gtk.SORT_ASCENDING:
-                self._sort_order = gtk.SORT_DESCENDING
-                sort_order = gtk.SORT_DESCENDING
+            if self._sort_order == Gtk.SORT_ASCENDING:
+                self._sort_order = Gtk.SORT_DESCENDING
+                sort_order = Gtk.SORT_DESCENDING
                 column.set_sort_indicator(True)
             elif self._sort_order == None:
-                self._sort_order = gtk.SORT_ASCENDING
-                sort_order = gtk.SORT_ASCENDING
+                self._sort_order = Gtk.SORT_ASCENDING
+                sort_order = Gtk.SORT_ASCENDING
                 column.set_sort_indicator(True)
             else:
                 self._sort_order = None
                 self._sort_column = None
-                sort_order = gtk.SORT_ASCENDING
+                sort_order = Gtk.SORT_ASCENDING
                 cid = 7
         else:
-            self._sort_order = gtk.SORT_ASCENDING
-            sort_order = gtk.SORT_ASCENDING
+            self._sort_order = Gtk.SORT_ASCENDING
+            sort_order = Gtk.SORT_ASCENDING
             self._sort_column = column
             column.set_sort_indicator(True)
         if self._sort_column:
             self._app.config["sort_column"] = cid
-            self._app.config["sort_desc"] = (sort_order == gtk.SORT_DESCENDING)
+            self._app.config["sort_desc"] = (sort_order == Gtk.SORT_DESCENDING)
         else:
             self._app.config["sort_column"] = -1
         self.lb.set_sort_column_id(cid, sort_order)
@@ -516,12 +515,12 @@ class ResultsWidget(gtk.ScrolledWindow):
         return len(self.lb)
 
 
-class DateSelectionDialog(gtk.Window):
+class DateSelectionDialog(Gtk.Window):
     def __init__(self, entry):
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
         self.set_decorated(False)
         self.set_deletable(False)
-        self.calendar = gtk.Calendar()
+        self.calendar = Gtk.Calendar()
         self.add(self.calendar)
         self.connect('focus_out_event', lambda w, e: self.hide())
         self._entry = entry
@@ -543,12 +542,12 @@ class DateSelectionDialog(gtk.Window):
         self.show_all()
 
 
-class DateSelectionEntry(gtk.Entry):
+class DateSelectionEntry(Gtk.Entry):
     def __init__(self):
-        gtk.Entry.__init__(self)
+        Gtk.Entry.__init__(self)
         self.set_editable(False)
         self.calendar = DateSelectionDialog(self)
-        self.unset_flags(gtk.CAN_FOCUS)
+        self.unset_flags(Gtk.CAN_FOCUS)
         self.connect('button_press_event', self.on_click)
         self.set_date(self.calendar.get_date())
 
@@ -572,77 +571,77 @@ class DateSelectionEntry(gtk.Entry):
                 self.calendar.run()
 
 
-class SearchOptionsBox(gtk.Expander):
+class SearchOptionsBox(Gtk.Expander):
     def __init__(self, app):
-        gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
+        Gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
         self.set_expanded(app.config["search_options_expanded"])
         self.connect("notify::expanded", self.on_expand_toggled)
         self._app = app
-        mainbox = gtk.VBox()
+        mainbox = Gtk.VBox()
         self.add(mainbox)
         mainbox.set_border_width(5)
         mainbox.set_spacing(10)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(10)
         mainbox.pack_start(hbox, False, False)
-        self.hide_zero_seeders = gtk.CheckButton(_("HIDE_ZERO_SEEDERS"))
+        self.hide_zero_seeders = Gtk.CheckButton(_("HIDE_ZERO_SEEDERS"))
         self.hide_zero_seeders.set_active(app.config["hide_zero_seeders"])
         self.hide_zero_seeders.connect(
             "toggled", self.on_hide_zero_seeders_toggled)
         hbox.pack_start(self.hide_zero_seeders, False, False)
-        self.filter_duplicates = gtk.CheckButton(_("FILTER_DUPLICATES"))
+        self.filter_duplicates = Gtk.CheckButton(_("FILTER_DUPLICATES"))
         self.filter_duplicates.set_active(app.config["filter_duplicates"])
         self.filter_duplicates.connect(
             "toggled", self.on_filter_duplicates_toggled)
         hbox.pack_start(self.filter_duplicates, False, False)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         mainbox.pack_start(hbox, False, False)
         hbox.set_spacing(10)
-        self.only_exact_phrase = gtk.CheckButton(_("ONLY_EXACT_PHRASE"))
+        self.only_exact_phrase = Gtk.CheckButton(_("ONLY_EXACT_PHRASE"))
         hbox.pack_start(self.only_exact_phrase, False, False)
         self.only_exact_phrase.set_active(app.config["only_exact_phrase"])
         self.only_exact_phrase.connect(
             "toggled", self.on_only_exact_phrase_toggled)
-        self.only_all_words = gtk.CheckButton(_("ONLY_ALL_WORDS"))
+        self.only_all_words = Gtk.CheckButton(_("ONLY_ALL_WORDS"))
         hbox.pack_start(self.only_all_words, False, False)
         self.only_all_words.set_active(app.config["only_all_words"])
         self.only_all_words.connect("toggled", self.on_only_all_words_toggled)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         mainbox.pack_start(hbox)
         hbox.set_spacing(10)
-        hbox.pack_start(gtk.Label(_("CATEGORY")), False, False)
-        self.category = gtk.ComboBox()
+        hbox.pack_start(Gtk.Label(_("CATEGORY")), False, False)
+        self.category = Gtk.ComboBox()
         hbox.pack_start(self.category, False, False)
-        self.category_ls = gtk.ListStore(object, str)
+        self.category_ls = Gtk.ListStore(object, str)
         self.category.set_model(self.category_ls)
         self.category_ls.append([None, _("ANY")])
-        r = gtk.CellRendererText()
+        r = Gtk.CellRendererText()
         self.category.pack_start(r)
         self.category.add_attribute(r, "text", 1)
         for i in self._app.categories.all():
             self.category_ls.append([i, str(i)])
         self.category.connect("changed", self.on_category_changed)
         self.category.set_active(0)
-        table = gtk.Table()
+        table = Gtk.Table()
         mainbox.pack_start(table)
         table.set_col_spacings(10)
         table.set_row_spacings(10)
-        l = gtk.Label(_("NAME_CONTAINS"))
+        l = Gtk.Label(_("NAME_CONTAINS"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 0, 1, xoptions=gtk.FILL)
-        self.name_contains = gtk.Entry()
+        table.attach(l, 0, 1, 0, 1, xoptions=Gtk.FILL)
+        self.name_contains = Gtk.Entry()
         self.name_contains.set_property(
-            "secondary-icon-stock", gtk.STOCK_CLEAR)
+            "secondary-icon-stock", Gtk.STOCK_CLEAR)
         self.name_contains.connect("icon_press", self.on_entry_icon_press)
         table.attach(self.name_contains, 1, 2, 0, 1, xoptions=0, yoptions=0)
         self.name_contains.set_width_chars(50)
         self.name_contains.connect("changed", self.on_name_contains_changed)
-        l = gtk.Label(_("NAME_DOES_NOT_CONTAIN"))
+        l = Gtk.Label(_("NAME_DOES_NOT_CONTAIN"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL)
-        self.name_does_not_contain = gtk.Entry()
+        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.FILL)
+        self.name_does_not_contain = Gtk.Entry()
         self.name_does_not_contain.set_property(
-            "secondary-icon-stock", gtk.STOCK_CLEAR)
+            "secondary-icon-stock", Gtk.STOCK_CLEAR)
         self.name_does_not_contain.connect(
             "icon_press", self.on_entry_icon_press)
         table.attach(self.name_does_not_contain, 1,
@@ -650,26 +649,26 @@ class SearchOptionsBox(gtk.Expander):
         self.name_does_not_contain.set_width_chars(50)
         self.name_does_not_contain.connect(
             "changed", self.on_name_does_not_contain_changed)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         mainbox.pack_start(hbox, False, False)
         hbox.set_spacing(10)
-        self.min_size_enable = gtk.CheckButton(_("MIN_SIZE"))
+        self.min_size_enable = Gtk.CheckButton(_("MIN_SIZE"))
         hbox.pack_start(self.min_size_enable, False, False)
-        self.min_size_value = gtk.SpinButton()
+        self.min_size_value = Gtk.SpinButton()
         self.min_size_value.set_width_chars(4)
         self.min_size_value.set_range(1, 1023)
         self.min_size_value.set_increments(10, 100)
         hbox.pack_start(self.min_size_value, False, False)
-        self.min_size_unit = gtk.combo_box_new_text()
+        self.min_size_unit = Gtk.combo_box_new_text()
         hbox.pack_start(self.min_size_unit, False, False)
-        self.max_size_enable = gtk.CheckButton(_("MAX_SIZE"))
+        self.max_size_enable = Gtk.CheckButton(_("MAX_SIZE"))
         hbox.pack_start(self.max_size_enable, False, False)
-        self.max_size_value = gtk.SpinButton()
+        self.max_size_value = Gtk.SpinButton()
         self.max_size_value.set_width_chars(4)
         self.max_size_value.set_range(1, 1023)
         self.max_size_value.set_increments(10, 100)
         hbox.pack_start(self.max_size_value, False, False)
-        self.max_size_unit = gtk.combo_box_new_text()
+        self.max_size_unit = Gtk.combo_box_new_text()
         hbox.pack_start(self.max_size_unit, False, False)
         units = ["KB", "MB", "GB"]
         self.min_size_unit.connect('changed', self.on_min_size_unit_changed)
@@ -698,14 +697,14 @@ class SearchOptionsBox(gtk.Expander):
             "value_changed", self.on_max_size_value_changed)
         self.min_size_value.set_value(app.config["min_size_value"])
         self.max_size_value.set_value(app.config["max_size_value"])
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(10)
         mainbox.pack_start(hbox, False, False)
-        self.after_date_enable = gtk.CheckButton(_("AFTER"))
+        self.after_date_enable = Gtk.CheckButton(_("AFTER"))
         hbox.pack_start(self.after_date_enable, False, False)
         self.after_date = DateSelectionEntry()
         hbox.pack_start(self.after_date, False, False)
-        self.before_date_enable = gtk.CheckButton(_("BEFORE"))
+        self.before_date_enable = Gtk.CheckButton(_("BEFORE"))
         hbox.pack_start(self.before_date_enable, False, False)
         self.before_date = DateSelectionEntry()
         hbox.pack_start(self.before_date, False, False)
@@ -784,136 +783,136 @@ class SearchOptionsBox(gtk.Expander):
         self._app.config["only_all_words"] = widget.get_active()
 
 
-class ConfirmPluginsDialog(gtk.Dialog):
+class ConfirmPluginsDialog(Gtk.Dialog):
     def __init__(self, app, plugins):
-        gtk.Dialog.__init__(self, _("AUTH_REQUIRED_FOR_NEW_PLUGINS"), app)
-        self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        hbox = gtk.HBox()
+        Gtk.Dialog.__init__(self, _("AUTH_REQUIRED_FOR_NEW_PLUGINS"), app)
+        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        hbox = Gtk.HBox()
         self.child.add(hbox)
         hbox.set_border_width(5)
         hbox.set_spacing(10)
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_DIALOG_WARNING, gtk.ICON_SIZE_DIALOG)
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.ICON_SIZE_DIALOG)
         hbox.pack_start(img, False, False)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         hbox.pack_start(vbox)
         vbox.set_spacing(10)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_alignment(0, 0.5)
         l.set_markup("<span size='large'><b>%s</b></span>" %
                      _("SOME_NEW_PLUGINS_REQUIRE_AUTH"))
         l.set_line_wrap(True)
         vbox.pack_start(l, False, False)
-        l = gtk.Label(_("SELECT_ONES_TO_ENABLE"))
+        l = Gtk.Label(_("SELECT_ONES_TO_ENABLE"))
         l.set_alignment(0, 0.5)
         l.set_line_wrap(True)
         vbox.pack_start(l, False, False)
         self.plugins_cb = {}
         for i in plugins:
-            cb = gtk.CheckButton(i.TITLE+" ("+i.website_url+")")
+            cb = Gtk.CheckButton(i.TITLE+" ("+i.website_url+")")
             self.plugins_cb[i] = cb
             vbox.pack_start(cb, False, False)
 
     def run(self):
         self.show_all()
-        gtk.Dialog.run(self)
+        Gtk.Dialog.run(self)
         for i in self.plugins_cb:
             i.enabled = self.plugins_cb[i].get_active()
         self.destroy()
 
 
-class TorrentInfosDialog(gtk.Dialog):
+class TorrentInfosDialog(Gtk.Dialog):
     def __init__(self, app):
-        gtk.Dialog.__init__(self)
+        Gtk.Dialog.__init__(self)
         self.set_size_request(650, 600)
         self.set_title(_("TORRENT_DETAILS"))
-        self.add_button(gtk.STOCK_CLOSE, gtk.RESPONSE_CLOSE)
+        self.add_button(Gtk.STOCK_CLOSE, Gtk.RESPONSE_CLOSE)
         self.set_transient_for(app)
-        self.notebook = gtk.Notebook()
+        self.notebook = Gtk.Notebook()
         self.child.add(self.notebook)
         self.notebook.set_border_width(5)
-        self.general_informations_page = gtk.Table()
+        self.general_informations_page = Gtk.Table()
         self.general_informations_page.set_border_width(5)
         self.general_informations_page.set_row_spacings(10)
         self.general_informations_page.set_col_spacings(10)
         self.notebook.append_page(
-            self.general_informations_page, gtk.Label(_("GENERAL_INFORMATIONS")))
-        l = gtk.Label()
+            self.general_informations_page, Gtk.Label(_("GENERAL_INFORMATIONS")))
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("NAME"))
         self.general_informations_page.attach(
-            l, 0, 1, 0, 1, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 0, 1, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_name_label = gtk.Label()
+        self.torrent_name_label = Gtk.Label()
         self.torrent_name_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_name_label, 1, 2, 0, 1, yoptions=0)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("DATE"))
         self.general_informations_page.attach(
-            l, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_date_label = gtk.Label()
+        self.torrent_date_label = Gtk.Label()
         self.torrent_date_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_date_label, 1, 2, 1, 2, yoptions=0)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("CATEGORY"))
         self.general_informations_page.attach(
-            l, 0, 1, 2, 3, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 2, 3, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_category_label = gtk.Label()
+        self.torrent_category_label = Gtk.Label()
         self.torrent_category_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_category_label, 1, 2, 2, 3, yoptions=0)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SIZE"))
         self.general_informations_page.attach(
-            l, 0, 1, 3, 4, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 3, 4, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_size_label = gtk.Label()
+        self.torrent_size_label = Gtk.Label()
         self.torrent_size_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_size_label, 1, 2, 3, 4, yoptions=0)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("SEEDERS"))
         self.general_informations_page.attach(
-            l, 0, 1, 4, 5, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 4, 5, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_seeders_label = gtk.Label()
+        self.torrent_seeders_label = Gtk.Label()
         self.torrent_seeders_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_seeders_label, 1, 2, 4, 5, yoptions=0)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("LEECHERS"))
         self.general_informations_page.attach(
-            l, 0, 1, 5, 6, xoptions=gtk.FILL, yoptions=0)
+            l, 0, 1, 5, 6, xoptions=Gtk.FILL, yoptions=0)
         l.set_alignment(0, 0.5)
-        self.torrent_leechers_label = gtk.Label()
+        self.torrent_leechers_label = Gtk.Label()
         self.torrent_leechers_label.set_alignment(0, 0.5)
         self.general_informations_page.attach(
             self.torrent_leechers_label, 1, 2, 5, 6, yoptions=0)
-        self.poster_img = gtk.Image()
+        self.poster_img = Gtk.Image()
         self.general_informations_page.attach(
             self.poster_img, 0, 2, 6, 7, xoptions=0, yoptions=0)
-        self.included_files_page = gtk.ScrolledWindow()
+        self.included_files_page = Gtk.ScrolledWindow()
         self.notebook.append_page(
-            self.included_files_page, gtk.Label(_("INCLUDED_FILES")))
-        tv = gtk.TreeView()
+            self.included_files_page, Gtk.Label(_("INCLUDED_FILES")))
+        tv = Gtk.TreeView()
         self.included_files_page.add(tv)
-        self.included_files_lb = gtk.ListStore(str, str)
+        self.included_files_lb = Gtk.ListStore(str, str)
         tv.set_model(self.included_files_lb)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("FILENAME"), r, text=0)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("FILENAME"), r, text=0)
         col.set_resizable(True)
         tv.append_column(col)
-        r = gtk.CellRendererText()
-        col = gtk.TreeViewColumn(_("SIZE"), r, text=1)
+        r = Gtk.CellRendererText()
+        col = Gtk.TreeViewColumn(_("SIZE"), r, text=1)
         col.set_resizable(True)
         tv.append_column(col)
-        self.comments_page = gtk.ScrolledWindow()
-        self.notebook.append_page(self.comments_page, gtk.Label(_("COMMENTS")))
-        self.comments_tv = gtk.TextView()
-        self.comments_tv.set_wrap_mode(gtk.WRAP_WORD)
+        self.comments_page = Gtk.ScrolledWindow()
+        self.notebook.append_page(self.comments_page, Gtk.Label(_("COMMENTS")))
+        self.comments_tv = Gtk.TextView()
+        self.comments_tv.set_wrap_mode(Gtk.WRAP_WORD)
         self.comments_tv.set_editable(False)
         self.comments_page.add(self.comments_tv)
         self.bold_tag = self.comments_tv.get_buffer().create_tag("bold")
@@ -961,27 +960,27 @@ class TorrentInfosDialog(gtk.Dialog):
                     self.comments_tv.get_buffer().get_end_iter(), "\n"+comment.content+"\n")
         self.notebook.set_current_page(0)
         self.show_all()
-        gtk.Dialog.run(self)
+        Gtk.Dialog.run(self)
         self.hide()
 
 
-class TorrentDetailsLoadingDialog(gtk.Window):
+class TorrentDetailsLoadingDialog(Gtk.Window):
     def __init__(self, app):
-        gtk.Window.__init__(self)
+        Gtk.Window.__init__(self)
         self.set_transient_for(app)
         self.set_deletable(False)
         self.set_resizable(False)
         self.set_decorated(False)
-        self.set_position(gtk.WIN_POS_CENTER_ALWAYS)
+        self.set_position(Gtk.WIN_POS_CENTER_ALWAYS)
         self.connect('delete_event', lambda w, e: True)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.add(vbox)
         vbox.set_border_width(5)
         vbox.set_spacing(5)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("LOADING_TORRENT_DETAILS"))
         vbox.pack_start(l)
-        self.pb = gtk.ProgressBar()
+        self.pb = Gtk.ProgressBar()
         vbox.pack_start(self.pb)
 
     def set_loading_progress(self, value):
@@ -991,7 +990,7 @@ class TorrentDetailsLoadingDialog(gtk.Window):
         self.pb.pulse()
 
 
-class Application(gtk.Window):
+class Application(Gtk.Window):
     def __init__(self, options):
         self.options = options
         self.categories = categories.CategoriesList(
@@ -1011,10 +1010,10 @@ class Application(gtk.Window):
         self.config["name_contains"] = ""
         self.config.register_listener(self.on_config_changed)
         icontheme.load_icons(options.share_dir)
-        gtk.window_set_default_icon_name("torrent-search")
+        Gtk.window_set_default_icon_name("torrent-search")
         self.load_search_plugins()
-        gtk.Window.__init__(self)
-        self._accel_group = gtk.AccelGroup()
+        Gtk.Window.__init__(self)
+        self._accel_group = Gtk.AccelGroup()
         self.add_accel_group(self._accel_group)
         self._maximized = False
         self.connect('window_state_event', self._on_window_state_event)
@@ -1023,11 +1022,11 @@ class Application(gtk.Window):
         self.torrent_infos_dialog = TorrentInfosDialog(self)
         self.torrent_details_loading_dialog = TorrentDetailsLoadingDialog(self)
         self.set_title(APPNAME)
-        vbox = gtk.VBox()
+        vbox = Gtk.VBox()
         self.add(vbox)
         self.mainmenu = MainMenu(self)
         vbox.pack_start(self.mainmenu, False, False)
-        mainbox = gtk.VBox()
+        mainbox = Gtk.VBox()
         vbox.pack_start(mainbox)
         mainbox.set_border_width(5)
         mainbox.set_spacing(10)
@@ -1036,20 +1035,20 @@ class Application(gtk.Window):
         self.results_widget = ResultsWidget(self)
         self.search_options_box = SearchOptionsBox(self)
         mainbox.pack_start(self.search_options_box, False, False)
-        hbox = gtk.HBox()
-        hbox = gtk.HPaned()
-        f = gtk.Frame()
+        hbox = Gtk.HBox()
+        hbox = Gtk.HPaned()
+        f = Gtk.Frame()
         mainbox.pack_start(hbox)
         hbox.pack1(f, True, False)
-        self.search_results_label = gtk.Label()
+        self.search_results_label = Gtk.Label()
         self.search_results_label.set_markup("<b>%s</b>" % _("SEARCH_RESULTS"))
         f.set_label_widget(self.search_results_label)
         f.add(self.results_widget)
-        vbox = gtk.VPaned()
+        vbox = Gtk.VPaned()
         hbox.pack2(vbox, False, True)
-        f = gtk.Frame()
+        f = Gtk.Frame()
         vbox.pack2(f, True, False)
-        l = gtk.Label()
+        l = Gtk.Label()
         l.set_markup("<b>%s</b>" % _("DOWNLOADS"))
         f.set_label_widget(l)
         # TODO: Remove download manager widget and replace it by popup notifying when a download fails
@@ -1164,7 +1163,7 @@ class Application(gtk.Window):
             plugin.icon.save(icon_filename, "png")
         else:
             try:
-                plugin.icon = gtk.gdk.pixbuf_new_from_file(icon_filename)
+                plugin.icon = Gtk.gdk.pixbuf_new_from_file(icon_filename)
             except:
                 pass
         self.results_widget.notify_plugin_icon(plugin)
@@ -1187,7 +1186,7 @@ class Application(gtk.Window):
         return res
 
     def _on_key_press_event(self, widget, event):
-        if event.keyval == gtk.keysyms.F1:
+        if event.keyval == Gtk.keysyms.F1:
             item = self.get_help_item(self.get_focus())
             self.show_help(item)
             return True
@@ -1269,7 +1268,7 @@ class Application(gtk.Window):
         return fd, filename
 
     def _on_window_state_event(self, window, event):
-        if event.new_window_state & gtk.gdk.WINDOW_STATE_MAXIMIZED:
+        if event.new_window_state & Gtk.gdk.WINDOW_STATE_MAXIMIZED:
             self._maximized = True
         else:
             self._maximized = False
@@ -1373,9 +1372,9 @@ class Application(gtk.Window):
         self.decrease_searches_to_clean()
 
     def error_mesg(self, mesg, submesg=""):
-        d = gtk.MessageDialog(self, 0, gtk.MESSAGE_ERROR)
+        d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_ERROR)
         d.set_title(_("ERROR"))
-        d.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
         if submesg:
             d.format_secondary_text(submesg)
@@ -1384,9 +1383,9 @@ class Application(gtk.Window):
         d.destroy()
 
     def info_mesg(self, mesg, submesg=""):
-        d = gtk.MessageDialog(self, 0, gtk.MESSAGE_INFO)
+        d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_INFO)
         d.set_title(_("INFORMATION"))
-        d.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
+        d.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
         if submesg:
             d.format_secondary_text(submesg)
@@ -1499,7 +1498,7 @@ class Application(gtk.Window):
             self.run_search(self.options.search_pattern)
             self.searchbar.set_pattern(self.options.search_pattern)
         self.searchbar.focus_entry()
-        gtk.main()
+        Gtk.main()
         self._http_queue.stop()
         for i in self._tempfiles:
             try:
@@ -1513,14 +1512,14 @@ class Application(gtk.Window):
                      self.searches_to_clean)
             return True
         else:
-            gtk.main_quit()
+            Gtk.main_quit()
             return False
 
     def quit(self):
         self.hide()
-        while gtk.gdk.events_pending():
-            gtk.main_iteration()
-        gtk.main_quit()
+        while Gtk.gdk.events_pending():
+            Gtk.main_iteration()
+        Gtk.main_quit()
 
     def _get_searches_to_clean(self):
         self.searches_to_clean_lock.acquire()

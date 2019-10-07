@@ -28,6 +28,7 @@ from .constants import *
 
 
 class OptionParser(optparse.OptionParser):
+
     def exit(self, status=0, msg=None):
         pass
 

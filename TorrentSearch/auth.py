@@ -19,48 +19,50 @@
 """
 
 import libxml2
-import gtk
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 import os
 from .constants import *
 
 
-class AuthDialog(gtk.Dialog):
+class AuthDialog(Gtk.Dialog):
     def __init__(self, app):
-        gtk.Dialog.__init__(self, _("AUTHENTICATION"), app)
-        self.add_button(gtk.STOCK_OK, gtk.RESPONSE_OK)
-        self.add_button(gtk.STOCK_CANCEL, gtk.RESPONSE_CANCEL)
-        vbox = gtk.VBox()
+        Gtk.Dialog.__init__(self, _("AUTHENTICATION"), app)
+        self.add_button(Gtk.STOCK_OK, Gtk.RESPONSE_OK)
+        self.add_button(Gtk.STOCK_CANCEL, Gtk.RESPONSE_CANCEL)
+        vbox = Gtk.VBox()
         vbox.set_border_width(5)
         vbox.set_spacing(10)
         self.child.add(vbox)
-        hbox = gtk.HBox()
+        hbox = Gtk.HBox()
         hbox.set_spacing(10)
         vbox.pack_start(hbox, False, False)
-        img = gtk.Image()
-        img.set_from_stock(gtk.STOCK_DIALOG_AUTHENTICATION, gtk.ICON_SIZE_DIALOG)
+        img = Gtk.Image()
+        img.set_from_stock(Gtk.STOCK_DIALOG_AUTHENTICATION, Gtk.ICON_SIZE_DIALOG)
         hbox.pack_start(img, False, False)
-        table = gtk.Table()
+        table = Gtk.Table()
         table.set_col_spacings(10)
         table.set_row_spacings(10)
         hbox.pack_start(table)
-        self.mesg_label = gtk.Label()
+        self.mesg_label = Gtk.Label()
         self.mesg_label.set_alignment(0, 0.5)
         table.attach(self.mesg_label, 0, 2, 0, 1, yoptions=0)
-        l = gtk.Label(_("USERNAME"))
+        l = Gtk.Label(_("USERNAME"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 1, 2, xoptions=gtk.FILL, yoptions=0)
-        self.username = gtk.Entry()
+        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.FILL, yoptions=0)
+        self.username = Gtk.Entry()
         table.attach(self.username, 1, 2, 1, 2, yoptions=0)
-        l = gtk.Label(_("PASSWORD"))
+        l = Gtk.Label(_("PASSWORD"))
         l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 2, 3, xoptions=gtk.FILL, yoptions=0)
-        self.password = gtk.Entry()
+        table.attach(l, 0, 1, 2, 3, xoptions=Gtk.FILL, yoptions=0)
+        self.password = Gtk.Entry()
         table.attach(self.password, 1, 2, 2, 3, yoptions=0)
         self.password.set_visibility(False)
-        self.remember = gtk.CheckButton(_("REMEMBER_AUTH"))
+        self.remember = Gtk.CheckButton(_("REMEMBER_AUTH"))
         vbox.pack_start(self.remember, False, False)
         self.username.connect("activate", lambda w: self.password.grab_focus())
-        self.password.connect("activate", lambda w: self.response(gtk.RESPONSE_OK))
+        self.password.connect("activate", lambda w: self.response(Gtk.RESPONSE_OK))
 
     def run(self, plugin, failed=False):
         self.username.set_text("")
@@ -71,7 +73,7 @@ class AuthDialog(gtk.Dialog):
             self.mesg_label.set_markup("<b>%s</b>" % (_("AUTH_REQUIRED_FOR_PLUGIN") % plugin.TITLE))
         self.username.grab_focus()
         self.show_all()
-        if gtk.Dialog.run(self) == gtk.RESPONSE_OK:
+        if Gtk.Dialog.run(self) == Gtk.RESPONSE_OK:
             res = self.username.get_text(), self.password.get_text(), self.remember.get_active()
         else:
             res = None
