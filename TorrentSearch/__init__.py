@@ -27,11 +27,11 @@ import tempfile
 import datetime
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
+from gi.repository import GObject
 
 from . import lang
 from . import AboutDialog
 from . import menus
-import gobject
 from . import config
 from . import Plugin
 import _thread
@@ -927,10 +927,10 @@ class TorrentInfosDialog(Gtk.Dialog):
     def run(self, torrent_result):
         self.poster_img.set_from_pixbuf(None)
         if self.poster_loading_timer:
-            gobject.source_remove(self.poster_loading_timer)
+            GObject.source_remove(self.poster_loading_timer)
         if not torrent_result.poster_pix_loaded:
             torrent_result.load_poster_pix()
-        self.poster_loading_timer = gobject.timeout_add(
+        self.poster_loading_timer = GObject.timeout_add(
             100, self.load_poster, torrent_result)
         self.torrent_name_label.set_text(torrent_result.label)
         self.torrent_date_label.set_text(str(torrent_result.date))
@@ -1110,7 +1110,7 @@ class Application(Gtk.Window):
 
     def show_torrent_infos(self, torrent_result):
         if self.comments_loading_timer:
-            gobject.source_remove(self.comments_loading_timer)
+            GObject.source_remove(self.comments_loading_timer)
             self.comments_loading_timer = 0
         if torrent_result.comments_loaded and torrent_result.filelist_loaded and torrent_result.poster_loaded:
             self.torrent_infos_dialog.run(torrent_result)
@@ -1123,7 +1123,7 @@ class Application(Gtk.Window):
                 torrent_result.load_filelist()
             if not torrent_result.poster_loaded:
                 torrent_result.load_poster()
-            self.comments_loading_timer = gobject.timeout_add(
+            self.comments_loading_timer = GObject.timeout_add(
                 100, self._wait_for_comments, torrent_result)
 
     def _wait_for_comments(self, torrent_result):
@@ -1393,7 +1393,7 @@ class Application(Gtk.Window):
 
     def ext_run_search(self, pattern):
         if self.cleanup_timer:
-            gobject.source_remove(self.cleanup_timer)
+            GObject.source_remove(self.cleanup_timer)
             self.cleanup_timer = None
         self.show_all()
         self.present()
@@ -1485,7 +1485,7 @@ class Application(Gtk.Window):
                     i.enabled = False  # TODO: Add notification dialog about default disabled plugins
 
     def run(self):
-        gobject.threads_init()
+        GObject.threads_init()
         self._http_queue.start()
         self.show_all()
         self.check_config()
