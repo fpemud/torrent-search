@@ -39,26 +39,12 @@ class OptionParser(optparse.OptionParser):
 
 
 optparser = OptionParser()
-optparser.add_option("--share-dir", dest="share_dir",
-                     default=DEFAULT_SHARE_PATH)
+optparser.add_option("--share-dir", dest="share_dir", default=DEFAULT_SHARE_PATH)
 options, args = optparser.parse_args()
 
 syslang = os.getenv('LANGUAGE')
 if type(syslang) != str:
     syslang = ""
 
-if PLATFORM == "windows":
-    try:
-        TRANSLATION = gettext.translation(UNIXNAME, os.path.join(options.share_dir, "locale"), [
-                                          locale.getlocale()[0].split('_')[0]], fallback=True)
-    except:
-        TRANSLATION = gettext.translation(UNIXNAME, os.path.join(
-            options.share_dir, "locale"), fallback=True)
-    try:
-        TRANSLATION.add_fallback(gettext.translation(
-            UNIXNAME, os.path.join(options.share_dir, "locale"), ["en"]))
-    except:
-        pass
-else:
-    TRANSLATION = gettext.translation("torrent-search", fallback=True, languages=[syslang, 'en'])
+TRANSLATION = gettext.translation("torrent-search", fallback=True, languages=[syslang, 'en'])
 TRANSLATION.install()

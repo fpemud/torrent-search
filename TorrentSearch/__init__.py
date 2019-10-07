@@ -104,20 +104,10 @@ class Searchbar(gtk.HBox):
         # IDEA: Warning about huge resource usage in case of short search term
         if not pattern:
             pattern = self.search_entry.get_text()
-        if PLATFORM == "windows":
-            try:
-                pattern = _codecs.utf_8_decode(pattern)[0]
-            except:
-                pass
         while "  " in pattern:
             pattern = pattern.replace("  ", " ")
         pattern = pattern.lower()
         self.add_to_history(pattern)
-        if PLATFORM == "windows":
-            try:
-                pattern = _codecs.utf_8_encode(pattern)[0]
-            except:
-                pass
         self._app.run_search(pattern)
         self.focus_entry()
 
@@ -1003,8 +993,6 @@ class TorrentDetailsLoadingDialog(gtk.Window):
 
 class Application(gtk.Window):
     def __init__(self, options):
-        if PLATFORM == "windows":
-            gtk.rc_parse_string("gtk-theme-name=\"MS-Windows\"")
         self.options = options
         self.categories = categories.CategoriesList(
             os.path.join(options.share_dir, UNIXNAME, "categories.xml"))
@@ -1015,7 +1003,6 @@ class Application(gtk.Window):
         self.comments_loading_timer = 0
         self.searches_to_clean_lock = _thread.allocate_lock()      # FIXME
         self.searches_to_clean = 0
-        self.last_version_lock = _thread.allocate_lock()      # FIXME
         self.search_pattern = ""
         self.config = config.AppConfig(self)
         self.auth_memory = auth.AuthMemory(self)
@@ -1206,34 +1193,12 @@ class Application(gtk.Window):
             return True
 
     def show_help(self, item=None):
-        if PLATFORM == "windows":
-            import win32help
-            itemsmap = {
-                "searchbar": "ch02s03.html#searchbar",
-                "results-list": "ch02s03.html#results-list",
-                "downloads-bar": "ch02s03.html#downloads-bar",
-                "search-options": "ch02s03.html#search-options",
-                "preferences-general": "ch03.html#preferences-general",
-                "preferences-plugins": "ch03s02.html",
-            }
-            helpfile = os.path.join(self.options.share_dir, "winhelp", locale.getlocale()[
-                                    0].split("_")[0])+".chm"
-            if not os.path.exists(helpfile):
-                helpfile = os.path.join(
-                    self.options.share_dir, "winhelp", "en")+".chm"
-            if item:
-                topic = itemsmap[item]
-                win32help.HtmlHelp(
-                    None, helpfile, win32help.HH_DISPLAY_TOPIC, topic)
-            else:
-                win32help.HtmlHelp(None, helpfile, win32help.HH_DISPLAY_TOC)
-        else:
-            url = "ghelp:torrent-search"
-            if item:
-                url += '?'+item
-            if os.fork() == 0:
-                try:
-                    os.execvp("gnome-help", ("", url))
+        url = "ghelp:torrent-search"
+        if item:
+            url += '?'+item
+        if os.fork() == 0:
+            try:
+                os.execvp("gnome-help", ("", url))
                 finally:
                     exit(0)
 
@@ -1511,48 +1476,6 @@ class Application(gtk.Window):
                 self.set_title("%s - %s - %s" %
                                (APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
 
-    def check_new_version(self):
-        try:
-            c = httplib2.Http()
-            resp, content = c.request(
-                "http://torrent-search.sourceforge.net/last_version/"+PLATFORM)
-            if resp.status != 200:
-                self.last_version = ""
-                return
-            data = content.splitlines()
-            self.last_version_files = data[1:]
-            self.last_version = data[0]
-        except:
-            self.last_version = ""
-
-    def _get_last_version(self):
-        self.last_version_lock.acquire()
-        res = self._last_version
-        self.last_version_lock.release()
-        return res
-
-    def _set_last_version(self, value):
-        self.last_version_lock.acquire()
-        if type(value) == str:
-            if not re.match("^((([0-9]+)((\.|\-)?))*)$", value):
-                value = ""
-        self._last_version = value
-        self.last_version_lock.release()
-    last_version = property(_get_last_version, _set_last_version)
-
-    def _get_last_version_files(self):
-        self.last_version_lock.acquire()
-        res = self._last_version_files
-        self.last_version_lock.release()
-        return res
-
-    def _set_last_version_files(self, value):
-        self.last_version_lock.acquire()
-        self._last_version_files = value
-        self.last_version_lock.release()
-
-    last_version_files = property(_get_last_version_files, _set_last_version_files)
-
     def check_plugin_updates(self):
         # TODO!: Handle the possibility of removing deprecated plugins
         if Plugin.PluginsUpdatesChecker(self).run():
@@ -1575,8 +1498,6 @@ class Application(gtk.Window):
         if self.options.search_pattern:
             self.run_search(self.options.search_pattern)
             self.searchbar.set_pattern(self.options.search_pattern)
-        self.last_version = None
-        _thread.start_new_thread(self.check_new_version, ())      # FIXME
         self.searchbar.focus_entry()
         gtk.main()
         self._http_queue.stop()

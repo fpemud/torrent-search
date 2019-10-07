@@ -36,16 +36,7 @@ if os.getenv('APPDATA'):
 else:
     APPDATA_PATH = os.path.join(os.getenv('HOME'), ".torrent-search")
 
-if os.path.exists("/usr"):
-    try:
-        i = __file__.index("/lib/")
-        DEFAULT_SHARE_PATH = __file__[:i]+'/share'
-    except:
-        DEFAULT_SHARE_PATH = "/usr/share"
-    PLATFORM = "unix"
-else:
-    DEFAULT_SHARE_PATH = os.path.join(os.path.split(sys.argv[0])[0], "share")
-    PLATFORM = "windows"
+DEFAULT_SHARE_PATH = "/usr/share"
 
 BUG_REPORT_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414043"
 FEATURE_REQUEST_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414046"

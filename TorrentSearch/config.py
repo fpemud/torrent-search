@@ -230,17 +230,10 @@ class GeneralPreferencesPage(gtk.VBox):
         self.torrent_use_custom_app_entry.connect(
             'changed', self.on_torrent_custom_app_changed)
         if os.path.exists(app.config['torrent_save_folder']) and os.path.isdir(app.config['torrent_save_folder']):
-            self.torrent_save_in_folder_fs.set_current_folder(
-                app.config['torrent_save_folder'])
+            self.torrent_save_in_folder_fs.set_current_folder(app.config['torrent_save_folder'])
         else:
-            if PLATFORM == "unix":
-                self.torrent_save_in_folder_fs.set_current_folder(
-                    os.getenv('HOME'))
-                app.config['torrent_save_folder'] = os.getenv('HOME')
-            else:
-                self.torrent_save_in_folder_fs.set_current_folder(
-                    os.getenv('APPDATA'))
-                app.config['torrent_save_folder'] = os.getenv('APPDATA')
+            self.torrent_save_in_folder_fs.set_current_folder(os.getenv('HOME'))
+            app.config['torrent_save_folder'] = os.getenv('HOME')
         f = gtk.Frame()
         l = gtk.Label()
         l.set_markup("<b>%s</b>" % _("PLUGINS_UPDATES"))
