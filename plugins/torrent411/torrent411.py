@@ -35,7 +35,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
                    'User-Agent': 'torrent-search'}
         resp, content = c.request(
             "http://www.torrent411.com/account-login.php", "POST", data, headers)
-        if "set-cookie" in resp and not 'pass=null;' in resp['set-cookie']:
+        if "set-cookie" in resp and 'pass=null;' not in resp['set-cookie']:
             return resp["set-cookie"]
         else:
             return None

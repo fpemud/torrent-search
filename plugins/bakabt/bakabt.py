@@ -71,7 +71,7 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
                 if "torrent_alt" in line.prop('class') and not is_alt:
                     is_alt = True
                     continue
-                if not "torrent_alt" in line.prop('class'):
+                if "torrent_alt" not in line.prop('class'):
                     is_alt = False
 
                 cells = htmltools.find_elements(line, "td")

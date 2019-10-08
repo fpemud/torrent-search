@@ -55,7 +55,7 @@ def list_keys_for_file(filename, res):
     while i < len(data):
         if data[i:i+3] in ["_(\"", "_('"]:
             j = data[i+3:].index(data[i+2])+i+3
-            if not "\n" in data[i+3:j] and not data[i+3:j] in res:
+            if "\n" not in data[i+3:j] and data[i+3:j] not in res:
                 res.append(data[i+3:j])
             i = j+1
         else:
@@ -72,7 +72,7 @@ def list_keys():
     items = htmltools.find_elements(d, "category")
     for i in items:
         item = i.prop('description')
-        if not item in res:
+        if item not in res:
             res.append(item)
     return res
 
@@ -160,7 +160,7 @@ if __name__ == '__main__':
             add_all = True
         add_values = []
         for j in keys:
-            if (add_all or t.gettext(j) == j) and not j in ['URL']:
+            if (add_all or t.gettext(j) == j) and j not in ['URL']:
                 value = dialog.run(i, j)
                 if value:
                     add_values.append((j, value))

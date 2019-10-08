@@ -144,7 +144,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
             return True
 
     def check_status(self):
-        if self.progress == None:
+        if self.progress is None:
             self.pb.pulse()
         else:
             self.pb.set_fraction(self.progress)
@@ -595,7 +595,7 @@ class Plugin(object):
     icon = property(_get_icon, _set_icon)
 
     def _get_enabled(self):
-        return not self.ID in self._app.config["disabled_plugins"]
+        return  self.ID not in self._app.config["disabled_plugins"]
 
     def _set_enabled(self, value):
         l = self._app.config["disabled_plugins"]

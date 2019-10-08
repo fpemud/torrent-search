@@ -67,7 +67,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
             data = htmltools.find_elements(htmltools.find_elements(
                 ucpcontent, "table")[1], "td")[1].getContent()
             i = 0
-            while not data[i] in "0123456789":
+            while data[i] not in "0123456789":
                 i += 1
             j = i
             while data[j] in "0123456789":

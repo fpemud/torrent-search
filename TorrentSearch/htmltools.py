@@ -21,7 +21,7 @@
 
 def find_elements(node, elname=None, maxdepth=-1, **params):
     res = []
-    if elname == None or node.name == elname:
+    if elname is None or node.name == elname:
         add = True
         for i in params:
             if node.prop(i) != params[i]:

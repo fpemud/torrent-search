@@ -238,13 +238,10 @@ class GeneralPreferencesPage(Gtk.VBox):
         f.add(vbox)
         vbox.set_border_width(5)
         vbox.set_spacing(10)
-        self.check_plugins_updates = Gtk.CheckButton(
-            _("CHECK_PLUGINS_UPDATES"))
+        self.check_plugins_updates = Gtk.CheckButton(_("CHECK_PLUGINS_UPDATES"))
         vbox.pack_start(self.check_plugins_updates, False, False, 0)
-        self.check_plugins_updates.set_active(
-            app.config["check_plugins_updates"])
-        self.check_plugins_updates.connect(
-            "toggled", self.on_check_plugins_updates_toggled)
+        self.check_plugins_updates.set_active(app.config["check_plugins_updates"])
+        self.check_plugins_updates.connect("toggled", self.on_check_plugins_updates_toggled)
         b = Gtk.Button(_("CHECK_NOW"))
         img = Gtk.Image()
         img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.BUTTON)
@@ -345,8 +342,6 @@ class PluginsPreferencesPage(Gtk.ScrolledWindow):
         l = []
         for i in app.search_plugins:
             l.append(i)
-        def _getkey(a):
-            return a.TITLE.lower()
         l.sort(key=_getkey)
         for i in l:
             self.lb.append((i, i.TITLE))
@@ -461,9 +456,8 @@ class PreferencesDialog(Gtk.Dialog):
         self.connect('configure_event', self._on_configure_event)
 
     def _on_configure_event(self, window, event):
-        if self.window:
-            self._app.config["config_dialog_width"] = event.width
-            self._app.config["config_dialog_height"] = event.height
+        self._app.config["config_dialog_width"] = event.width
+        self._app.config["config_dialog_height"] = event.height
 
     def show_help(self, notebook):
         item = ["preferences-general",
@@ -475,3 +469,7 @@ class PreferencesDialog(Gtk.Dialog):
         Gtk.Dialog.run(self)
         self._app.config['torrent_save_folder'] = self.general_page.torrent_save_in_folder_fs.get_filename()
         self.hide()
+
+
+def _getkey(a):
+    return a.TITLE.lower()

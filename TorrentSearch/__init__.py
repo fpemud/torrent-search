@@ -126,7 +126,7 @@ class Searchbar(Gtk.HBox):
 
     def add_to_history(self, pattern):
         l = self.search_history
-        if not pattern in l:
+        if pattern not in l:
             l.insert(0, pattern)
             self.search_history = l[:100]
             self.update_completion()
@@ -233,9 +233,9 @@ class ResultsWidget(Gtk.ScrolledWindow):
                 cindex = cid
             self._sort_column = self.tv.get_column(cindex)
             if app.config["sort_desc"]:
-                self._sort_order = Gtk.SORT_DESCENDING
+                self._sort_order = Gtk.SortType.DESCENDING
             else:
-                self._sort_order = Gtk.SORT_ASCENDING
+                self._sort_order = Gtk.SortType.ASCENDING
             self.lb.set_sort_column_id(cid, self._sort_order)
             self._sort_column.set_sort_order(self._sort_order)
             self._sort_column.set_sort_indicator(True)
@@ -287,7 +287,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
                 res = True
             else:
                 res = False
-                if selected != None:
+                if selected is not None:
                     sel = [selected]
                 else:
                     sel = []
@@ -325,7 +325,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         if not self._app.config["filter_duplicates"]:
             return True
         item = model.get_value(iter, 0)
-        if item.magnet_link == None:
+        if item.magnet_link is None:
             return True
         seeds = model.get_value(iter, 4)
         is_before = True
@@ -339,7 +339,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         return True
 
     def get_must_show(self, model, iter):
-        if self._app.config["category"] != None and model.get_value(iter, 0) != None and not self._app.config["category"].contains(model.get_value(iter, 0).category):
+        if self._app.config["category"] is not None and model.get_value(iter, 0) is not None and not self._app.config["category"].contains(model.get_value(iter, 0).category):
             return False
         if self._app.config["hide_zero_seeders"] and model.get_value(iter, 4) == 0:
             return False
@@ -369,7 +369,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         while "  " in pattern:
             pattern = pattern.replace("  ", " ")
         if self._app.config["only_exact_phrase"]:
-            if not pattern in label:
+            if pattern not in label:
                 return False
         if self._app.config["only_all_words"]:
             words = []
@@ -384,7 +384,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
                     i += 1
             words.append(pattern[sw:])
             for i in words:
-                if not i in label:
+                if i not in label:
                     return False
         if self._app.config["name_does_not_contain"]:
             expattern = self._app.config["name_does_not_contain"].lower(
@@ -394,7 +394,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         if self._app.config["name_contains"]:
             inpattern = self._app.config["name_contains"].lower(
             ).rstrip().lstrip()
-            if not inpattern in label:
+            if inpattern not in label:
                 return False
         return True
 
@@ -449,27 +449,27 @@ class ResultsWidget(Gtk.ScrolledWindow):
         if self._sort_column:
             self._sort_column.set_sort_indicator(False)
         if column == self._sort_column:
-            if self._sort_order == Gtk.SORT_ASCENDING:
-                self._sort_order = Gtk.SORT_DESCENDING
-                sort_order = Gtk.SORT_DESCENDING
+            if self._sort_order == Gtk.SortType.ASCENDING:
+                self._sort_order = Gtk.SortType.DESCENDING
+                sort_order = Gtk.SortType.DESCENDING
                 column.set_sort_indicator(True)
-            elif self._sort_order == None:
-                self._sort_order = Gtk.SORT_ASCENDING
-                sort_order = Gtk.SORT_ASCENDING
+            elif self._sort_order is None:
+                self._sort_order = Gtk.SortType.ASCENDING
+                sort_order = Gtk.SortType.ASCENDING
                 column.set_sort_indicator(True)
             else:
                 self._sort_order = None
                 self._sort_column = None
-                sort_order = Gtk.SORT_ASCENDING
+                sort_order = Gtk.SortType.ASCENDING
                 cid = 7
         else:
-            self._sort_order = Gtk.SORT_ASCENDING
-            sort_order = Gtk.SORT_ASCENDING
+            self._sort_order = Gtk.SortType.ASCENDING
+            sort_order = Gtk.SortType.ASCENDING
             self._sort_column = column
             column.set_sort_indicator(True)
         if self._sort_column:
             self._app.config["sort_column"] = cid
-            self._app.config["sort_desc"] = (sort_order == Gtk.SORT_DESCENDING)
+            self._app.config["sort_desc"] = (sort_order == Gtk.SortType.DESCENDING)
         else:
             self._app.config["sort_column"] = -1
         self.lb.set_sort_column_id(cid, sort_order)
@@ -569,8 +569,9 @@ class DateSelectionEntry(Gtk.Entry):
 
 
 class SearchOptionsBox(Gtk.Expander):
+
     def __init__(self, app):
-#        Gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
+        # Gtk.Expander.__init__(self, _("SEARCH_OPTIONS"))
         Gtk.Expander.__init__(self)
         self.set_expanded(app.config["search_options_expanded"])
         self.connect("notify::expanded", self.on_expand_toggled)
@@ -1096,7 +1097,7 @@ class Application(Gtk.Window):
             for p in params:
                 try:
                     key, value = p.rstrip().lstrip().split("=")
-                    if not key in ["expires", "path"] and value != 'deleted':
+                    if key not in ["expires", "path"] and value != 'deleted':
                         d[key] = value
                         if cookie:
                             cookie += "; "
@@ -1148,7 +1149,7 @@ class Application(Gtk.Window):
         Parameters:
            * plugin : the plugin for which the login failed (TorrentSearch.Plugin.Plugin)"""
 
-        if not plugin in self.search_plugins:
+        if plugin not in self.search_plugins:
             return
         del self.auth_memory[plugin.ID]
         if plugin.ID in self._plugins_credentials:
@@ -1179,7 +1180,7 @@ class Application(Gtk.Window):
             self.search_options_box: "search-options",
         }
         try:
-            while not res in widgets_to_help_items:
+            while res not in widgets_to_help_items:
                 res = res.get_parent()
             res = widgets_to_help_items[res]
         except:
@@ -1200,7 +1201,7 @@ class Application(Gtk.Window):
             try:
                 os.execvp("gnome-help", ("", url))
             finally:
-               exit(0)
+                exit(0)
 
     def _on_window_configure_event(self, window, event):
         if not self._maximized:
@@ -1214,7 +1215,7 @@ class Application(Gtk.Window):
 
     def check_config(self):
         try:
-            if not self.config["torrent_mode"] in ["save_in_folder", "use_standard_app", "use_custom_app"]:
+            if self.config["torrent_mode"] not in ["save_in_folder", "use_standard_app", "use_custom_app"]:
                 self.config["torrent_mode"] = "save_in_folder"
                 self.error_mesg(_("INCORRECT_CONFIG"), _("CHECK_CONFIG"))
                 return
@@ -1235,7 +1236,7 @@ class Application(Gtk.Window):
                 for appID, label, command in torrentApps.listApps():
                     if appID == selAppID:
                         selCommand = command
-                if selCommand == None:
+                if selCommand is None:
                     self.error_mesg(_("TORRENT_APP_NOT_FOUND"),
                                     _("CHECK_CONFIG"))
             else:
@@ -1248,7 +1249,7 @@ class Application(Gtk.Window):
                     if os.path.exists(path) and os.path.isfile(path) and os.access(path, os.EX_OK):
                         expath = path
                         break
-                if expath == None:
+                if expath is None:
                     self.error_mesg(_("TORRENT_APP_NOT_FOUND"),
                                     _("CHECK_CONFIG"))
         except:
@@ -1293,7 +1294,7 @@ class Application(Gtk.Window):
             self.load_search_plugin_from_path(self.options.add_plugin)
         not_confirmed = []
         for i in self.search_plugins:
-            if i.require_auth and not i.ID in self.config["confirmed_plugins"]:
+            if i.require_auth and i.ID not in self.config["confirmed_plugins"]:
                 not_confirmed.append(i)
         if not_confirmed:
             self.confirm_plugins(not_confirmed)
@@ -1313,7 +1314,7 @@ class Application(Gtk.Window):
             exc.handle()
 
     def add_result(self, plugin, result):
-        if not plugin in self.search_plugins:
+        if plugin not in self.search_plugins:
             return
         self.results_widget.append(plugin, result)
         del result
@@ -1369,7 +1370,7 @@ class Application(Gtk.Window):
         self.decrease_searches_to_clean()
 
     def error_mesg(self, mesg, submesg=""):
-        d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_ERROR)
+        d = Gtk.MessageDialog(self, 0, Gtk.MessageType.ERROR)
         d.set_title(_("ERROR"))
         d.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
@@ -1380,7 +1381,7 @@ class Application(Gtk.Window):
         d.destroy()
 
     def info_mesg(self, mesg, submesg=""):
-        d = Gtk.MessageDialog(self, 0, Gtk.MESSAGE_INFO)
+        d = Gtk.MessageDialog(self, 0, Gtk.MessageType.INFO)
         d.set_title(_("INFORMATION"))
         d.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
         d.set_markup("<span size='large'><b>%s</b></span>" % mesg)
@@ -1426,7 +1427,7 @@ class Application(Gtk.Window):
         self._search_id += 1
 
     def get_plugin_credentials(self, plugin, failed=False):
-        if not plugin.ID in self._plugins_credentials:
+        if plugin.ID not in self._plugins_credentials:
             if plugin.ID in self.auth_memory:
                 self._plugins_credentials[plugin.ID] = self.auth_memory[plugin.ID]
             else:
@@ -1452,7 +1453,7 @@ class Application(Gtk.Window):
         self.download_manager.append(result)
 
     def notify_search_finished(self, plugin):
-        if not plugin in self.search_plugins:
+        if plugin not in self.search_plugins:
             return
         self.nb_plugins_search_finished += 1
         if self.nb_plugins_search_finished == self.plugins_count and len(self.results_widget) == 0:
@@ -1480,7 +1481,7 @@ class Application(Gtk.Window):
                 old_plugin_ids.append(i.ID)
             self.load_search_plugins()
             for i in self.search_plugins:
-                if i.default_disable and not i.ID in old_plugin_ids:
+                if i.default_disable and i.ID not in old_plugin_ids:
                     i.enabled = False  # TODO: Add notification dialog about default disabled plugins
 
     def run(self):

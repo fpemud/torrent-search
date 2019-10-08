@@ -25,9 +25,8 @@ class TorrentbitPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
     def _run_search(self, pattern, page=1, href=None):
-        if href == None:
-            href = "http://www.torrentbit.net/search/?torrent=" + \
-                urllib.parse.quote_plus(pattern)
+        if href is None:
+            href = "http://www.torrentbit.net/search/?torrent=" + urllib.parse.quote_plus(pattern)
         resp, content = self.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         td = htmltools.find_elements(tree.getRootElement(), "td", id="main")[0]
@@ -35,7 +34,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
             h = htmltools.find_elements(td, "h1")[0]
             data = h.getContent().rstrip().lstrip()
             i = len(data)-1
-            while i >= 0 and not data[i] in "0123456789":
+            while i >= 0 and data[i] not in "0123456789":
                 i -= 1
             j = i
             while j >= 0 and data[j] in "0123456789":

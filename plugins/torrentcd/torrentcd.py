@@ -41,7 +41,7 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         titles = TorrentSearch.htmltools.find_elements(
             tree.getRootElement(), "h2")
         i = 0
-        while not "site results" in titles[i].getContent():
+        while "site results" not in titles[i].getContent():
             i += 1
         header = titles[i]
         self.results_count = int(header.getContent().split(" ")[0])
