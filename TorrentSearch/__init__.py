@@ -77,22 +77,9 @@ class Searchbar(Gtk.HBox):
         img.set_from_stock(Gtk.STOCK_CLEAR, Gtk.IconSize.BUTTON)
         self.clear_button.set_image(img)
         self.pack_start(self.clear_button, False, False, 0)
-        self.clear_button.connect("clicked", lambda w: self.clear_history())
         self.search_button.connect('clicked', lambda w: self.run_search())
         self.search_entry.connect('activate', lambda w: self.run_search())
-        self.stop_button.connect(
-            'clicked', lambda w, a: a.stop_search(a.search_plugins), app)
-        self.search_completion = Gtk.EntryCompletion()
-        self.search_entry.set_completion(self.search_completion)
-        self.completion_lb = Gtk.ListStore(str)
-        self.search_completion.set_model(self.completion_lb)
-        self.search_completion.set_text_column(0)
-        self.update_completion()
-
-    def update_completion(self):
-        self.completion_lb.clear()
-        for i in self.search_history:
-            self.completion_lb.append([i])
+        self.stop_button.connect('clicked', lambda w, a: a.stop_search(a.search_plugins), app)
 
     def focus_entry(self):
         self.search_entry.grab_focus()
@@ -104,32 +91,11 @@ class Searchbar(Gtk.HBox):
         while "  " in pattern:
             pattern = pattern.replace("  ", " ")
         pattern = pattern.lower()
-        self.add_to_history(pattern)
         self._app.run_search(pattern)
         self.focus_entry()
 
     def set_pattern(self, pattern):
         self.search_entry.set_text(pattern)
-
-    def _get_search_history(self):
-        return self._app.config["search_history"]
-
-    def _set_search_history(self, value):
-        self._app.config["search_history"] = value
-    search_history = property(_get_search_history, _set_search_history)
-
-    def clear_history(self):
-        self.search_history = []
-        self.update_completion()
-        self._app.info_mesg(_("HISTORY_CLEARED"))
-        self.focus_entry()
-
-    def add_to_history(self, pattern):
-        l = self.search_history
-        if pattern not in l:
-            l.insert(0, pattern)
-            self.search_history = l[:100]
-            self.update_completion()
 
 
 class ResultsWidget(Gtk.ScrolledWindow):
@@ -993,19 +959,21 @@ class TorrentDetailsLoadingDialog(Gtk.Window):
 
 
 class Application(Gtk.Window):
+
     def __init__(self, options):
         Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
+
         self.options = options
-        self.categories = categories.CategoriesList(os.path.join(options.share_dir, UNIXNAME, "categories.xml"))
-        self._plugins_credentials = {}
-        self.cleanup_timer = None
+
+        self.categories = categories.CategoriesList(os.path.join(options.share_dir, APPID, "categories.xml"))
+        self.config = config.AppConfig(self)
+
         self._tempfiles = []
         self._search_id = 0
         self.comments_loading_timer = 0
         self.searches_to_clean_lock = _thread.allocate_lock()      # FIXME
         self.searches_to_clean = 0
         self.search_pattern = ""
-        self.config = config.AppConfig(self)
         self.auth_memory = auth.AuthMemory(self)
         self.auth_dialog = auth.AuthDialog(self)
         self.config["name_does_not_contain"] = ""
@@ -1014,7 +982,6 @@ class Application(Gtk.Window):
         icontheme.load_icons(options.share_dir)
         self.set_icon_name("torrent-search")
         self.load_search_plugins()
-#        Gtk.Window.__init__(self)
         self._accel_group = Gtk.AccelGroup()
         self.add_accel_group(self._accel_group)
         self._maximized = False
@@ -1152,8 +1119,6 @@ class Application(Gtk.Window):
         if plugin not in self.search_plugins:
             return
         del self.auth_memory[plugin.ID]
-        if plugin.ID in self._plugins_credentials:
-            del self._plugins_credentials[plugin.ID]
         plugin.credentials = self.get_plugin_credentials(plugin, True)
         plugin.search(self.search_pattern)
 
@@ -1260,8 +1225,6 @@ class Application(Gtk.Window):
             self.results_widget.refilter()
         if key == "filter_duplicates":
             self.results_widget.refilter_duplicates()
-        if key == "search_history":
-            self.searchbar.update_completion()
 
     def get_tempfile(self):
         fd, filename = tempfile.mkstemp()
@@ -1392,9 +1355,6 @@ class Application(Gtk.Window):
         d.destroy()
 
     def ext_run_search(self, pattern):
-        if self.cleanup_timer:
-            GObject.source_remove(self.cleanup_timer)
-            self.cleanup_timer = None
         self.show_all()
         self.present()
         if pattern:
@@ -1427,18 +1387,13 @@ class Application(Gtk.Window):
         self._search_id += 1
 
     def get_plugin_credentials(self, plugin, failed=False):
-        if plugin.ID not in self._plugins_credentials:
-            if plugin.ID in self.auth_memory:
-                self._plugins_credentials[plugin.ID] = self.auth_memory[plugin.ID]
-            else:
-                res = self.auth_dialog.run(plugin, failed)
-                if res:
-                    username, password, remember = res
-                    self._plugins_credentials[plugin.ID] = (username, password)
-                    if remember:
-                        self.auth_memory[plugin.ID] = (username, password)
-        if plugin.ID in self._plugins_credentials:
-            return self._plugins_credentials[plugin.ID]
+        if plugin.ID not in self.auth_memory:
+            res = self.auth_dialog.run(plugin, failed)
+            if res:
+                username, password, remember = res
+                self.auth_memory[plugin.ID] = (username, password)
+        if plugin.ID in self.auth_memory:
+            return self.auth_memory[plugin.ID]
         else:
             plugin.enabled = False
             return None
@@ -1529,8 +1484,7 @@ class Application(Gtk.Window):
         self.searches_to_clean_lock.acquire()
         self._searches_to_clean = value
         self.searches_to_clean_lock.release()
-    searches_to_clean = property(
-        _get_searches_to_clean, _set_searches_to_clean)
+    searches_to_clean = property(_get_searches_to_clean, _set_searches_to_clean)
 
     def increase_searches_to_clean(self):
         self.searches_to_clean_lock.acquire()

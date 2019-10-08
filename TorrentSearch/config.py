@@ -41,7 +41,6 @@ CONFIG_KEYS = {
     "config_dialog_width": ("window_pos/config_dialog_width", "int", 1),
     "config_dialog_height": ("window_pos/config_dialog_height", "int", 400),
     "window_maximized": ("window_pos/maximized", "bool", False),
-    "search_history": ("search_history", "string_list", []),
     "disabled_plugins": ("disabled_plugins", "string_list", []),
     "hide_zero_seeders": ("hide_zero_seeders", "bool", False),
     "min_size_enable": ("min_size_enable", "bool", False),

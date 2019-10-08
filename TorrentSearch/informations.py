@@ -3,9 +3,9 @@
 
 VERSION = "0.11.2"
 
-APPNAME = "Torrent Search"
+APPID = "torrent-search"
 
-UNIXNAME = "torrent-search"
+APPNAME = "Torrent Search"
 
 LICENSE = """
     Torrent Search is free software: you can redistribute it and/or modify
@@ -23,11 +23,11 @@ LICENSE = """
 """
 
 AUTHORS = [
-    "Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>"
+    "Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>",
 ]
 
 DOCUMENTERS = [
-    "Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>"
+    "Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>",
 ]
 
 TRANSLATOR_CREDITS = """
@@ -41,8 +41,9 @@ TRANSLATOR_CREDITS = """
     Svenska : Rickard Hedlund <bigricke@hotmail.com>
 """
 
-ARTISTS = ["Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>",
-           "VistaICO <http://www.vistaico.com/>"
+ARTISTS = [
+    "Gwendal Le Bihan <gwendal.lebihan.dev@gmail.com>",
+    "VistaICO <http://www.vistaico.com/>",
 ]
 
 COPYRIGHT = "Copyright (C) 2010-2012 Gwendal Le Bihan"

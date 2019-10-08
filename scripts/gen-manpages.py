@@ -85,14 +85,14 @@ class ManFormatter(optparse.IndentedHelpFormatter):
 
 
 def format_options(lang):
-    translation = gettext.translation(UNIXNAME, os.path.join(PATH, "share", "locale"), [lang])
+    translation = gettext.translation(APPID, os.path.join(PATH, "share", "locale"), [lang])
     translation.install()
     optparser = OptionParser()
     return optparser.format_option_help(ManFormatter())
 
 
 def format_string(s, lang):
-    translation = gettext.translation(UNIXNAME, os.path.join(PATH, "share", "locale"), [lang])
+    translation = gettext.translation(APPID, os.path.join(PATH, "share", "locale"), [lang])
     data = s
     while "%%" in data:
         i = data.index("%%")

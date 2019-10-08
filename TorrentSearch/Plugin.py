@@ -33,6 +33,8 @@ from gi.repository import Gtk
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+from .constants import *
+
 
 class TorrentResultComment(object):
     def __init__(self, content, comment_date=None, user_name="", user_url=""):
@@ -598,17 +600,17 @@ class Plugin(object):
     icon = property(_get_icon, _set_icon)
 
     def _get_enabled(self):
-        return  self.ID not in self._app.config["disabled_plugins"]
+        return self.ID not in self._app.config["disabled_plugins"]
 
     def _set_enabled(self, value):
-        l = self._app.config["disabled_plugins"]
+        tl = self._app.config["disabled_plugins"]
         if value:
-            while self.ID in l:
-                i = l.index(self.ID)
-                del l[i]
+            while self.ID in tl:
+                i = tl.index(self.ID)
+                del tl[i]
         else:
-            l.append(self.ID)
-        self._app.config["disabled_plugins"] = l
+            tl.append(self.ID)
+        self._app.config["disabled_plugins"] = tl
 
     enabled = property(_get_enabled, _set_enabled)
 
@@ -717,9 +719,9 @@ class Plugin(object):
     def _do_search(self, pattern):
         try:
             if self.require_auth:
-                if self.login_cookie == None:
+                if self.login_cookie is None:
                     self.login_cookie = self._try_login()
-                if self.login_cookie == None:
+                if self.login_cookie is None:
                     self._login_failed()
                     return
             self.login_status = LOGIN_STATUS_OK
@@ -747,7 +749,7 @@ def check_plugin_dtd(tree, dtd, filename):
 def parse_metadata(app, filename):
     res = {}
     dtd = libxml2.parseDTD(None, os.path.join(
-        app.options.share_dir, UNIXNAME, "dtds", "torrent-search-plugin.dtd"))
+        app.options.share_dir, APPID, "dtds", "torrent-search-plugin.dtd"))
     tree = libxml2.parseFile(filename)
     check_plugin_dtd(tree, dtd, filename)
     root = tree.getRootElement()

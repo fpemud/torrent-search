@@ -129,7 +129,7 @@ class AuthMemory(object):
                 username = child.content
             if child.name == "password":
                 password = child.content
-            child = child.__next__                # FIXME
+            child = child.next
         self._auths[plugin] = (username, password)
 
     def _load(self):
@@ -141,6 +141,6 @@ class AuthMemory(object):
             while child:
                 if child.name == "auth":
                     self._load_auth(child)
-                child = child.__next__             # FIXME
+                child = child.next
         except:
             pass
