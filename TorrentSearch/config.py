@@ -178,27 +178,20 @@ class GeneralPreferencesPage(Gtk.VBox):
         table.set_col_spacings(10)
         table.set_row_spacings(10)
         f.add(table)
-        self.torrent_save_in_folder_rb = Gtk.RadioButton(
-            None, _("SAVE_IN_FOLDER"))
-        table.attach(self.torrent_save_in_folder_rb, 0, 1,
-                     0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
-        self.torrent_save_in_folder_fs = Gtk.FileChooserButton(
-            _("SELECT_FOLDER"))
-        self.torrent_save_in_folder_fs.set_action(
-            Gtk.FILE_CHOOSER_ACTION_SELECT_FOLDER)
+        self.torrent_save_in_folder_rb = Gtk.RadioButton(None, _("SAVE_IN_FOLDER"))
+        table.attach(self.torrent_save_in_folder_rb, 0, 1, 0, 1, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
+        self.torrent_save_in_folder_fs = Gtk.FileChooserButton(_("SELECT_FOLDER"))
+        self.torrent_save_in_folder_fs.set_action(Gtk.FileChooserAction.SELECT_FOLDER)
         table.attach(self.torrent_save_in_folder_fs, 1, 2, 0, 1, yoptions=0)
         self.torrent_save_in_folder_fs.set_sensitive(False)
-        self.torrent_use_standard_app_rb = Gtk.RadioButton(
-            self.torrent_save_in_folder_rb, _("USE_STANDARD_APP"))
-        table.attach(self.torrent_use_standard_app_rb, 0,
-                     1, 1, 2, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
+        self.torrent_use_standard_app_rb = Gtk.RadioButton(self.torrent_save_in_folder_rb, _("USE_STANDARD_APP"))
+        table.attach(self.torrent_use_standard_app_rb, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
         self.torrent_use_standard_app_cb = Gtk.ComboBox()
         table.attach(self.torrent_use_standard_app_cb, 1, 2, 1, 2, yoptions=0)
         self.torrent_use_standard_app_cb_ls = Gtk.ListStore(str, str)
-        self.torrent_use_standard_app_cb.set_model(
-            self.torrent_use_standard_app_cb_ls)
+        self.torrent_use_standard_app_cb.set_model(self.torrent_use_standard_app_cb_ls)
         r = Gtk.CellRendererText()
-        self.torrent_use_standard_app_cb.pack_start(r)
+        self.torrent_use_standard_app_cb.pack_start(r, False)
         self.torrent_use_standard_app_cb.add_attribute(r, "text", 1)
         self.torrent_use_standard_app_cb.set_sensitive(False)
         for appID, label, command in torrentApps.listApps():
@@ -352,7 +345,9 @@ class PluginsPreferencesPage(Gtk.ScrolledWindow):
         l = []
         for i in app.search_plugins:
             l.append(i)
-        l.sort(lambda a, b: cmp(a.TITLE.lower(), b.TITLE.lower()))
+        def _getkey(a):
+            return a.TITLE.lower()
+        l.sort(key=_getkey)
         for i in l:
             self.lb.append((i, i.TITLE))
         self.tv.connect('button_press_event', self.on_button_press_event)

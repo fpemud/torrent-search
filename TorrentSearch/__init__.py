@@ -1204,11 +1204,10 @@ class Application(Gtk.Window):
 
     def _on_window_configure_event(self, window, event):
         if not self._maximized:
-            if self.window:
-                self.config['window_width'] = event.width
-                self.config['window_height'] = event.height
-                self.config['window_x'] = event.x
-                self.config['window_y'] = event.y
+            self.config['window_width'] = event.width
+            self.config['window_height'] = event.height
+            self.config['window_x'] = event.x
+            self.config['window_y'] = event.y
 
     def add_accelerator(self, widget, signal, *args):
         widget.add_accelerator(signal, self._accel_group, *args)
@@ -1269,10 +1268,7 @@ class Application(Gtk.Window):
         return fd, filename
 
     def _on_window_state_event(self, window, event):
-        if event.new_window_state & Gtk.gdk.WINDOW_STATE_MAXIMIZED:
-            self._maximized = True
-        else:
-            self._maximized = False
+        self._maximized = window.is_maximized()
         self.config['window_maximized'] = self._maximized
 
     def rec_mkdir(self, path):
@@ -1517,9 +1513,9 @@ class Application(Gtk.Window):
             return False
 
     def quit(self):
-        self.hide()
-        while Gtk.gdk.events_pending():
-            Gtk.main_iteration()
+        # self.hide()
+        # while Gtk.gdk.events_pending():
+        #     Gtk.main_iteration()
         Gtk.main_quit()
 
     def _get_searches_to_clean(self):
