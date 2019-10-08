@@ -541,6 +541,7 @@ class Plugin(object):
         self.login_cookie_lock.acquire()
         self._login_cookie = value
         self.login_cookie_lock.release()
+
     login_cookie = property(_get_login_cookie, _set_login_cookie)
 
     def _get_credentials(self):
@@ -553,12 +554,14 @@ class Plugin(object):
         self.credentials_lock.acquire()
         self._credentials = value
         self.credentials_lock.release()
+
     credentials = property(_get_credentials, _set_credentials)
 
     def _set_icon_url(self, url):
         if url:
             _thread.start_new_thread(self._try_load_icon, (url,))    # FIXME
             GObject.timeout_add(100, self._watch_load_icon)
+
     icon_url = property(None, _set_icon_url)
 
     def _watch_load_icon(self):
@@ -591,6 +594,7 @@ class Plugin(object):
         self.icon_lock.acquire()
         self._icon = value
         self.icon_lock.release()
+
     icon = property(_get_icon, _set_icon)
 
     def _get_enabled(self):
@@ -605,6 +609,7 @@ class Plugin(object):
         else:
             l.append(self.ID)
         self._app.config["disabled_plugins"] = l
+
     enabled = property(_get_enabled, _set_enabled)
 
     def _get_results_count(self):
@@ -618,6 +623,7 @@ class Plugin(object):
         if type(value) == int:
             self._results_count = value
         self.results_count_lock.release()
+
     results_count = property(_get_results_count, _set_results_count)
 
     def stop(self):
@@ -626,9 +632,6 @@ class Plugin(object):
             time.sleep(0.1)
         while len(self.new_results):
             del self.new_results[0]
-
-    def download(self, link):
-        self._app.download(link)
 
     def _get_search_finished(self):
         self.search_finished_lock.acquire()
@@ -640,6 +643,7 @@ class Plugin(object):
         self.search_finished_lock.acquire()
         self._search_finished = value
         self.search_finished_lock.release()
+
     search_finished = property(_get_search_finished, _set_search_finished)
 
     def _get_stop_search(self):
@@ -652,6 +656,7 @@ class Plugin(object):
         self.stop_search_lock.acquire()
         self._stop_search = value
         self.stop_search_lock.release()
+
     stop_search = property(_get_stop_search, _set_stop_search)
 
     def _get_login_status(self):
@@ -664,6 +669,7 @@ class Plugin(object):
         self.login_status_lock.acquire()
         self._login_status = value
         self.login_status_lock.release()
+
     login_status = property(_get_login_status, _set_login_status)
 
     def search(self, pattern):
