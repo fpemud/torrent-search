@@ -15,6 +15,7 @@ from .informations import *
 from .exceptions import *
 from gi.repository import GObject
 from gi.repository import Gtk
+
 """
     This file is part of Torrent Search.
 
@@ -31,9 +32,6 @@ from gi.repository import Gtk
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
-
-import gi
-gi.require_version('Gtk', '3.0')
 
 
 class TorrentResultComment(object):
@@ -297,6 +295,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
 
 
 class PluginResult(object):
+
     def __init__(self, label, date, size, seeders=-1, leechers=-1, magnet_link=None, hashvalue=None, category="", nb_comments=0, orig_url=""):
         self.size = size
         self.label = label

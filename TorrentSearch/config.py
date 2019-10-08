@@ -18,15 +18,14 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import time
+import libxml2
+import webbrowser
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-import os
-import time
 from . import torrentApps
-import libxml2
-import webbrowser
-import _codecs
 from .informations import *
 from .constants import *
 
@@ -142,7 +141,7 @@ class AppConfig(object):
             while child:
                 if child.type == "element":
                     if child.prop('type') == "string":
-                        self._values[child.name] = _codecs.utf_8_decode(child.getContent())[0]
+                        self._values[child.name] = child.getContent().decode("utf-8")[0]
                     if child.prop('type') == "int":
                         self._values[child.name] = int(child.getContent())
                     if child.prop('type') == "bool":
@@ -153,8 +152,7 @@ class AppConfig(object):
                         item = child.children
                         while item:
                             if item.name == "item":
-                                res.append(_codecs.utf_8_decode(
-                                    item.getContent())[0])
+                                res.append(item.getContent().decode("utf-8")[0])
                             item = item.__next__            # FIXME
                         self._values[child.name] = res
                 child = child.__next__                      # FIXME

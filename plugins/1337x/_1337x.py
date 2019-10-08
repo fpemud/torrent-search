@@ -16,8 +16,7 @@ import TorrentSearch.htmltools
 class _1337XPluginResult(TorrentSearch.Plugin.PluginResult):
 
     def __init__(self, label, date, size, seeders, leechers, torrent_url, magnet_url, category, nb_comments, details_page_url, comments, poster, filelist):
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, magnet_url, category=category, nb_comments=nb_comments)
+        TorrentSearch.Plugin.PluginResult.__init__(self, label, date, size, seeders, leechers, magnet_url, category=category, nb_comments=nb_comments)
         self.torrent_url = torrent_url
         self.details_page_url = details_page_url
         self.comments = comments

@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000031_ahashare" version="0.1.0">
+<plugin id="ahashare" version="0.1.0">
   <title>AhaShare</title>
   <released_time>2011-10-26 17:09:10</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>

@@ -10,7 +10,6 @@ import datetime
 import os
 import time
 import httplib2
-import _codecs
 from TorrentSearch import htmltools
 
 

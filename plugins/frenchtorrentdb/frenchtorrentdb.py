@@ -10,7 +10,6 @@ import datetime
 import os
 import time
 import httplib2
-import _codecs
 import http.client
 import tempfile
 import subprocess

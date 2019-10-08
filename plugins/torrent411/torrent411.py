@@ -10,7 +10,6 @@ import datetime
 import os
 import time
 import httplib2
-import _codecs
 from TorrentSearch import htmltools
 
 
@@ -45,7 +44,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
             href = "http://www.torrent411.com/search/" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.http_queue_request(href)
-        content = _codecs.utf_8_encode(_codecs.latin_1_decode(content)[0])[0]
+        content = content.decode("latin-1")[0].decode("utf-8")[0]
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(htmltools.find_elements(
             tree.getRootElement(), "table", **{'class': 'NB-frame'})[1], "p")[0]
@@ -77,8 +76,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
                 link = urllib.basejoin(
                     "http://www.torrent411.com", link.prop('href'))
                 resp, content = self.http_queue_request(link)
-                content = _codecs.utf_8_encode(
-                    _codecs.latin_1_decode(content)[0])[0]
+                content = content.decode("latin-1")[0].decode("utf-8")[0]
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 table = htmltools.find_elements(
                     itemtree.getRootElement(), "table", **{'cellpadding': '3'})[1]
