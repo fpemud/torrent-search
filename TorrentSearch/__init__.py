@@ -40,7 +40,6 @@ import urllib.parse
 import urllib.error
 import httplib2
 from . import downloads
-from . import icontheme
 import locale
 from . import auth
 from . import categories
@@ -1094,8 +1093,7 @@ class Application(Gtk.Window):
                 torrent_result.load_filelist()
             if not torrent_result.poster_loaded:
                 torrent_result.load_poster()
-            self.comments_loading_timer = GObject.timeout_add(
-                100, self._wait_for_comments, torrent_result)
+            self.comments_loading_timer = GObject.timeout_add(100, self._wait_for_comments, torrent_result)
 
     def _wait_for_comments(self, torrent_result):
         if torrent_result.comments_loaded and torrent_result.filelist_loaded and torrent_result.poster_loaded:
@@ -1153,10 +1151,11 @@ class Application(Gtk.Window):
         return res
 
     def _on_key_press_event(self, widget, event):
-        if event.keyval == Gtk.keysyms.F1:
-            item = self.get_help_item(self.get_focus())
-            self.show_help(item)
-            return True
+        # if event.keyval == Gtk.keysyms.F1:
+        #     item = self.get_help_item(self.get_focus())
+        #     self.show_help(item)
+        #     return True
+        pass
 
     def show_help(self, item=None):
         url = "ghelp:torrent-search"
