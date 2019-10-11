@@ -33,7 +33,7 @@ LOGIN_STATUS_FAILED = 2
 
 APPDATA_PATH = os.path.join(os.getenv('HOME'), ".torrent-search")
 
-DEFAULT_SHARE_PATH = "/usr/share"
+SHARE_PATH = "/usr/share"
 
 BUG_REPORT_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414043"
 

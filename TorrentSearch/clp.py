@@ -20,7 +20,6 @@
 
 import optparse
 from .informations import *
-from .constants import DEFAULT_SHARE_PATH
 
 
 class OptionParser(optparse.OptionParser):
@@ -40,7 +39,5 @@ class OptionParser(optparse.OptionParser):
                                action="store_true", help=_("HELP_NO_PLUGIN_CHECK"))
 
         advanced_group = self.add_option_group(_("ADVANCED_OPTIONS"))
-        advanced_group.add_option("--share-dir", dest="share_dir",
-                                  default=DEFAULT_SHARE_PATH, help=_("PATH_TO_SHARE"))
         advanced_group.add_option("--add-plugin", dest="add_plugin", default="",
                                   help=_("HELP_ADD_PLUGIN"))

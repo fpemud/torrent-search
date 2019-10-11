@@ -106,8 +106,8 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self._stars_icons = {0: None}
         for i in range(1, 6):
             try:
-                self._stars_icons[i] = Gtk.Image.new_from_file(os.path.join(
-                    app.options.share_dir, "torrent-search", "icons", "stars", "%d.png" % i))
+                icon_path = os.path.join(SHARE_PATH, "torrent-search", "icons", "stars", "%d.png" % i)
+                self._stars_icons[i] = Gtk.Image.new_from_file(icon_path)
             except:
                 self._stars_icons[i] = None
         self.set_policy(Gtk.PolicyType.AUTOMATIC, Gtk.PolicyType.AUTOMATIC)
@@ -965,7 +965,7 @@ class Application(Gtk.Window):
 
         self.options = options
 
-        self.categories = categories.CategoriesList(os.path.join(options.share_dir, APPID, "categories.xml"))
+        self.categories = categories.CategoriesList(os.path.join(SHARE_PATH, APPID, "categories.xml"))
         self.config = config.AppConfig(self)
 
         self._tempfiles = []
@@ -979,7 +979,7 @@ class Application(Gtk.Window):
         self.config["name_does_not_contain"] = ""
         self.config["name_contains"] = ""
         self.config.register_listener(self.on_config_changed)
-        icontheme.load_icons(options.share_dir)
+        self.load_icons()
         self.set_icon_name("torrent-search")
         self.load_search_plugins()
         self._accel_group = Gtk.AccelGroup()
@@ -1495,3 +1495,20 @@ class Application(Gtk.Window):
         self.searches_to_clean_lock.acquire()
         self._searches_to_clean -= 1
         self.searches_to_clean_lock.release()
+
+    def load_icons(self):
+        path = os.path.join(SHARE_PATH, "torrent-search", "icons")
+        sizes = [16, 22, 32, 48, 64, 128]
+        for size in sizes:
+            sizepath = os.path.join(path, "%dx%d" % (size, size))
+            try:
+                for filename in os.listdir(sizepath):
+                    try:
+                        fullfilename = os.path.join(sizepath, filename)
+                        iconname, ext = filename.split(".")
+                        if ext == "png":
+                            gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.Image.new_from_file(fullfilename))
+                    except:
+                        pass
+            except:
+                pass

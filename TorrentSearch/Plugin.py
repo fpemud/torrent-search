@@ -748,8 +748,7 @@ def check_plugin_dtd(tree, dtd, filename):
 
 def parse_metadata(app, filename):
     res = {}
-    dtd = libxml2.parseDTD(None, os.path.join(
-        app.options.share_dir, APPID, "dtds", "torrent-search-plugin.dtd"))
+    dtd = libxml2.parseDTD(None, os.path.join(DEFAULT_SHARE_DIR, APPID, "dtds", "torrent-search-plugin.dtd"))
     tree = libxml2.parseFile(filename)
     check_plugin_dtd(tree, dtd, filename)
     root = tree.getRootElement()

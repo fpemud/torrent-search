@@ -211,7 +211,7 @@ class DownloadManager(Gtk.VBox):
 
     def _do_download(self, item, url=None, cookie=None, init_url=None, retry=0):
         # TODO: Handle download by magnet link
-        if url == None:
+        if url is None:
             item.status = DOWNLOAD_TORRENT_STATUS_GETTING_LINK
             try:
                 url = item.get_link()
@@ -306,7 +306,7 @@ class DownloadManager(Gtk.VBox):
                             command = com
                 else:
                     command = self._app.config["torrent_custom_app"]
-                if command == None:
+                if command is None:
                     return
                 file_param = False
                 for i in ["%f", "%F", "%u", "%U"]:
