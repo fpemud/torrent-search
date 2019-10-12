@@ -14,4 +14,4 @@ install:
 	find "$(DESTDIR)/$(prefix)/share/fpemud-refsystem" -type f | xargs chmod 644
 	find "$(DESTDIR)/$(prefix)/share/fpemud-refsystem" -type d | xargs chmod 755
 
-.PHONY: all clean install uninstall
+.PHONY: install
