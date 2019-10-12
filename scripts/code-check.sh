@@ -1,7 +1,7 @@
 #!/bin/bash
 
 ROOTDIR=$(realpath $(dirname $(realpath "$0"))/..)
-FILES="${FILES} $(find ${ROOTDIR}/TorrentSearch -name '*.py' | tr '\n' ' ')"
+FILES="${FILES} $(find ${ROOTDIR}/lib -name '*.py' | tr '\n' ' ')"
 ERRFLAG=0
 
 OUTPUT=`pyflakes ${FILES} 2>&1`

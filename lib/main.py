@@ -33,6 +33,7 @@ sys.path.append("/usr/lib64/torrent-search")
 import lang
 import AboutDialog
 import wnd_menus
+import wnd_preference
 import config
 import Plugin
 import _thread
@@ -46,6 +47,7 @@ import auth
 import categories
 import HttpQueue
 import webbrowser
+import torrentApps
 from informations import *
 from constants import *
 from exceptions import *
@@ -1435,7 +1437,7 @@ class Application(Gtk.Window):
         self.check_config()
         if self.config["check_plugins_updates"] and not self.options.no_plugins_check:
             self.check_plugin_updates()
-        self.preferences_dialog = config.PreferencesDialog(self)
+        self.preferences_dialog = wnd_preference.PreferencesDialog(self)
         if self.options.search_pattern:
             self.run_search(self.options.search_pattern)
             self.searchbar.set_pattern(self.options.search_pattern)
