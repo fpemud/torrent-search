@@ -158,8 +158,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
             self.set_main_mesg(_("DONE"))
             self.set_sub_mesg("")
             self.cancel_button.set_sensitive(False)
-            GObject.timeout_add_seconds(
-                1, self.response, Gtk.ResponseType.CLOSE)
+            GObject.timeout_add_seconds(1, self.response, Gtk.ResponseType.CLOSE)
             return False
         if self.status == 4:
             self.pb.set_fraction(1)
@@ -172,8 +171,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
             self.set_main_mesg(_("FAILED"))
             self.set_sub_mesg("")
             self.cancel_button.set_sensitive(False)
-            GObject.timeout_add_seconds(
-                1, self.response, Gtk.ResponseType.CLOSE)
+            GObject.timeout_add_seconds(1, self.response, Gtk.ResponseType.CLOSE)
             return False
         if self.status == -2:
             return False
@@ -216,8 +214,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
                 url = i["download_url"]
                 resp, content = c.request(url)
                 if resp.status == 200:
-                    path = os.path.join(
-                        APPDATA_PATH, "search-plugins", i["id"])
+                    path = os.path.join(APPDATA_PATH, "search-plugins", i["id"])
                     if not os.path.exists(path):
                         self._app.rec_mkdir(path)
                     metafile = os.path.join(path, "metadata.xml")

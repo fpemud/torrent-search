@@ -5,4 +5,3 @@ _arguments \
   '(--version -v)'{-v,--version}'[show version]' \
   '--no-plugins-check [do not check for new plugins]' \
   '(-s --search)'{-s,--search=}'[search for pattern on startup]:*:search' \
-  '--add-plugin=[add a plugin from a custom path]:add_plugin folder:_files -/' \

@@ -1247,14 +1247,11 @@ class Application(Gtk.Window):
             self.search_plugins = []
         while len(self.search_plugins):
             del self.search_plugins[0]
-        plugins_path = os.path.join(APPDATA_PATH, "search-plugins")
-        self.rec_mkdir(plugins_path)
-        for i in os.listdir(plugins_path):
-            path = os.path.join(plugins_path, i)
-            if os.path.isdir(path):
-                self.load_search_plugin_from_path(path)
-        if self.options.add_plugin:
-            self.load_search_plugin_from_path(self.options.add_plugin)
+        if os.path.exists(PATH_PLUGIN_DIR):
+            for i in os.listdir(PATH_PLUGIN_DIR):
+                path = os.path.join(PATH_PLUGIN_DIR, i)
+                if os.path.isdir(path):
+                    self.load_search_plugin_from_path(path)
         not_confirmed = []
         for i in self.search_plugins:
             if i.require_auth and i.ID not in self.config["confirmed_plugins"]:

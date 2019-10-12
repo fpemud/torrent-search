@@ -34,7 +34,7 @@ LOGIN_STATUS_FAILED = 2
 APPDATA_PATH = os.path.join(os.getenv('HOME'), ".torrent-search")
 
 PATH_ICONS_DIR = "/usr/share/torrent-search/icons"
-
+PATH_PLUGIN_DIR = "/usr/lib64/plugins"
 PATH_CATEGORIES_FILE = "/usr/share/torrent-search/categories.xml"
 
 BUG_REPORT_PAGE = "http://sourceforge.net/tracker/?func=add&group_id=337561&atid=1414043"
