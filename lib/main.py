@@ -32,7 +32,7 @@ from gi.repository import GObject
 sys.path.append("/usr/lib64/torrent-search")
 import lang
 import AboutDialog
-import menus
+import wnd_menus
 import config
 import Plugin
 import _thread
@@ -49,14 +49,6 @@ import webbrowser
 from informations import *
 from constants import *
 from exceptions import *
-
-
-class MainMenu(Gtk.MenuBar):
-    def __init__(self, app):
-        Gtk.MenuBar.__init__(self)
-        self.add(menus.FileMenu(app))
-        self.add(menus.EditMenu(app))
-        self.add(menus.HelpMenu(app))
 
 
 class Searchbar(Gtk.HBox):
@@ -993,7 +985,7 @@ class Application(Gtk.Window):
         self.set_title(APPNAME)
         vbox = Gtk.VBox()
         self.add(vbox)
-        self.mainmenu = MainMenu(self)
+        self.mainmenu = wnd_menus.MainMenu(self)
         vbox.pack_start(self.mainmenu, False, False, 0)
         mainbox = Gtk.VBox()
         vbox.pack_start(mainbox, False, False, 0)

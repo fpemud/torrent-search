@@ -25,6 +25,14 @@ import webbrowser
 from constants import *
 
 
+class MainMenu(Gtk.MenuBar):
+    def __init__(self, app):
+        Gtk.MenuBar.__init__(self)
+        self.add(FileMenu(app))
+        self.add(EditMenu(app))
+        self.add(HelpMenu(app))
+
+
 class HelpMenu(Gtk.MenuItem):
     def __init__(self, app):
         Gtk.MenuItem.__init__(self, _("HELP_MENU_LABEL"))
