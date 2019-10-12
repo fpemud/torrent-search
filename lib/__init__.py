@@ -105,7 +105,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self._stars_icons = {0: None}
         for i in range(1, 6):
             try:
-                icon_path = os.path.join(SHARE_PATH, "torrent-search", "icons", "stars", "%d.png" % i)
+                icon_path = os.path.join(PATH_ICONS_DIR, "stars", "%d.png" % i)
                 self._stars_icons[i] = Gtk.Image.new_from_file(icon_path)
             except:
                 self._stars_icons[i] = None
@@ -964,7 +964,7 @@ class Application(Gtk.Window):
 
         self.options = options
 
-        self.categories = categories.CategoriesList(os.path.join(SHARE_PATH, APPID, "categories.xml"))
+        self.categories = categories.CategoriesList(PATH_CATEGORIES_FILE)
         self.config = config.AppConfig(self)
 
         self._tempfiles = []
@@ -1496,10 +1496,9 @@ class Application(Gtk.Window):
         self.searches_to_clean_lock.release()
 
     def load_icons(self):
-        path = os.path.join(SHARE_PATH, "torrent-search", "icons")
         sizes = [16, 22, 32, 48, 64, 128]
         for size in sizes:
-            sizepath = os.path.join(path, "%dx%d" % (size, size))
+            sizepath = os.path.join(PATH_ICONS_DIR, "%dx%d" % (size, size))
             try:
                 for filename in os.listdir(sizepath):
                     try:
