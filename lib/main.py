@@ -29,25 +29,26 @@ gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GObject
 
-from . import lang
-from . import AboutDialog
-from . import menus
-from . import config
-from . import Plugin
+sys.path.append("/usr/lib64/torrent-search")
+import lang
+import AboutDialog
+import menus
+import config
+import Plugin
 import _thread
 import urllib.request
 import urllib.parse
 import urllib.error
 import httplib2
-from . import downloads
+import downloads
 import locale
-from . import auth
-from . import categories
-from . import HttpQueue
+import auth
+import categories
+import HttpQueue
 import webbrowser
-from .informations import *
-from .constants import *
-from .exceptions import *
+from informations import *
+from constants import *
+from exceptions import *
 
 
 class MainMenu(Gtk.MenuBar):

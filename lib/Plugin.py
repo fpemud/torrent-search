@@ -10,9 +10,9 @@ import imp
 import libxml2
 import os
 import _thread
-from .constants import *
-from .informations import *
-from .exceptions import *
+from constants import *
+from informations import *
+from exceptions import *
 from gi.repository import GObject
 from gi.repository import Gtk
 
@@ -33,7 +33,7 @@ from gi.repository import Gtk
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from .constants import *
+from constants import *
 
 
 class TorrentResultComment(object):

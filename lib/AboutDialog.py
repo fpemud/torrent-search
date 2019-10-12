@@ -22,7 +22,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import webbrowser
-from .informations import *
+from informations import *
 
 
 def on_url_activated(dialog, url, data):

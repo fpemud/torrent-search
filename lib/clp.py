@@ -19,7 +19,7 @@
 """
 
 import optparse
-from .informations import *
+from informations import *
 
 
 class OptionParser(optparse.OptionParser):

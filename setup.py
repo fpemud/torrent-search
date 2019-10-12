@@ -49,6 +49,9 @@ def list_share_files():
     return res
 
 
+# We use Makefile instead
+assert False
+
 setup(name="torrent-search",
       version="0.11.2",
       author="Gwendal Le Bihan",

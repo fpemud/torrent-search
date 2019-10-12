@@ -25,9 +25,9 @@ import webbrowser
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
-from . import torrentApps
-from .informations import *
-from .constants import *
+import torrentApps
+from informations import *
+from constants import *
 
 CONFIG_KEYS = {
     "torrent_mode": ("torrent_mode", "string", "save_in_folder"),

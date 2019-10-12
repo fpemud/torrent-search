@@ -22,7 +22,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import webbrowser
-from .constants import *
+from constants import *
 
 
 class HelpMenu(Gtk.MenuItem):

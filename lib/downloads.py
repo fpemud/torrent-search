@@ -27,10 +27,10 @@ import http.client
 import urllib.request
 import urllib.parse
 import urllib.error
-from . import torrentApps
+import torrentApps
 import os
 import gzip
-from .constants import *
+from constants import *
 
 
 class DownloadItem(object):

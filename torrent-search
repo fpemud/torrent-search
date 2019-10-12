@@ -3,7 +3,7 @@
 
 """
     This file is part of Torrent Search.
-    
+
     Torrent Search is free software: you can redistribute it and/or modify
     it under the terms of the GNU General Public License as published by
     the Free Software Foundation, either version 3 of the License, or
@@ -23,9 +23,10 @@ import os
 import sys
 import gettext
 import tempfile
-from TorrentSearch import clp
-from TorrentSearch import Application
-from TorrentSearch.DBusHandler import *
+sys.path.append("/usr/lib64/torrent-search")
+import clp
+from main import Application
+from DBusHandler import *
 
 
 if __name__ == '__main__':
