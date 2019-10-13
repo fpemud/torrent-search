@@ -1,20 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import urllib.error
-import urllib.parse
-import urllib.request
-import time
-import imp
-import libxml2
-import os
-from gi.repository import GObject
-from gi.repository import Gtk
-import _thread
-from constants import *
-from informations import *
-import exceptions
-
 """
     This file is part of Torrent Search.
 
@@ -32,7 +18,97 @@ import exceptions
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-from constants import *
+import os
+import imp
+import time
+import libxml2
+import urllib.error
+import urllib.parse
+import urllib.request
+from gi.repository import GObject
+from gi.repository import Gtk
+import _thread
+import constants
+import informations
+import exceptions
+
+
+def load_plugin(app, path):
+    # get metadata.xml file
+    metadata_file = os.path.join(path, "metadata.xml")
+    if not os.path.exists(metadata_file):
+        raise exceptions.PluginFileNotFound(metadata_file)
+    if not os.path.isfile(metadata_file):
+        raise exceptions.PluginFileNotFile(metadata_file)
+    if not os.access(metadata_file, os.R_OK):
+        raise exceptions.PluginFileNotReadable(metadata_file)
+
+    # check metadata.xml file content
+    dtd = libxml2.parseDTD(None, constants.PATH_PLUGIN_DTD_FILE)
+    tree = libxml2.parseFile(metadata_file)
+    if True:
+        ctxt = libxml2.newValidCtxt()
+        messages = []
+        ctxt.setValidityErrorHandler(lambda item, msgs: msgs.append(item), None, messages)
+        if tree.validateDtd(ctxt, dtd) != 1:
+            msg = ""
+            for i in messages:
+                msg += i
+            raise IncorrectPluginMetaFile(metadata_file, msg)
+
+    # get values from metadata.xml file
+    root = tree.getRootElement()
+    metadata = {}
+    metadata["id"] = root.prop("id")
+    metadata["version"] = root.prop("version")
+    metadata["icon_url"] = None
+    metadata["require_auth"] = False
+    metadata["default_disable"] = False
+    child = root.children
+    while child:
+        if child.name == "require_auth":
+            metadata["require_auth"] = (child.getContent() == "true")
+        elif child.name == "default_disable":
+            metadata["default_disable"] = (child.getContent() == "true")
+        elif child.type == "element":
+            metadata[child.name] = child.getContent()
+        child = child.next
+
+    # get plugin module file
+    filename = os.path.join(path, metadata["filename"])
+    if not os.path.exists(filename):
+        raise exceptions.PluginFileNotFound(filename)
+    if not os.path.isfile(filename):
+        raise exceptions.PluginFileNotFile(filename)
+    if not os.access(filename, os.R_OK):
+        raise exceptions.PluginFileNotReadable(filename)
+
+    # create plugin class
+    plugin_class = None
+    try:
+        f = open(filename)
+        m = imp.load_module(metadata["filename"][:-3], f, filename, ('.py', 'r', imp.PY_SOURCE))
+        plugin_class = getattr(m, metadata["classname"])
+    except:
+        raise exceptions.PluginSyntaxError(filename)
+    plugin_class.ID = metadata["id"]
+    plugin_class.TITLE = metadata['title']
+    plugin_class.VERSION = metadata["version"]
+    plugin_class.AUTHOR = metadata["author"]
+    plugin_class.RELEASED_TIME = metadata["released_time"]
+    plugin_class.ICON_URL = metadata["icon_url"]
+    if True:
+        fn = os.path.join(path, "icon.png")
+        if os.path.exists(fn):
+            plugin_class.ICON_FILENAME = fn
+
+    # create plugin object
+    plugin_obj = plugin_class(app)
+    plugin_obj.website_url = metadata["website_url"]
+    plugin_obj.require_auth = metadata["require_auth"]
+    plugin_obj.default_disable = metadata["default_disable"]
+
+    return plugin_obj
 
 
 class TorrentResultComment(object):
@@ -264,55 +340,33 @@ class ResultsList(object):
 
 
 class Plugin(object):
+
+    ID = ""
     TITLE = "No title"
+    VERSION = ""
     AUTHOR = ""
     RELEASED_TIME = ""
+    ICON_URL = None
+    ICON_FILENAME = None
 
     def __init__(self, app):
         self._app = app
-        self.search_finished_lock = _thread.allocate_lock()    # FIXME
-        self.stop_search_lock = _thread.allocate_lock()    # FIXME
+
+        self.credentials = None
+
+        self.login_cookie = None
+        self.login_status = None
+
+        self.stop_search = False
+        self.search_finished = True
+
+
         self.results_count_lock = _thread.allocate_lock()    # FIXME
-        self.icon_lock = _thread.allocate_lock()    # FIXME
-        self.credentials_lock = _thread.allocate_lock()    # FIXME
-        self.login_cookie_lock = _thread.allocate_lock()    # FIXME
-        self.login_status_lock = _thread.allocate_lock()    # FIXME
-        self._login_cookie = None
-        self._credentials = None
-        self._search_finished = True
-        self._stop_search = False
         self._results_count = -1
-        self._icon_url = None
         self.results_loaded = 0
 
     def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         return self._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
-
-    def _get_login_cookie(self):
-        self.login_cookie_lock.acquire()
-        res = self._login_cookie
-        self.login_cookie_lock.release()
-        return res
-
-    def _set_login_cookie(self, value):
-        self.login_cookie_lock.acquire()
-        self._login_cookie = value
-        self.login_cookie_lock.release()
-
-    login_cookie = property(_get_login_cookie, _set_login_cookie)
-
-    def _get_credentials(self):
-        self.credentials_lock.acquire()
-        res = self._credentials
-        self.credentials_lock.release()
-        return res
-
-    def _set_credentials(self, value):
-        self.credentials_lock.acquire()
-        self._credentials = value
-        self.credentials_lock.release()
-
-    credentials = property(_get_credentials, _set_credentials)
 
     # def _set_icon_url(self, url):
     #     if url:
@@ -390,63 +444,26 @@ class Plugin(object):
         while len(self.new_results):
             del self.new_results[0]
 
-    def _get_search_finished(self):
-        self.search_finished_lock.acquire()
-        res = self._search_finished
-        self.search_finished_lock.release()
-        return res
-
-    def _set_search_finished(self, value):
-        self.search_finished_lock.acquire()
-        self._search_finished = value
-        self.search_finished_lock.release()
-
-    search_finished = property(_get_search_finished, _set_search_finished)
-
-    def _get_stop_search(self):
-        self.stop_search_lock.acquire()
-        res = self._stop_search
-        self.stop_search_lock.release()
-        return res
-
-    def _set_stop_search(self, value):
-        self.stop_search_lock.acquire()
-        self._stop_search = value
-        self.stop_search_lock.release()
-
-    stop_search = property(_get_stop_search, _set_stop_search)
-
-    def _get_login_status(self):
-        self.login_status_lock.acquire()
-        res = self._login_status
-        self.login_status_lock.release()
-        return res
-
-    def _set_login_status(self, value):
-        self.login_status_lock.acquire()
-        self._login_status = value
-        self.login_status_lock.release()
-
-    login_status = property(_get_login_status, _set_login_status)
-
     def search(self, pattern):
         if not hasattr(self, "new_results"):
             self.new_results = ResultsList()
         while len(self.new_results):
             del self.new_results[0]
+
         self.search_finished = False
         self.stop_search = False
         self.results_count = -1
         self.results_loaded = 0
-        self.login_status = LOGIN_STATUS_WAITING
+        self.login_status = constants.LOGIN_STATUS_WAITING
+
         _thread.start_new_thread(self._do_search, (pattern,))    # FIXME
         GObject.timeout_add(200, self._check_results)
         GObject.timeout_add(50, self._check_login_status)
 
     def _check_login_status(self):
-        if self.login_status == LOGIN_STATUS_WAITING:
+        if self.login_status == constants.LOGIN_STATUS_WAITING:
             return True
-        if self.login_status == LOGIN_STATUS_FAILED:
+        if self.login_status == constants.LOGIN_STATUS_FAILED:
             self._app.notify_plugin_login_failed(self)
         return False
 
@@ -469,7 +486,7 @@ class Plugin(object):
             self.stop_search = True
 
     def _login_failed(self):
-        self.login_status = LOGIN_STATUS_FAILED
+        self.login_status = constants.LOGIN_STATUS_FAILED
 
     def _do_search(self, pattern):
         try:
@@ -479,7 +496,7 @@ class Plugin(object):
                 if self.login_cookie is None:
                     self._login_failed()
                     return
-            self.login_status = LOGIN_STATUS_OK
+            self.login_status = constants.LOGIN_STATUS_OK
             self._run_search(pattern)
         except:
             pass
@@ -487,84 +504,3 @@ class Plugin(object):
 
     def _run_search(self, pattern):
         pass
-
-
-def check_plugin_dtd(tree, dtd, filename):
-    ctxt = libxml2.newValidCtxt()
-    messages = []
-    ctxt.setValidityErrorHandler(
-        lambda item, msgs: msgs.append(item), None, messages)
-    if tree.validateDtd(ctxt, dtd) != 1:
-        msg = ""
-        for i in messages:
-            msg += i
-        raise IncorrectPluginMetaFile(filename, msg)
-
-
-def parse_metadata(app, filename):
-    res = {}
-    dtd = libxml2.parseDTD(None, os.path.join(DEFAULT_SHARE_DIR, APPID, "dtds", "torrent-search-plugin.dtd"))
-    tree = libxml2.parseFile(filename)
-    check_plugin_dtd(tree, dtd, filename)
-    root = tree.getRootElement()
-    res["id"] = root.prop("id")
-    res["version"] = root.prop("version")
-    res["icon_url"] = None
-    res["require_auth"] = False
-    res["default_disable"] = False
-    child = root.children
-    while child:
-        if child.name == "require_auth":
-            res["require_auth"] = (child.getContent() == "true")
-        elif child.name == "default_disable":
-            res["default_disable"] = (child.getContent() == "true")
-        elif child.type == "element":
-            res[child.name] = child.getContent()
-        child = child.__next__    # FIXME
-    return res
-
-
-def load_plugin(app, path):
-    metadata_file = os.path.join(path, "metadata.xml")
-    if not os.path.exists(metadata_file):
-        raise exceptions.PluginFileNotFound(metadata_file)
-    if not os.path.isfile(metadata_file):
-        raise exceptions.PluginFileNotFile(metadata_file)
-    if not os.access(metadata_file, os.R_OK):
-        raise exceptions.PluginFileNotReadable(metadata_file)
-    metadata = parse_metadata(app, metadata_file)
-
-    filename = os.path.join(path, metadata["filename"])
-    if not os.path.exists(filename):
-        raise exceptions.PluginFileNotFound(filename)
-    if not os.path.isfile(filename):
-        raise exceptions.PluginFileNotFile(filename)
-    if not os.access(filename, os.R_OK):
-        raise exceptions.PluginFileNotReadable(filename)
-    try:
-        f = open(filename)
-        m = imp.load_module(metadata["filename"][:-3], f, filename, ('.py', 'r', imp.PY_SOURCE))
-        plugin_class = getattr(m, metadata["classname"])
-        res = plugin_class(app)
-        res.TITLE = metadata['title']
-        res.VERSION = metadata["version"]
-        res.ID = metadata["id"]
-        res.AUTHOR = metadata["author"]
-        res.RELEASED_TIME = metadata["released_time"]
-        res.icon_url = metadata["icon_url"]
-        res.website_url = metadata["website_url"]
-        res.require_auth = metadata["require_auth"]
-        res.default_disable = metadata["default_disable"]
-
-        icon_filename = os.path.join(constants.APPDATA_PATH, "search-plugins", res.ID, "icon.png")
-        if os.path.exists(icon_filename):
-            res.icon_filename = icon_filename
-        else:
-            res.icon_filename = None
-
-        return res
-    except:
-        raise exceptions.PluginSyntaxError(filename)
-
-
-

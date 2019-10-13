@@ -25,21 +25,11 @@ import webbrowser
 import informations
 
 
-def on_url_activated(dialog, url, data):
-    webbrowser.open(url)
-
-
-def on_email_activated(dialog, link, data):
-    if link[:7] == "http://":
-        on_url_activated(dialog, link, data)
-    else:
-        webbrowser.open("mailto:"+link)
-
-
 class AboutDialog(Gtk.AboutDialog):
+
     def __init__(self, app):
-        # Gtk.about_dialog_set_url_hook(on_url_activated, None)       # FIXME, use activate-link?
-        # Gtk.about_dialog_set_email_hook(on_email_activated, None)   # FIXME, use activate-link?
+        # Gtk.about_dialog_set_url_hook(self.on_url_activated, None)       # FIXME, use activate-link?
+        # Gtk.about_dialog_set_email_hook(self.on_email_activated, None)   # FIXME, use activate-link?
         Gtk.AboutDialog.__init__(self)
         self.set_transient_for(app)
         self.set_program_name(informations.APPNAME)
@@ -58,3 +48,12 @@ class AboutDialog(Gtk.AboutDialog):
         self.show_all()
         Gtk.AboutDialog.run(self)
         self.hide()
+
+    def on_url_activated(self, dialog, url, data):
+        webbrowser.open(url)
+
+    def on_email_activated(self, dialog, link, data):
+        if link[:7] == "http://":
+            self.on_url_activated(dialog, link, data)
+        else:
+            webbrowser.open("mailto:"+link)

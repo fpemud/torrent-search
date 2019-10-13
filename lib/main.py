@@ -1118,10 +1118,10 @@ class Application(Gtk.Window):
 
     def notify_plugin_icon(self, plugin):
         # TODO: Add tooltips on icons
-        if plugin.icon_filename is not None:
-            icon = Gtk.Image.new_from_file(plugin.icon_filename)
+        if plugin.ICON_FILENAME is not None:
+            icon = Gtk.Image.new_from_file(plugin.ICON_FILENAME)
             self.results_widget.notify_plugin_icon(plugin, icon)
-        elif plugin.icon_url is not None:
+        elif plugin.ICON_URL is not None:
             pass
         else:
             pass
@@ -1260,7 +1260,7 @@ class Application(Gtk.Window):
 
     def load_search_plugin_from_path(self, path):
         try:
-            self.search_plugins.append(Plugin.load_plugin(self, path))
+            self.search_plugins.append(plugin.load_plugin(self, path))
         except PluginException:
             exc_class, exc, traceback = sys.exc_info()
             exc.handle()
@@ -1392,15 +1392,13 @@ class Application(Gtk.Window):
         self.download_manager.append(result)
 
     def notify_search_finished(self, plugin):
-        if plugin not in self.search_plugins:
-            return
+        assert plugin in self.search_plugins
+
         self.nb_plugins_search_finished += 1
         if self.nb_plugins_search_finished == self.plugins_count and len(self.results_widget) == 0:
             self.searchbar.stop_button.set_sensitive(False)
-            self.search_results_label.set_markup(
-                "<b>%s</b>" % _("SEARCH_RESULTS_NO_RESULTS"))
-            self.set_title("%s - %s - %s" %
-                           (APPNAME, self.search_pattern, _("NO_RESULTS")))
+            self.search_results_label.set_markup("<b>%s</b>" % _("SEARCH_RESULTS_NO_RESULTS"))
+            self.set_title("%s - %s - %s" % (APPNAME, self.search_pattern, _("NO_RESULTS")))
         elif self.nb_plugins_search_finished == self.plugins_count:
             self.searchbar.stop_button.set_sensitive(False)
             try:
@@ -1409,8 +1407,7 @@ class Application(Gtk.Window):
                 self.search_results_label.set_markup("<b>"+_("SEARCH_RESULTS")+" - "+_("NB_RESULTS") % len(
                     self.results_widget)+" ("+_("NB_RESULTS_SHOWN") % self.results_widget.nb_results_shown+")"+"</b>")
             except:
-                self.set_title("%s - %s - %s" %
-                               (APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
+                self.set_title("%s - %s - %s" % (APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
 
     def check_plugin_updates(self):
         # TODO!: Handle the possibility of removing deprecated plugins
