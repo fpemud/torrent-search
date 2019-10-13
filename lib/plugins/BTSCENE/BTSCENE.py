@@ -74,7 +74,7 @@ class BTSCENETorrentPlugin(TorrentSearch.Plugin.Plugin):
             res = datetime.date(year, month, day)
         return res
 
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.btscene.net/verified-search/torrent/%s/" % urllib.parse.quote_plus(
                 pattern)
@@ -144,7 +144,7 @@ class BTSCENETorrentPlugin(TorrentSearch.Plugin.Plugin):
                         leechers = eval(leechers.getContent())
                     except:
                         leechers = 0
-                    self.add_result(BTSCENETorrentPluginResult(
+                    self.api_add_result(BTSCENETorrentPluginResult(
                         label, date, size, seeders, leechers, link, nb_comments, filelist))
             except:
                 pass
@@ -172,7 +172,7 @@ class BTSCENETorrentPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self._run_search(pattern, pn, urllib.basejoin(
+                        self.plugin_run_search(pattern, pn, urllib.basejoin(
                             href, pages[i].prop('href')))
             except:
                 pass

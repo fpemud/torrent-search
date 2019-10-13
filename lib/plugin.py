@@ -22,6 +22,7 @@ import os
 import imp
 import time
 import libxml2
+import threading
 import urllib.error
 import urllib.parse
 import urllib.request
@@ -29,7 +30,6 @@ from gi.repository import GObject
 from gi.repository import Gtk
 import _thread
 import constants
-import informations
 import exceptions
 
 
@@ -54,7 +54,7 @@ def load_plugin(app, path):
             msg = ""
             for i in messages:
                 msg += i
-            raise IncorrectPluginMetaFile(metadata_file, msg)
+            raise exceptions.IncorrectPluginMetaFile(metadata_file, msg)
 
     # get values from metadata.xml file
     root = tree.getRootElement()
@@ -103,7 +103,7 @@ def load_plugin(app, path):
             plugin_class.ICON_FILENAME = fn
 
     # create plugin object
-    plugin_obj = plugin_class(app)
+    plugin_obj = plugin_class(app, app.get_plugin_credentials)
     plugin_obj.website_url = metadata["website_url"]
     plugin_obj.require_auth = metadata["require_auth"]
     plugin_obj.default_disable = metadata["default_disable"]
@@ -349,24 +349,139 @@ class Plugin(object):
     ICON_URL = None
     ICON_FILENAME = None
 
-    def __init__(self, app):
+    def __init__(self, app, func_get_credentials):
         self._app = app
+        self._func_get_credentials = func_get_credentials
 
-        self.credentials = None
-
-        self.login_cookie = None
         self.login_status = None
-
-        self.stop_search = False
-        self.search_finished = True
-
+        self.search_status = None
+        self._login_cookie = None
 
         self.results_count_lock = _thread.allocate_lock()    # FIXME
         self._results_count = -1
         self.results_loaded = 0
 
-    def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
+    @property
+    def login_cookie(self):
+        return self._login_cookie
+
+    def _get_enabled(self):
+        return self.ID not in self._app.config["disabled_plugins"]
+
+    def _set_enabled(self, value):
+        tl = self._app.config["disabled_plugins"]
+        if value:
+            while self.ID in tl:
+                i = tl.index(self.ID)
+                del tl[i]
+        else:
+            tl.append(self.ID)
+        self._app.config["disabled_plugins"] = tl
+
+    enabled = property(_get_enabled, _set_enabled)
+
+    @property
+    def stop_search(self):
+        return self.search_status == constants.SEARCH_STATUS_STOPPING
+
+    def _get_results_count(self):
+        self.results_count_lock.acquire()
+        res = self._results_count
+        self.results_count_lock.release()
+        return res
+
+    def _set_results_count(self, value):
+        self.results_count_lock.acquire()
+        if type(value) == int:
+            self._results_count = value
+        self.results_count_lock.release()
+
+    results_count = property(_get_results_count, _set_results_count)
+
+    def search(self, pattern):
+        if not hasattr(self, "new_results"):
+            self.new_results = ResultsList()
+        while len(self.new_results):
+            del self.new_results[0]
+
+        self.login_status = constants.LOGIN_STATUS_WAITING
+        self.search_status = constants.SEARCH_STATUS_WORKING
+        self.results_count = -1
+        self.results_loaded = 0
+
+        threading.Thread(target=self._do_search, kwargs=(pattern,)).start()
+        GObject.timeout_add(50, self._check_login_status)
+        GObject.timeout_add(200, self._check_results)
+
+    def stop(self):
+        self.search_status = constants.SEARCH_STATUS_STOPPING
+
+        while self.search_status not in [constants.SEARCH_STATUS_OK, constants.SEARCH_STATUS_FAILED]:
+            time.sleep(0.1)
+
+        while len(self.new_results):
+            del self.new_results[0]
+        self.login_status = None
+        self.search_status = None
+
+    def _check_login_status(self):
+        if self.login_status == constants.LOGIN_STATUS_WAITING:
+            return True
+        if self.login_status == constants.LOGIN_STATUS_FAILED:
+            self._app.notify_plugin_login_failed(self)
+        return False
+
+    def _check_results(self):
+        while len(self.new_results):
+            item = self.new_results[0]
+            item.plugin = self
+            item.category = self._app.categories[item.category]
+            del self.new_results[0]
+            self._app.add_result_2(self, item)
+            del item
+        if self.search_status in [constants.SEARCH_STATUS_OK, constants.SEARCH_STATUS_FAILED]:
+            self._app.notify_search_finished(self)
+            return False
+        else:
+            return True
+
+    def _do_search(self, pattern):
+        try:
+            if self.require_auth:
+                if self._login_cookie is None:
+                    self._login_cookie = self.plugin_try_login()
+                    if self._login_cookie is None:
+                        self.login_status = constants.LOGIN_STATUS_FAILED
+                        return
+            self.login_status = constants.LOGIN_STATUS_OK
+            self.plugin_run_search(pattern)
+            self.search_status = constants.SEARCH_STATUS_OK
+        except:
+            self.search_status = constants.SEARCH_STATUS_FAILED
+
+    def api_http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         return self._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
+
+    def api_get_credentials(self):
+        return self._func_get_credentials(self.ID)
+
+    def api_get__login_cookie(self):
+        return self._login_cookie
+
+    def api_add_result(self, result):
+        self.new_results.append(result)
+        self.results_loaded += 1
+        if self._app.config["stop_search_when_nb_plugin_results_reaches_enabled"] and self.results_loaded >= self._app.config["stop_search_when_nb_plugin_results_reaches_value"]:
+            self.search_status = constants.SEARCH_STATUS_STOPPING
+
+    def plugin_try_login(self):
+        # implemented by plugin
+        assert False
+
+    def plugin_run_search(self, pattern):
+        # implemented by plugin
+        assert False
+
 
     # def _set_icon_url(self, url):
     #     if url:
@@ -407,100 +522,3 @@ class Plugin(object):
     #     self.icon_lock.release()
 
     # icon = property(_get_icon, _set_icon)
-
-    def _get_enabled(self):
-        return self.ID not in self._app.config["disabled_plugins"]
-
-    def _set_enabled(self, value):
-        tl = self._app.config["disabled_plugins"]
-        if value:
-            while self.ID in tl:
-                i = tl.index(self.ID)
-                del tl[i]
-        else:
-            tl.append(self.ID)
-        self._app.config["disabled_plugins"] = tl
-
-    enabled = property(_get_enabled, _set_enabled)
-
-    def _get_results_count(self):
-        self.results_count_lock.acquire()
-        res = self._results_count
-        self.results_count_lock.release()
-        return res
-
-    def _set_results_count(self, value):
-        self.results_count_lock.acquire()
-        if type(value) == int:
-            self._results_count = value
-        self.results_count_lock.release()
-
-    results_count = property(_get_results_count, _set_results_count)
-
-    def stop(self):
-        self.stop_search = True
-        while not self.search_finished:
-            time.sleep(0.1)
-        while len(self.new_results):
-            del self.new_results[0]
-
-    def search(self, pattern):
-        if not hasattr(self, "new_results"):
-            self.new_results = ResultsList()
-        while len(self.new_results):
-            del self.new_results[0]
-
-        self.search_finished = False
-        self.stop_search = False
-        self.results_count = -1
-        self.results_loaded = 0
-        self.login_status = constants.LOGIN_STATUS_WAITING
-
-        _thread.start_new_thread(self._do_search, (pattern,))    # FIXME
-        GObject.timeout_add(200, self._check_results)
-        GObject.timeout_add(50, self._check_login_status)
-
-    def _check_login_status(self):
-        if self.login_status == constants.LOGIN_STATUS_WAITING:
-            return True
-        if self.login_status == constants.LOGIN_STATUS_FAILED:
-            self._app.notify_plugin_login_failed(self)
-        return False
-
-    def _check_results(self):
-        while len(self.new_results):
-            item = self.new_results[0]
-            item.plugin = self
-            item.category = self._app.categories[item.category]
-            del self.new_results[0]
-            self._app.add_result(self, item)
-            del item
-        if self.search_finished:
-            self._app.notify_search_finished(self)
-        return not self.search_finished
-
-    def add_result(self, result):
-        self.new_results.append(result)
-        self.results_loaded += 1
-        if self._app.config["stop_search_when_nb_plugin_results_reaches_enabled"] and self.results_loaded >= self._app.config["stop_search_when_nb_plugin_results_reaches_value"]:
-            self.stop_search = True
-
-    def _login_failed(self):
-        self.login_status = constants.LOGIN_STATUS_FAILED
-
-    def _do_search(self, pattern):
-        try:
-            if self.require_auth:
-                if self.login_cookie is None:
-                    self.login_cookie = self._try_login()
-                if self.login_cookie is None:
-                    self._login_failed()
-                    return
-            self.login_status = constants.LOGIN_STATUS_OK
-            self._run_search(pattern)
-        except:
-            pass
-        self.search_finished = True
-
-    def _run_search(self, pattern):
-        pass

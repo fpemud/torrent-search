@@ -21,16 +21,16 @@ class BakaBTPluginResult(TorrentSearch.Plugin.PluginResult):
 
     def _do_get_link(self):
         c = httplib2.Http()
-        headers = {'Cookie': self.plugin.login_cookie}
+        headers = {'Cookie': self.plugin.api_get_login_cookie}
         resp, content = c.request(self.reflink, headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         return urllib.basejoin(self.reflink, htmltools.find_elements(tree.getRootElement(), "a", **{'class': 'download_link'})[0].prop('href'))
 
 
 class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
-    def _try_login(self):
+    def plugin_try_login(self):
         c = httplib2.Http()
-        username, password = self.credentials
+        username, password = self.api_get_credentials
         resp, content = c.request('http://www.bakabt.com/login.php')
         data = urllib.parse.urlencode(
             {'username': username, 'password': password, 'returnto': '/index.php'})
@@ -43,9 +43,9 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def _run_search(self, pattern, page_url=''):
+    def plugin_run_search(self, pattern, page_url=''):
         http = httplib2.Http()
-        headers = {'Cookie': self.login_cookie}
+        headers = {'Cookie': self.api_get_login_cookie}
         if page_url == "":
             page_url = "http://www.bakabt.com/browse.php?q=" + \
                 urllib.parse.quote(pattern)
@@ -91,7 +91,7 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
                 link = htmltools.find_elements(details, "a")[0]
                 label = link.getContent()
                 link = urllib.basejoin(page_url, link.prop('href'))
-                self.add_result(BakaBTPluginResult(
+                self.api_add_result(BakaBTPluginResult(
                     label, date, size, seeders, leechers, link))
             except:
                 pass
@@ -101,5 +101,5 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
             link = htmltools.find_elements(htmltools.find_elements(
                 tree.getRootElement(), "div", **{'class': 'pager'})[0], "a")[-1]
             if link.prop('class') != 'selected':
-                self._run_search(pattern, urllib.basejoin(
+                self.plugin_run_search(pattern, urllib.basejoin(
                     page_url, link.prop('href')))

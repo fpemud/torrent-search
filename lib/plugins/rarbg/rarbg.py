@@ -263,14 +263,14 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
             return ""
 
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
 
         if href == None:
 
             href = "http://rarbg.com/torrents.php?search=" + \
                 urllib.parse.quote_plus(pattern)
 
-        resp, content = self.http_queue_request(href)
+        resp, content = self.api_http_queue_request(href)
 
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
@@ -346,7 +346,7 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
                 nb_comments = eval(comments.getContent())
 
-                self.add_result(RARBGTorrentPluginResult(
+                self.api_add_result(RARBGTorrentPluginResult(
                     label, date, size, seeders, leechers, link, hashvalue, cat, nb_comments))
 
             except:
@@ -371,7 +371,7 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
                 if a.name == "a":
 
-                    self._run_search(
+                    self.plugin_run_search(
                         pattern, 0, urllib.basejoin(href, a.prop('href')))
 
             except:

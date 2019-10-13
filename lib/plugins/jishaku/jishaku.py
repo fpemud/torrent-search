@@ -26,11 +26,11 @@ class JishakuPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class JishakuPlugin(TorrentSearch.Plugin.Plugin):
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://www.jishaku.net/?q=" + \
                 urllib.parse.quote_plus(pattern)+"&limit=150"
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         results_table = TorrentSearch.htmltools.find_elements(
@@ -51,7 +51,7 @@ class JishakuPlugin(TorrentSearch.Plugin.Plugin):
             TorrentSearch.htmltools.find_elements(pager, "li")[-2], "a")[0]
         if next_page_link.getContent() == ">":
             url = urllib.basejoin(page_url, next_page_link.prop('href'))
-            self._run_search(pattern, url)
+            self.plugin_run_search(pattern, url)
 
     def _parse_result(self, result_line):
         category, infos, details = TorrentSearch.htmltools.find_elements(
@@ -66,5 +66,5 @@ class JishakuPlugin(TorrentSearch.Plugin.Plugin):
         date = time.strptime(date.prop('title').split(' ')[0], "%Y-%m-%d")
         date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        self.add_result(JishakuPluginResult(
+        self.api_add_result(JishakuPluginResult(
             label, date, size, torrent_link, magnet_link))

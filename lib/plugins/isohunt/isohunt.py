@@ -33,11 +33,11 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
             day = day[1:]
         return datetime.date(eval(year), eval(month), eval(day))
 
-    def _run_search(self, pattern, href=None):
+    def plugin_run_search(self, pattern, href=None):
         if href == None:
             href = "http://isohunt.com/torrents/?ihq=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(href)
+        resp, content = self.api_http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(
             tree.getRootElement(), "table", **{'class': 'pager'})[0]
@@ -82,7 +82,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                 if unit == "w":
                     value *= 7
                 date = datetime.date.today()-datetime.timedelta(value)
-                resp, content = self.http_queue_request(link)
+                resp, content = self.api_http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 torrent_link = None
                 for i in htmltools.find_elements(itemtree.getRootElement(), "a"):
@@ -94,7 +94,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                 data = span.getContent()[11:]
                 j = data.index(" ")
                 hashvalue = data[:j]
-                self.add_result(isoHuntPluginResult(
+                self.api_add_result(isoHuntPluginResult(
                     label, date, size, seeders, leechers, torrent_link, hashvalue))
             except:
                 pass
@@ -104,7 +104,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
             try:
                 link = htmltools.find_elements(pager, "a", title="Next page")
                 if link:
-                    self._run_search(pattern, urllib.basejoin(
+                    self.plugin_run_search(pattern, urllib.basejoin(
                         href, link[0].prop('href')))
             except:
                 pass

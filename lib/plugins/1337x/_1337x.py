@@ -61,11 +61,11 @@ class _1337XPlugin(TorrentSearch.Plugin.Plugin):
                 res.append((path+filename, size))
         return res
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://1337x.org/search/%s/0/" % urllib.parse.quote_plus(
                 pattern)
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         pager = None
@@ -100,7 +100,7 @@ class _1337XPlugin(TorrentSearch.Plugin.Plugin):
                     result, "h3", **{'class': 'org'})[0], "a")[0].getContent()
                 details_link = urllib.basejoin(page_url, TorrentSearch.htmltools.find_elements(
                     TorrentSearch.htmltools.find_elements(result, "h3", **{'class': 'org'})[0], "a")[0].prop("href"))
-                resp, content = self.http_queue_request(details_link)
+                resp, content = self.api_http_queue_request(details_link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 infobox = TorrentSearch.htmltools.find_elements(
                     itemtree.getRootElement(), "div", **{'class': 'torrentInfolf'})[0]
@@ -135,7 +135,7 @@ class _1337XPlugin(TorrentSearch.Plugin.Plugin):
                     itemtree.getRootElement(), "a", **{'class': 'torrentDw'})[0].prop("href")
                 magnet_link = TorrentSearch.htmltools.find_elements(
                     itemtree.getRootElement(), "a", **{'class': 'magnetDw'})[0].prop("href")
-                self.add_result(_1337XPluginResult(label, date, size, seeders, leechers, torrent_link,
+                self.api_add_result(_1337XPluginResult(label, date, size, seeders, leechers, torrent_link,
                                                    magnet_link, "", nb_comments, details_link, res_comments, poster, res_filelist))
             except:
                 pass
@@ -145,4 +145,4 @@ class _1337XPlugin(TorrentSearch.Plugin.Plugin):
         if pager and not self.stop_search:
             url = urllib.basejoin(page_url, TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(
                 pager, "a", **{'class': 'active'})[0].parent.__next__, "a")[0].prop("href"))
-            self._run_search(pattern, url)
+            self.plugin_run_search(pattern, url)

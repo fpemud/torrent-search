@@ -31,11 +31,11 @@ class TorrentCDPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://torrent.cd/torrents/search/?q=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         titles = TorrentSearch.htmltools.find_elements(
@@ -64,7 +64,7 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         if next_page_link_li.prop("class") == "page":
             next_page_link = urllib.basejoin(page_url, TorrentSearch.htmltools.find_elements(
                 next_page_link_li, "a")[0].prop("href"))
-            self._run_search(pattern, next_page_link)
+            self.plugin_run_search(pattern, next_page_link)
 
     def _parseCat(self, cat):
         return ""
@@ -85,5 +85,5 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         leechers = int(leechers_cell.getContent())
         cat = self._parseCat(category_cell.getContent())
 
-        self.add_result(TorrentCDPluginResult(title, date, size,
+        self.api_add_result(TorrentCDPluginResult(title, date, size,
                                               seeders, leechers, cat, details_page_url))

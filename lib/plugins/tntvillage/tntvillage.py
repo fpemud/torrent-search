@@ -24,9 +24,9 @@ class TNTVillagePluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
-    def _try_login(self):
+    def plugin_try_login(self):
         c = httplib2.Http()
-        username, password = self.credentials
+        username, password = self.api_get_credentials
         resp, content = c.request(
             'http://forum.tntvillage.scambioetico.org/tntforum/index.php?act=Login&CODE=00')
         data = urllib.parse.urlencode(
@@ -46,9 +46,9 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
         resp, content = c.request(url, 'GET', headers=headers)
         return cookie
 
-    def _run_search(self, pattern, stp=0, stn=20, first_page=True):
+    def plugin_run_search(self, pattern, stp=0, stn=20, first_page=True):
         headers = {'Content-type': 'application/x-www-form-urlencoded',
-                   'Cookie': self.login_cookie}
+                   'Cookie': self.api_get_login_cookie}
         data = {'sb': '0', 'sd': '0', 'cat': '0',
                 'stn': str(stn), 'filter': pattern}
         if first_page:
@@ -57,7 +57,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
             data['next'] = "Pagine successive >>"
             data['stp'] = str(stp)
         data = urllib.parse.urlencode(data)
-        resp, content = self.http_queue_request(
+        resp, content = self.api_http_queue_request(
             "http://forum.tntvillage.scambioetico.org/tntforum/index.php?act=allreleases", 'POST', data, headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         ucpcontent = htmltools.find_elements(
@@ -85,7 +85,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                 link = link.prop('href')
                 leechers = eval(leechers.getContent()[1:-1].rstrip().lstrip())
                 seeders = eval(seeders.getContent()[1:-1].rstrip().lstrip())
-                resp, content = self.http_queue_request(link, headers=headers)
+                resp, content = self.api_http_queue_request(link, headers=headers)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 date = htmltools.find_elements(htmltools.find_elements(itemtree.getRootElement(
                 ), "span", **{'class': 'postdetails'})[0], "b")[0].next.getContent()
@@ -114,7 +114,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                             hashvalue = value
                     except:
                         pass
-                self.add_result(TNTVillagePluginResult(
+                self.api_add_result(TNTVillagePluginResult(
                     label, date, size, seeders, leechers, torrent_link.prop('href'), hashvalue))
             except:
                 pass
@@ -129,4 +129,4 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                         tree.getRootElement(), "input", name="stp")[0].prop('value'))
                 except:
                     stp = 0
-                self._run_search(pattern, stp, stn, False)
+                self.plugin_run_search(pattern, stp, stn, False)

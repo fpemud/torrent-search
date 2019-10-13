@@ -24,11 +24,11 @@ class xtremespeedsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
-    def _try_login(self):
+    def plugin_try_login(self):
         c = httplib2.Http()
         resp, content = c.request("http://xtremespeeds.net/")
         init_cookie = self._app.parse_cookie(resp['set-cookie'])
-        username, password = self.credentials
+        username, password = self.api_get_credentials
         data = urllib.parse.urlencode(
             {'username': username, 'password': password})
         headers = {'Content-type': 'application/x-www-form-urlencoded',
@@ -40,17 +40,17 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def _run_search(self, pattern, href=None):
+    def plugin_run_search(self, pattern, href=None):
         http = httplib2.Http()
         if href == None:
             href = "http://xtremespeeds.net/browse.php"
             headers = {'Content-type': 'application/x-www-form-urlencoded',
-                       'Cookie': self.login_cookie, "User-Agent": "Python-httplib2/$Rev$"}
+                       'Cookie': self.api_get_login_cookie, "User-Agent": "Python-httplib2/$Rev$"}
             data = urllib.parse.urlencode(
                 {'do': 'search', 'keywords': pattern, 'search_type': 't_name', 'category': '0'})
             resp, content = http.request(href, 'POST', data, headers)
         else:
-            headers = {'Cookie': self.login_cookie,
+            headers = {'Cookie': self.api_get_login_cookie,
                        "User-Agent": "Python-httplib2/$Rev$"}
             resp, content = http.request(href, 'POST', headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
@@ -81,7 +81,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
                 size = size.getContent().rstrip().lstrip()
                 seeders = eval(seeders.getContent().rstrip().lstrip())
                 leechers = eval(leechers.getContent().rstrip().lstrip())
-                self.add_result(xtremespeedsPluginResult(
+                self.api_add_result(xtremespeedsPluginResult(
                     label, date, size, seeders, leechers, torrent_link))
             except:
                 pass
@@ -98,7 +98,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
                         next_link = i
                         break
                 if next_link:
-                    self._run_search(pattern, urllib.basejoin(
+                    self.plugin_run_search(pattern, urllib.basejoin(
                         href, next_link.prop('href')))
             except:
                 pass

@@ -40,7 +40,7 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 data = 0
         return datetime.date.today()-datetime.timedelta(data)
 
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.yourbittorrent.com/?q=" + \
                 urllib.parse.quote_plus(pattern)
@@ -108,7 +108,7 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
                 date = self._parseDate(date.getContent())
-                self.add_result(yourBITTORRENTTorrentPluginResult(
+                self.api_add_result(yourBITTORRENTTorrentPluginResult(
                     label, date, size, seeders, leechers, link, hashvalue, filelist, poster))
             except:
                 pass
@@ -138,6 +138,6 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     if must_continue:
                         url = "http://www.yourbittorrent.com/?q=%s&page=%d" % (
                             urllib.parse.quote_plus(pattern), pn)
-                        self._run_search(pattern, pn, url)
+                        self.plugin_run_search(pattern, pn, url)
             except:
                 pass

@@ -26,12 +26,12 @@ class ExtraTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://extratorrent.com/search.php?search=" + \
                 urllib.parse.quote_plus(pattern)
             self.known_cats = []
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
@@ -58,7 +58,7 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
             tree.getRootElement(), "a", **{'class': 'pager_link'})
         for i in nav_links:
             if i.getContent() == ">":
-                self._run_search(pattern, urllib.basejoin(
+                self.plugin_run_search(pattern, urllib.basejoin(
                     page_url, i.prop('href')))
                 break
 
@@ -113,7 +113,7 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
             category, "a")[0].prop('href').split('/')[-2])
 
         c = httplib2.Http()
-        resp, content = self.http_queue_request(details_link)
+        resp, content = self.api_http_queue_request(details_link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         lines = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(
             tree, "td", **{'class': 'tabledata0'})[0].parent.parent, "tr")
@@ -126,5 +126,5 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 date = time.strptime(date, "%Y-%m-%d")
                 date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        self.add_result(ExtraTorrentPluginResult(
+        self.api_add_result(ExtraTorrentPluginResult(
             title, date, size, seeders, leechers, torrent_url, hashvalue, category))

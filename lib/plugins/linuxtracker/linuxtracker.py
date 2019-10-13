@@ -25,11 +25,11 @@ class linuxTRACKERPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
-    def _run_search(self, pattern, href=None):
+    def plugin_run_search(self, pattern, href=None):
         if href == None:
             href = "http://linuxtracker.org/index.php?page=torrents&search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(href)
+        resp, content = self.api_http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
             pager = htmltools.find_elements(
@@ -69,7 +69,7 @@ class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
                 seeders = int(data["Seeds"])
                 leechers = int(data["Leechers"])
                 size = data["Size:"]
-                self.add_result(linuxTRACKERPluginResult(
+                self.api_add_result(linuxTRACKERPluginResult(
                     label, date, size, seeders, leechers, torrent_link, magnet_link))
             except:
                 pass
@@ -86,6 +86,6 @@ class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
                     if i < len(spans):
                         link = htmltools.find_elements(spans[i], "a")[0]
                         link = urllib.basejoin(href, link.prop('href'))
-                        self._run_search(pattern, link)
+                        self.plugin_run_search(pattern, link)
             except:
                 pass

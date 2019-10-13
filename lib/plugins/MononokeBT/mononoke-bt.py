@@ -24,9 +24,9 @@ class MononokeBTPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
-    def _try_login(self):
+    def plugin_try_login(self):
         c = httplib2.Http()
-        username, password = self.credentials
+        username, password = self.api_get_credentials
         data = urllib.parse.urlencode(
             {'username': username, 'password': password, 'returnto': '/'})
         headers = {'Content-type': 'application/x-www-form-urlencoded',
@@ -38,12 +38,12 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def _run_search(self, pattern, href=None, page=0):
+    def plugin_run_search(self, pattern, href=None, page=0):
         if href == None:
             href = "http://mononoke-bt.org/browse2.php?search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(
-            href, headers={'Cookie': self._app.parse_cookie(self.login_cookie)})
+        resp, content = self.api_http_queue_request(
+            href, headers={'Cookie': self._app.parse_cookie(self.api_get_login_cookie)})
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(tree.getRootElement(
         ), "div", **{'class': 'animecoversfan'})[0].parent.__next__
@@ -81,15 +81,15 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
                 size = strsize.replace('O', 'B')
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
-                resp, content = self.http_queue_request(
-                    link, headers={'Cookie': self._app.parse_cookie(self.login_cookie)})
+                resp, content = self.api_http_queue_request(
+                    link, headers={'Cookie': self._app.parse_cookie(self.api_get_login_cookie)})
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 tds = htmltools.find_elements(itemtree.getRootElement(), "td")
                 hashvalue = None
                 for j in tds:
                     if j.getContent() == "Info hash":
                         hashvalue = j.next.next.getContent()
-                self.add_result(MononokeBTPluginResult(
+                self.api_add_result(MononokeBTPluginResult(
                     label, date, size, seeders, leechers, torrent_link, hashvalue))
             except:
                 pass
@@ -101,6 +101,6 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
                 if b.parent.name == "a":
                     url = "http://mononoke-bt.org/browse2.php?search=%s&page=%d" % (
                         urllib.parse.quote_plus(pattern), page+1)
-                    self._run_search(pattern, url, page+1)
+                    self.plugin_run_search(pattern, url, page+1)
             except:
                 pass

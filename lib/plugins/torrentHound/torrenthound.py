@@ -91,11 +91,11 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
         year = eval("20"+year)
         return datetime.date(year, month, day)
 
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.torrenthound.com/search/" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(href)
+        resp, content = self.api_http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
             count_div = htmltools.find_elements(
@@ -140,7 +140,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 while j < len(data) and data[j] in "0123456789":
                     j += 1
                 leechers = eval(data[:j])
-                resp, content = self.http_queue_request(link)
+                resp, content = self.api_http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 div = htmltools.find_elements(
                     itemtree.getRootElement(), "div", id="torrent")[0]
@@ -166,7 +166,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     nb_comments = int(data[:j])
                 except:
                     nb_comments = 0
-                self.add_result(TorrentHoundTorrentPluginResult(
+                self.api_add_result(TorrentHoundTorrentPluginResult(
                     label, date, size, seeders, leechers, link, hashvalue, nb_comments))
             except:
                 pass
@@ -193,7 +193,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self._run_search(pattern, pn, urllib.basejoin(
+                        self.plugin_run_search(pattern, pn, urllib.basejoin(
                             href, pages[i].prop('href')))
             except:
                 pass

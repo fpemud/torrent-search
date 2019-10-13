@@ -26,11 +26,11 @@ class TokyoToshokanPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://tokyotosho.info/search.php?terms=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         results_table = TorrentSearch.htmltools.find_elements(
@@ -54,7 +54,7 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
             TorrentSearch.htmltools.find_elements(pager, "li")[-2], "a")[0]
         if next_page_link.getContent() == ">":
             url = urllib.basejoin(page_url, next_page_link.prop('href'))
-            self._run_search(pattern, url)
+            self.plugin_run_search(pattern, url)
 
     def _parse_result(self, url, result):
         links = TorrentSearch.htmltools.find_elements(result, "a")
@@ -64,7 +64,7 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
             category, result_link, website, details_link = links
         label = result_link.getContent()
         details_link = urllib.basejoin(url, details_link.prop('href'))
-        resp, content = self.http_queue_request(details_link)
+        resp, content = self.api_http_queue_request(details_link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         infotable = TorrentSearch.htmltools.find_elements(
             tree.getRootElement(), "div", **{'class': 'details'})[0]
@@ -103,5 +103,5 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
         size = size[:i]+' '+size[i:]
         torrent_link = urllib.basejoin(url, result_link.prop('href'))
 
-        self.add_result(TokyoToshokanPluginResult(
+        self.api_add_result(TokyoToshokanPluginResult(
             label, date, size, seeders, leechers, torrent_link))

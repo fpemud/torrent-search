@@ -166,15 +166,15 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                  "Aug", "Sep", "Oct", "Nov", "Dec"].index(month)+1
         return datetime.date(eval(year), month, eval(day))
 
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.sumotorrent.com/searchResult.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         try:
-            resp, content = self.http_queue_request(href)
+            resp, content = self.api_http_queue_request(href)
         except httplib2.FailedToDecompressContent:
             if not self.stop_search:
-                self._run_search(pattern, page, href)
+                self.plugin_run_search(pattern, page, href)
             return
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
@@ -218,7 +218,7 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     leeches = eval(leeches.getContent().lstrip().rstrip())
                     result = SUMOTorrentPluginResult(name, date, size, seeds, leeches, htmltools.find_elements(
                         links, "a")[0].prop('href'), refmagnet, nb_comments, details_url)
-                    self.add_result(result)
+                    self.api_add_result(result)
             except:
                 pass
             if self.stop_search:
@@ -242,6 +242,6 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self._run_search(pattern, pn, pages[i].prop('href'))
+                        self.plugin_run_search(pattern, pn, pages[i].prop('href'))
             except:
                 pass

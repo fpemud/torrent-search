@@ -127,11 +127,11 @@ class ThePirateBayTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
-    def _run_search(self, pattern, page_url=""):
+    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://thepiratebay.org/search/" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(page_url)
+        resp, content = self.api_http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
@@ -168,7 +168,7 @@ class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
             next_page_link = next_page_img[0].parent
             next_page_url = urllib.basejoin(
                 page_url, next_page_link.prop('href'))
-            self._run_search(pattern, next_page_url)
+            self.plugin_run_search(pattern, next_page_url)
 
     def _parse_date(self, data):
         try:  # Date this year ?
@@ -264,5 +264,5 @@ class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
         size_data = size_data[6:]
         size = size_data.replace("i", "")
 
-        self.add_result(ThePirateBayTorrentPluginResult(title, date, size, seeders,
+        self.api_add_result(ThePirateBayTorrentPluginResult(title, date, size, seeders,
                                                         leechers, torrent_url, magnet_url, cat, nb_comments, details_page_url))

@@ -76,7 +76,7 @@ class FrenchTorrentDBPluginResult(TorrentSearch.Plugin.PluginResult):
     def _do_load_filelist(self):
         res = TorrentSearch.Plugin.FileList()
         http = httplib2.Http()
-        headers = {'Cookie': self.plugin.login_cookie}
+        headers = {'Cookie': self.plugin.api_get_login_cookie}
         resp, content = http.request(
             "http://www2.frenchtorrentdb.com/?section=INFOS&id="+self._get_site_id()+"&type=1", headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
@@ -105,7 +105,7 @@ class FrenchTorrentDBPluginResult(TorrentSearch.Plugin.PluginResult):
 class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
     vector_compare = VectorCompare()
 
-    def _try_login(self):
+    def plugin_try_login(self):
         if len(IMAGESET) == 0:
             for letter in ICONSET:
                 letter_filename = os.path.join(
@@ -119,7 +119,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                     continue
                 im = Image.open(letter_filename)
                 IMAGESET.append({letter: [buildvector(im)]})
-        username, password = self.credentials
+        username, password = self.api_get_credentials
         c = http.client.HTTPConnection('www2.frenchtorrentdb.com')
         c.request('GET', '/')
         resp = c.getresponse()
@@ -240,9 +240,9 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
             guessword = guessword[1:]
         return guessword
 
-    def _run_search(self, pattern, page_url='', year=None, prev_month=13):
+    def plugin_run_search(self, pattern, page_url='', year=None, prev_month=13):
         http = httplib2.Http()
-        headers = {'Cookie': self.login_cookie}
+        headers = {'Cookie': self.api_get_login_cookie}
         if page_url == "":
             page_url = "http://www2.frenchtorrentdb.com/?name=%s&parent_cat_id=&section=TORRENTS&last_adv_cat_selected=&order_by=added&order=DESC&Rechercher=Rechercher" % urllib.parse.quote(
                 pattern)
@@ -321,7 +321,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                             comment_txt[:-1], comment_date, username))
                 except:
                     pass
-                self.add_result(FrenchTorrentDBPluginResult(
+                self.api_add_result(FrenchTorrentDBPluginResult(
                     label, date, size, seeders, leechers, torrent_link, poster, comments))
             except:
                 pass
@@ -334,5 +334,5 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                 nav = htmltools.find_elements(
                     nav[0], "div", **{'class': 'right'})
                 if nav and nav[0].prop('style') != 'visibility: hidden':
-                    self._run_search(pattern, urllib.basejoin(page_url, htmltools.find_elements(
+                    self.plugin_run_search(pattern, urllib.basejoin(page_url, htmltools.find_elements(
                         nav[0], "a")[0].prop('href')), year, prev_month)

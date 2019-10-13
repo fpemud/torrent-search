@@ -24,10 +24,10 @@ class TorrentbitPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href is None:
             href = "http://www.torrentbit.net/search/?torrent=" + urllib.parse.quote_plus(pattern)
-        resp, content = self.http_queue_request(href)
+        resp, content = self.api_http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         td = htmltools.find_elements(tree.getRootElement(), "td", id="main")[0]
         try:
@@ -65,7 +65,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                 size = size.getContent().replace(chr(194)+chr(160), " ")
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
-                resp, content = self.http_queue_request(link)
+                resp, content = self.api_http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 table = htmltools.find_elements(
                     itemtree.getRootElement(), "table", **{'class': 'tor_item'})[0]
@@ -78,7 +78,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                 hashvalue = htmltools.find_elements(
                     lines[4], "td")[0].getContent()
                 magnet = "magnet:?xt=urn:btih:"+hashvalue
-                self.add_result(TorrentbitPluginResult(
+                self.api_add_result(TorrentbitPluginResult(
                     label, date, size, seeders, leechers, itemlink, magnet))
             except:
                 pass
@@ -97,6 +97,6 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                     if nextlink:
                         nextlink = urllib.basejoin(
                             href, nextlink[0].prop('href'))
-                        self._run_search(pattern, 1, nextlink)
+                        self.plugin_run_search(pattern, 1, nextlink)
             except:
                 pass

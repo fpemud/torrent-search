@@ -101,7 +101,7 @@
          <sect2>
             <title>Source file</title>
             <para>We are now going to create the code file <filename>~/dev/torrent-search/myplugin/MyPlugin.py</filename>.</para>
-            <para>Your plugin's must be a subclass of <classname>TorrentSearch.Plugin.Plugin</classname> and must implement a method called <function>_run_search</function>, which will take a <parameter>pattern</parameter> parameter.</para>
+            <para>Your plugin's must be a subclass of <classname>TorrentSearch.Plugin.Plugin</classname> and must implement a method called <function>plugin_run_search</function>, which will take a <parameter>pattern</parameter> parameter.</para>
             <para>We will also have to create a <classname>MyPluginResult</classname> class, subclass of <classname>TorrentSearch.Plugin.PluginResult</classname> and implementing a method called <function>_do_get_link</function> with no parameters. We will see what this is used for later.</para>
             <para>So, here is what the file <filename>MyPlugin.py</filename> should look like for now :</para>
             <programlisting>
@@ -118,7 +118,7 @@
    
    class MyPlugin(TorrentSearch.Plugin.Plugin):
       
-      def _run_search(self, pattern):
+      def plugin_run_search(self, pattern):
          pass
             </programlisting>
          </sect2>
@@ -144,9 +144,9 @@
       <title>Core of the plugin</title>
       <sect1>
          <title>Sending results to the application</title>
-         <para>The <classname>TorrentSearch.Plugin.Plugin</classname> class has a method called <function>add_result</function> :</para>
+         <para>The <classname>TorrentSearch.Plugin.Plugin</classname> class has a method called <function>api_add_result</function> :</para>
          <programlisting>
-def add_result(self, result)
+def api_add_result(self, result)
          </programlisting>
          <para>Each time a new result is found, we will have to make a call to this method, passing it an object of class <classname>MyPluginResult</classname>.</para>
       </sect1>
@@ -160,9 +160,9 @@ def add_result(self, result)
          <title>Retrieving the results</title>
          <sect2>
             <title>Making the request</title>
-            <para>The first thing we'll have to do is identifying the structure of the request URL. On "The Pirate Bay", if we're looking for "funny video", the request URL will be "http://thepiratebay.org/search/funny+video". So the first thing we'll hace to do in our <function>_run_search</function> method is to the get data from this URL.</para>
+            <para>The first thing we'll have to do is identifying the structure of the request URL. On "The Pirate Bay", if we're looking for "funny video", the request URL will be "http://thepiratebay.org/search/funny+video". So the first thing we'll hace to do in our <function>plugin_run_search</function> method is to the get data from this URL.</para>
             <programlisting>
-   def _run_search(self, pattern):
+   def plugin_run_search(self, pattern):
       filename, msg = urllib.urlretrieve("http://thepiratebay.org/search/"+urllib.quote_plus(pattern))
             </programlisting>
             <note><para>The <function>urllib.quote_plus</function> function will automatically replace spaces by the "+" sign and handle specials characters.</para></note>
@@ -201,7 +201,7 @@ def add_result(self, result)
    
    class MyPlugin(TorrentSearch.Plugin.Plugin):
       
-      def _run_search(self, pattern):
+      def plugin_run_search(self, pattern):
          filename, msg = urllib.urlretrieve("http://thepiratebay.org/search/"+urllib.quote_plus(pattern))
          os.system('cp "%s" "~/dev/torrent-search/MyPlugin/temp.html"'%filename)
          tree = libxml2.htmlParseFile(filename, "utf-8")
@@ -379,10 +379,10 @@ def add_result(self, result)
             </sect3>
          </sect2>
          <sect2>
-            <title>Back to the <function>_run_search</function> method</title>
-            <para>Now that we can parse the results, we can complete the <function>_run_search</function> method. It will now look like this :</para>
+            <title>Back to the <function>plugin_run_search</function> method</title>
+            <para>Now that we can parse the results, we can complete the <function>plugin_run_search</function> method. It will now look like this :</para>
             <programlisting>
-   def _run_search(self, pattern):
+   def plugin_run_search(self, pattern):
       filename, msg = urllib.urlretrieve("http://thepiratebay.org/search/"+urllib.quote_plus(pattern))
       os.system('cp "%s" "~/dev/torrent-search/MyPlugin/temp.html"'%filename)
       tree = libxml2.htmlParseFile(filename, "utf-8")
@@ -419,9 +419,9 @@ def add_result(self, result)
    if next_page_img:
       next_page_link = next_page_img[0].parent
             </programlisting>
-            <para>We will now rerun the <function>_run_search</function> method, passing it as a new argument the link to the next page. Here is the resulting code :</para>
+            <para>We will now rerun the <function>plugin_run_search</function> method, passing it as a new argument the link to the next page. Here is the resulting code :</para>
             <programlisting>
-   def _run_search(self, pattern, page_url=""):
+   def plugin_run_search(self, pattern, page_url=""):
       if page_url == "": # First time we run the method
          page_url = "http://thepiratebay.org/search/"+urllib.quote_plus(pattern)
       filename, msg = urllib.urlretrieve(page_url)
@@ -446,7 +446,7 @@ def add_result(self, result)
       if next_page_img:
          next_page_link = next_page_img[0].parent
          next_page_url = urllib.basejoin(page_url, next_page_link.prop('href')) # urllib.basejoin handles relative links
-         self._run_search(pattern, next_page_url) # We call the method again to parse the next page
+         self.plugin_run_search(pattern, next_page_url) # We call the method again to parse the next page
             </programlisting>
             <para>We now have a fully working plugin !</para>
          </sect2>
@@ -505,7 +505,7 @@ def add_result(self, result)
    
    class MyPlugin(TorrentSearch.Plugin.Plugin):
       
-      def _run_search(self, pattern, page_url=""):
+      def plugin_run_search(self, pattern, page_url=""):
          if page_url == "":
             page_url = "http://thepiratebay.org/search/"+urllib.quote_plus(pattern)
          filename, msg = urllib.urlretrieve(page_url)
@@ -541,7 +541,7 @@ def add_result(self, result)
          if next_page_img:
             next_page_link = next_page_img[0].parent
             next_page_url = urllib.basejoin(page_url, next_page_link.prop('href'))
-            self._run_search(pattern, next_page_url)
+            self.plugin_run_search(pattern, next_page_url)
                
       def _parse_date(self, data):
          try: # Date this year ?
@@ -582,7 +582,7 @@ def add_result(self, result)
          size_data = size_data[6:]
          size = size_data.replace("i","")
          
-         self.add_result(MyPluginResult(title, date, size, seeders, leechers, torrent_url, magnet_url))
+         self.api_add_result(MyPluginResult(title, date, size, seeders, leechers, torrent_url, magnet_url))
          
       </programlisting>
    </appendix>

@@ -1105,16 +1105,10 @@ class Application(Gtk.Window):
             return True
 
     def notify_plugin_login_failed(self, plugin):
-        """ Notify the application that the login failed for a plugin
+        """ Notify the application that the login failed for a plugin"""
 
-        Parameters:
-           * plugin : the plugin for which the login failed (TorrentSearch.Plugin.Plugin)"""
-
-        if plugin not in self.search_plugins:
-            return
-        del self.auth_memory[plugin.ID]
-        plugin.credentials = self.get_plugin_credentials(plugin, True)
-        plugin.search(self.search_pattern)
+        assert plugin in self.search_plugins
+        # should change display status
 
     def notify_plugin_icon(self, plugin):
         # TODO: Add tooltips on icons
@@ -1265,7 +1259,7 @@ class Application(Gtk.Window):
             exc_class, exc, traceback = sys.exc_info()
             exc.handle()
 
-    def add_result(self, plugin, result):
+    def add_result_2(self, plugin, result):
         if plugin not in self.search_plugins:
             return
         self.results_widget.append(plugin, result)
@@ -1369,13 +1363,12 @@ class Application(Gtk.Window):
                        (APPNAME, pattern, _("SEARCH_RUNNING")))
         self.nb_plugins_search_finished = 0
         for i in plugins:
-            if i.require_auth and not i.credentials:
-                i.credentials = self.get_plugin_credentials(i)
-        for i in plugins:
             i.search(pattern)
         self._search_id += 1
 
-    def get_plugin_credentials(self, plugin, failed=False):
+    def get_plugin_credentials(self, plugin):
+        assert plugin.require_auth
+
         if plugin.ID in self.auth_memory:
             return self.auth_memory[plugin.ID]
         else:

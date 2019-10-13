@@ -31,10 +31,10 @@ class MonovaPlugin(TorrentSearch.Plugin.Plugin):
             data /= 1024.
         return "%.1f %s" % (data, units[ui])
 
-    def _run_search(self, pattern):
+    def plugin_run_search(self, pattern):
         url = "http://www.monova.org/rss.php?search=" + \
             urllib.parse.quote(pattern)+"&order=added"
-        resp, content = self.http_queue_request(url)
+        resp, content = self.api_http_queue_request(url)
         tree = libxml2.parseDoc(content)
         results = htmltools.find_elements(tree.getRootElement(), "item")
         self.results_count = len(results)
@@ -52,7 +52,7 @@ class MonovaPlugin(TorrentSearch.Plugin.Plugin):
             link = htmltools.find_elements(i, "enclosure")[0]
             size = self._formatSize(link.prop('length'))
             torrent_link = link.prop('url')
-            self.add_result(MonovaPluginResult(
+            self.api_add_result(MonovaPluginResult(
                 title, date, size, torrent_link))
             if self.stop_search:
                 return

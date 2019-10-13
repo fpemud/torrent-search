@@ -23,7 +23,7 @@ class KickassTorrentsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
-    def _run_search(self, pattern, page=1, href=None):
+    def plugin_run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "https://kickass.to/usearch/%s/" % urllib.parse.quote(
                 pattern)
@@ -86,7 +86,7 @@ class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                     month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
                              'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].index(month)+1
                 date = datetime.date(year, month, day)
-                self.add_result(KickassTorrentsPluginResult(
+                self.api_add_result(KickassTorrentsPluginResult(
                     label, date, size, seeders, leechers, torrent, magnet))
             except:
                 pass
@@ -114,7 +114,7 @@ class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self._run_search(pattern, pn, urllib.basejoin(
+                        self.plugin_run_search(pattern, pn, urllib.basejoin(
                             href, pages[i].prop('href')))
             except:
                 pass
