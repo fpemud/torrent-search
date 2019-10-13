@@ -970,7 +970,6 @@ class Application(Gtk.Window):
         self.searches_to_clean = 0
         self.search_pattern = ""
         self.auth_memory = auth.AuthMemory(self)
-        self.auth_dialog = auth.AuthDialog(self)
         self.config["name_does_not_contain"] = ""
         self.config["name_contains"] = ""
         self.config.register_listener(self.on_config_changed)
@@ -1379,11 +1378,6 @@ class Application(Gtk.Window):
         self._search_id += 1
 
     def get_plugin_credentials(self, plugin, failed=False):
-        if plugin.ID not in self.auth_memory:
-            res = self.auth_dialog.run(plugin, failed)
-            if res:
-                username, password, remember = res
-                self.auth_memory[plugin.ID] = (username, password)
         if plugin.ID in self.auth_memory:
             return self.auth_memory[plugin.ID]
         else:

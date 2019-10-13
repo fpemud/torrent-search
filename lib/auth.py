@@ -18,68 +18,9 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
-import libxml2
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
 import os
-from constants import *
-
-
-class AuthDialog(Gtk.Dialog):
-
-    def __init__(self, app):
-        Gtk.Dialog.__init__(self, _("AUTHENTICATION"), app)
-        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        self.add_button(Gtk.STOCK_CANCEL, Gtk.ResponseType.CANCEL)
-        vbox = Gtk.VBox()
-        vbox.set_border_width(5)
-        vbox.set_spacing(10)
-        self.add(vbox)
-        hbox = Gtk.HBox()
-        hbox.set_spacing(10)
-        vbox.pack_start(hbox, False, False, 0)
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_DIALOG_AUTHENTICATION, Gtk.IconSize.DIALOG)
-        hbox.pack_start(img, False, False, 0)
-        table = Gtk.Table()
-        table.set_col_spacings(10)
-        table.set_row_spacings(10)
-        hbox.pack_start(table, False, False, 0)
-        self.mesg_label = Gtk.Label()
-        self.mesg_label.set_alignment(0, 0.5)
-        table.attach(self.mesg_label, 0, 2, 0, 1, yoptions=0)
-        l = Gtk.Label(_("USERNAME"))
-        l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 1, 2, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
-        self.username = Gtk.Entry()
-        table.attach(self.username, 1, 2, 1, 2, yoptions=0)
-        l = Gtk.Label(_("PASSWORD"))
-        l.set_alignment(0, 0.5)
-        table.attach(l, 0, 1, 2, 3, xoptions=Gtk.AttachOptions.FILL, yoptions=0)
-        self.password = Gtk.Entry()
-        table.attach(self.password, 1, 2, 2, 3, yoptions=0)
-        self.password.set_visibility(False)
-        self.remember = Gtk.CheckButton(_("REMEMBER_AUTH"))
-        vbox.pack_start(self.remember, False, False, 0)
-        self.username.connect("activate", lambda w: self.password.grab_focus())
-        self.password.connect("activate", lambda w: self.response(Gtk.ResponseType.OK))
-
-    def run(self, plugin, failed=False):
-        self.username.set_text("")
-        self.password.set_text("")
-        if failed:
-            self.mesg_label.set_markup("<span color='#FF0000'><b>%s</b></span>" % (_("AUTH_FAILED_FOR_PLUGIN") % plugin.TITLE))
-        else:
-            self.mesg_label.set_markup("<b>%s</b>" % (_("AUTH_REQUIRED_FOR_PLUGIN") % plugin.TITLE))
-        self.username.grab_focus()
-        self.show_all()
-        if Gtk.Dialog.run(self) == Gtk.ResponseType.OK:
-            res = self.username.get_text(), self.password.get_text(), self.remember.get_active()
-        else:
-            res = None
-        self.hide()
-        return res
+import libxml2
+import constants
 
 
 class AuthMemory(object):
@@ -114,9 +55,9 @@ class AuthMemory(object):
             node.setProp('plugin', plugin)
             node.newTextChild(None, 'username', username)
             node.newTextChild(None, 'password', password)
-        if not os.path.exists(APPDATA_PATH):
-            self._app.rec_mkdir(APPDATA_PATH)
-        filename = os.path.join(APPDATA_PATH, "auth.xml")
+        if not os.path.exists(constants.APPDATA_PATH):
+            self._app.rec_mkdir(constants.APPDATA_PATH)
+        filename = os.path.join(constants.APPDATA_PATH, "auth.xml")
         d.saveFormatFileEnc(filename, "utf-8", True)
 
     def _load_auth(self, node):
