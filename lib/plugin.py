@@ -131,9 +131,9 @@ class FileList(list):
 class PluginResult(object):
 
     def __init__(self, label, date, size, seeders=-1, leechers=-1, magnet_link=None, hashvalue=None, category="", nb_comments=0, orig_url=""):
-        self.size = size
         self.label = label
         self.date = date
+        self.size = size
         self.seeders = seeders
         self.leechers = leechers
         self.category = category
