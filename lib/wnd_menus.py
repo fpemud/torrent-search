@@ -22,7 +22,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import webbrowser
-from constants import *
+import informations
 
 
 class MainMenu(Gtk.MenuBar):
@@ -49,10 +49,10 @@ class HelpMenu(Gtk.MenuItem):
         item.set_submenu(submenu)
         item = Gtk.MenuItem(_("REPORT_BUG"))
         submenu.add(item)
-        item.connect('activate', lambda w: webbrowser.open(BUG_REPORT_PAGE))
+        item.connect('activate', lambda w: webbrowser.open(informations.BUG_REPORT_PAGE))
         item = Gtk.MenuItem(_("REQUEST_FEATURE"))
         submenu.add(item)
-        item.connect('activate', lambda w: webbrowser.open(FEATURE_REQUEST_PAGE))
+        item.connect('activate', lambda w: webbrowser.open(informations.FEATURE_REQUEST_PAGE))
         item = Gtk.ImageMenuItem(Gtk.STOCK_ABOUT)
         menu.add(item)
         item.connect('activate', lambda w: app.show_about_dialog())

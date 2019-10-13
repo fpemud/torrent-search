@@ -19,14 +19,12 @@
 """
 
 import optparse
-from informations import *
 
 
 class OptionParser(optparse.OptionParser):
 
     def __init__(self):
         optparse.OptionParser.__init__(self, add_help_option=False)
-        self.version = VERSION
 
         basic_group = self.add_option_group(_("BASIC_OPTIONS"))
         basic_group.add_option("-h", "--help", dest="show_help",

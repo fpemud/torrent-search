@@ -4,7 +4,7 @@ ROOTDIR=$(realpath $(dirname $(realpath "$0"))/..)
 FILES="${FILES} $(find ${ROOTDIR}/lib -name '*.py' | tr '\n' ' ')"
 ERRFLAG=0
 
-OUTPUT=`pyflakes ${FILES} 2>&1`
+OUTPUT=`pyflakes ${FILES} 2>&1 | grep -Ev "undefined name '_'"`
 if [ -n "$OUTPUT" ] ; then
     echo "pyflake errors:"
     echo "$OUTPUT"
@@ -23,3 +23,4 @@ fi
 if [ "${ERRFLAG}" == 1 ] ; then
     exit 1
 fi
+

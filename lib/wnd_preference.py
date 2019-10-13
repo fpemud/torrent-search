@@ -18,6 +18,8 @@
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
 """
 
+import os
+import time
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -28,10 +30,11 @@ import torrentApps
 class PreferencesDialog(Gtk.Dialog):
     def __init__(self, app):
         self._app = app
-        self._accel_group = Gtk.AccelGroup()
         Gtk.Dialog.__init__(self, _("PREFERENCES"), app)
+
         self.resize(app.config['config_dialog_width'],
                     app.config['config_dialog_height'])
+        self._accel_group = Gtk.AccelGroup()
         self.add_accel_group(self._accel_group)
         self.add_button(Gtk.STOCK_CLOSE, Gtk.ResponseType.CLOSE)
         self.help_button = Gtk.Button(stock=Gtk.STOCK_HELP)
@@ -44,8 +47,7 @@ class PreferencesDialog(Gtk.Dialog):
         notebook.set_border_width(5)
         self.add(notebook)
         self.general_page = _GeneralPreferencesPage(app)
-        notebook.append_page(
-            self.general_page, Gtk.Label(_('GENERAL_OPTIONS')))
+        notebook.append_page(self.general_page, Gtk.Label(_('GENERAL_OPTIONS')))
         notebook.append_page(_PluginsPreferencesPage(
             app), Gtk.Label(_('SEARCH_PLUGINS')))
         self.help_button.connect(
@@ -69,6 +71,7 @@ class PreferencesDialog(Gtk.Dialog):
 
 
 class _GeneralPreferencesPage(Gtk.VBox):
+
     def __init__(self, app):
         self._app = app
         Gtk.VBox.__init__(self)
@@ -332,3 +335,7 @@ class _PluginsPreferencesPage(Gtk.ScrolledWindow):
     def _enabled_data_func(self, column, cell, model, iter):
         plugin = model.get_value(iter, 0)
         cell.set_property('active', plugin.enabled)
+
+
+def _getkey(a):
+    return a.TITLE.lower()

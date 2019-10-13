@@ -33,9 +33,10 @@ sys.path.append("/usr/lib64/torrent-search")
 import lang
 import AboutDialog
 import wnd_menus
+import wnd_plugin
 import wnd_preference
 import config
-import Plugin
+import plugin
 import _thread
 import urllib.request
 import urllib.parse
@@ -1421,7 +1422,7 @@ class Application(Gtk.Window):
 
     def check_plugin_updates(self):
         # TODO!: Handle the possibility of removing deprecated plugins
-        if Plugin.PluginsUpdatesChecker(self).run():
+        if wnd_plugin.PluginsUpdatesChecker(self).run():
             old_plugin_ids = []
             for i in self.search_plugins:
                 old_plugin_ids.append(i.ID)

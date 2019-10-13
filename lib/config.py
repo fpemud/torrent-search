@@ -19,14 +19,8 @@
 """
 
 import os
-import time
 import libxml2
-import webbrowser
-import gi
-gi.require_version('Gtk', '3.0')
-from gi.repository import Gtk
-from informations import *
-from constants import *
+import constants
 
 
 CONFIG_KEYS = {
@@ -126,14 +120,14 @@ class AppConfig(object):
                 root.addChild(node)
                 for item in self[key]:
                     node.newTextChild(None, "item", item)
-        if not os.path.exists(APPDATA_PATH):
-            self._app.rec_mkdir(APPDATA_PATH)
-        filename = os.path.join(APPDATA_PATH, "config.xml")
+        if not os.path.exists(constants.APPDATA_PATH):
+            self._app.rec_mkdir(constants.APPDATA_PATH)
+        filename = os.path.join(constants.APPDATA_PATH, "config.xml")
         d.saveFormatFileEnc(filename, "utf-8", True)
 
     def _load(self):
         try:
-            filename = os.path.join(APPDATA_PATH, "config.xml")
+            filename = os.path.join(constants.APPDATA_PATH, "config.xml")
             d = libxml2.parseFile(filename)
             root = d.getRootElement()
             child = root.children
@@ -157,7 +151,3 @@ class AppConfig(object):
                 child = child.__next__                      # FIXME
         except:
             pass
-
-
-def _getkey(a):
-    return a.TITLE.lower()
