@@ -8,12 +8,12 @@ import time
 import imp
 import libxml2
 import os
+from gi.repository import GObject
+from gi.repository import Gtk
 import _thread
 from constants import *
 from informations import *
-from exceptions import *
-from gi.repository import GObject
-from gi.repository import Gtk
+import exceptions
 
 """
     This file is part of Torrent Search.
@@ -158,8 +158,7 @@ class PluginResult(object):
         self.poster_pix_loaded_lock.acquire()
         self._poster_pix_loaded = value
         self.poster_pix_loaded_lock.release()
-    poster_pix_loaded = property(
-        _get_poster_pix_loaded, _set_poster_pix_loaded)
+    poster_pix_loaded = property(_get_poster_pix_loaded, _set_poster_pix_loaded)
 
     def load_comments(self):
         _thread.start_new_thread(self._load_comments, ())    # FIXME
@@ -211,9 +210,9 @@ class PluginResult(object):
         return self._link
     link = property(_get_link)
 
-    def _get_icon(self):
-        return self.plugin.icon
-    icon = property(_get_icon)
+    # def _get_icon(self):
+    #     return self.plugin.icon
+    # icon = property(_get_icon)
 
     def _get_rate(self):
         if not hasattr(self, "_rate"):
@@ -315,45 +314,45 @@ class Plugin(object):
 
     credentials = property(_get_credentials, _set_credentials)
 
-    def _set_icon_url(self, url):
-        if url:
-            _thread.start_new_thread(self._try_load_icon, (url,))    # FIXME
-            GObject.timeout_add(100, self._watch_load_icon)
+    # def _set_icon_url(self, url):
+    #     if url:
+    #         _thread.start_new_thread(self._try_load_icon, (url,))    # FIXME
+    #         GObject.timeout_add(100, self._watch_load_icon)
 
-    icon_url = property(None, _set_icon_url)
+    # icon_url = property(None, _set_icon_url)
 
-    def _watch_load_icon(self):
-        self.icon_lock.acquire()
-        res = not hasattr(self, "_icon")
-        self.icon_lock.release()
-        if not res:
-            self._app.notify_plugin_icon(self)
-        return res
+    # def _watch_load_icon(self):
+    #     self.icon_lock.acquire()
+    #     res = not hasattr(self, "_icon")
+    #     self.icon_lock.release()
+    #     if not res:
+    #         self._app.notify_plugin_icon(self)
+    #     return res
 
-    def _try_load_icon(self, url):
-        try:
-            filename, msg = urllib.request.urlretrieve(url)
-#         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
-            self.icon = Gtk.Image_new_from_file(filename)
-            os.unlink(filename)
-        except:
-            self.icon = None
+#     def _try_load_icon(self, url):
+#         try:
+#             filename, msg = urllib.request.urlretrieve(url)
+# #         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
+#             self.icon = Gtk.Image_new_from_file(filename)
+#             os.unlink(filename)
+#         except:
+#             self.icon = None
 
-    def _get_icon(self):
-        self.icon_lock.acquire()
-        if hasattr(self, '_icon'):
-            res = self._icon
-        else:
-            res = None
-        self.icon_lock.release()
-        return res
+    # def _get_icon(self):
+    #     self.icon_lock.acquire()
+    #     if hasattr(self, '_icon'):
+    #         res = self._icon
+    #     else:
+    #         res = None
+    #     self.icon_lock.release()
+    #     return res
 
-    def _set_icon(self, value):
-        self.icon_lock.acquire()
-        self._icon = value
-        self.icon_lock.release()
+    # def _set_icon(self, value):
+    #     self.icon_lock.acquire()
+    #     self._icon = value
+    #     self.icon_lock.release()
 
-    icon = property(_get_icon, _set_icon)
+    # icon = property(_get_icon, _set_icon)
 
     def _get_enabled(self):
         return self.ID not in self._app.config["disabled_plugins"]
@@ -528,23 +527,23 @@ def parse_metadata(app, filename):
 def load_plugin(app, path):
     metadata_file = os.path.join(path, "metadata.xml")
     if not os.path.exists(metadata_file):
-        raise PluginFileNotFound(metadata_file)
+        raise exceptions.PluginFileNotFound(metadata_file)
     if not os.path.isfile(metadata_file):
-        raise PluginFileNotFile(metadata_file)
+        raise exceptions.PluginFileNotFile(metadata_file)
     if not os.access(metadata_file, os.R_OK):
-        raise PluginFileNotReadable(metadata_file)
+        raise exceptions.PluginFileNotReadable(metadata_file)
     metadata = parse_metadata(app, metadata_file)
+
     filename = os.path.join(path, metadata["filename"])
     if not os.path.exists(filename):
-        raise PluginFileNotFound(filename)
+        raise exceptions.PluginFileNotFound(filename)
     if not os.path.isfile(filename):
-        raise PluginFileNotFile(filename)
+        raise exceptions.PluginFileNotFile(filename)
     if not os.access(filename, os.R_OK):
-        raise PluginFileNotReadable(filename)
+        raise exceptions.PluginFileNotReadable(filename)
     try:
         f = open(filename)
-        m = imp.load_module(metadata["filename"][:-3],
-                            f, filename, ('.py', 'r', imp.PY_SOURCE))
+        m = imp.load_module(metadata["filename"][:-3], f, filename, ('.py', 'r', imp.PY_SOURCE))
         plugin_class = getattr(m, metadata["classname"])
         res = plugin_class(app)
         res.TITLE = metadata['title']
@@ -556,6 +555,16 @@ def load_plugin(app, path):
         res.website_url = metadata["website_url"]
         res.require_auth = metadata["require_auth"]
         res.default_disable = metadata["default_disable"]
+
+        icon_filename = os.path.join(constants.APPDATA_PATH, "search-plugins", res.ID, "icon.png")
+        if os.path.exists(icon_filename):
+            res.icon_filename = icon_filename
+        else:
+            res.icon_filename = None
+
         return res
     except:
-        raise PluginSyntaxError(filename)
+        raise exceptions.PluginSyntaxError(filename)
+
+
+

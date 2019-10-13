@@ -25,27 +25,27 @@ import sys
 import time
 import tempfile
 import datetime
+import urllib.request
+import urllib.parse
+import urllib.error
+import httplib2
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GObject
 
 sys.path.append("/usr/lib64/torrent-search")
 import lang
+import auth
+import config
+import categories
+import plugin
 import wnd_about
 import wnd_menus
 import wnd_plugin
 import wnd_preference
-import config
-import plugin
 import _thread
-import urllib.request
-import urllib.parse
-import urllib.error
-import httplib2
 import downloads
 import locale
-import auth
-import categories
 import HttpQueue
 import webbrowser
 import torrentApps
@@ -223,11 +223,11 @@ class ResultsWidget(Gtk.ScrolledWindow):
         else:
             cell.set_property("text", str(value))
 
-    def notify_plugin_icon(self, plugin):
+    def notify_plugin_icon(self, plugin, icon):
         for i in range(len(self.lb)):
             item = self.lb[i][0]
             if item.plugin == plugin:
-                self.lb[i][8] = plugin.icon
+                self.lb[i][8] = icon
 
     def show_help(self):
         item = self._app.get_help_item(self)
@@ -467,7 +467,9 @@ class ResultsWidget(Gtk.ScrolledWindow):
         else:
             comments_str = ""
         self.lb.append((result, result.label, result.date, result.size, result.seeders, result.leechers,
-                        plugin.TITLE, len(self.lb), plugin.icon, str(result.category), comments_str, result.rate))
+                        plugin.TITLE, len(self.lb),
+                        None,       # FIXME
+                        str(result.category), comments_str, result.rate))
 
     def __len__(self):
         return len(self.lb)
@@ -568,8 +570,7 @@ class SearchOptionsBox(Gtk.Expander):
         self.only_exact_phrase = Gtk.CheckButton(_("ONLY_EXACT_PHRASE"))
         hbox.pack_start(self.only_exact_phrase, False, False, 0)
         self.only_exact_phrase.set_active(app.config["only_exact_phrase"])
-        self.only_exact_phrase.connect(
-            "toggled", self.on_only_exact_phrase_toggled)
+        self.only_exact_phrase.connect("toggled", self.on_only_exact_phrase_toggled)
         self.only_all_words = Gtk.CheckButton(_("ONLY_ALL_WORDS"))
         hbox.pack_start(self.only_all_words, False, False, 0)
         self.only_all_words.set_active(app.config["only_all_words"])
@@ -1117,16 +1118,13 @@ class Application(Gtk.Window):
 
     def notify_plugin_icon(self, plugin):
         # TODO: Add tooltips on icons
-        icon_filename = os.path.join(
-            APPDATA_PATH, "search-plugins", plugin.ID, "icon.png")
-        if plugin.icon:
-            plugin.icon.save(icon_filename, "png")
+        if plugin.icon_filename is not None:
+            icon = Gtk.Image.new_from_file(plugin.icon_filename)
+            self.results_widget.notify_plugin_icon(plugin, icon)
+        elif plugin.icon_url is not None:
+            pass
         else:
-            try:
-                plugin.icon = Gtk.Image.new_from_file(icon_filename)
-            except:
-                pass
-        self.results_widget.notify_plugin_icon(plugin)
+            pass
 
     def get_help_item(self, widget):
         res = widget
