@@ -22,7 +22,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import webbrowser
-from informations import *
+import informations
 
 
 def on_url_activated(dialog, url, data):
@@ -38,19 +38,19 @@ def on_email_activated(dialog, link, data):
 
 class AboutDialog(Gtk.AboutDialog):
     def __init__(self, app):
-        #Gtk.about_dialog_set_url_hook(on_url_activated, None)       # FIXME, use activate-link?
-        #Gtk.about_dialog_set_email_hook(on_email_activated, None)   # FIXME, use activate-link?
+        # Gtk.about_dialog_set_url_hook(on_url_activated, None)       # FIXME, use activate-link?
+        # Gtk.about_dialog_set_email_hook(on_email_activated, None)   # FIXME, use activate-link?
         Gtk.AboutDialog.__init__(self)
         self.set_transient_for(app)
-        self.set_program_name(APPNAME)
-        self.set_version(VERSION)
-        self.set_authors(AUTHORS)
-        self.set_documenters(DOCUMENTERS)
-        self.set_translator_credits(TRANSLATOR_CREDITS)
-        self.set_website(WEBSITE)
-        self.set_copyright(COPYRIGHT)
-        self.set_license(LICENSE)
-        self.set_artists(ARTISTS)
+        self.set_program_name(informations.APPNAME)
+        self.set_version(informations.VERSION)
+        self.set_authors(informations.AUTHORS)
+        self.set_documenters(informations.DOCUMENTERS)
+        self.set_translator_credits(informations.TRANSLATOR_CREDITS)
+        self.set_website(informations.WEBSITE)
+        self.set_copyright(informations.COPYRIGHT)
+        self.set_license(informations.LICENSE)
+        self.set_artists(informations.ARTISTS)
         self.set_logo_icon_name("torrent-search")
         self.set_comments(_("ABOUT_DIALOG_COMMENTS"))
 

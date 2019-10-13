@@ -75,7 +75,7 @@ class AuthMemory(object):
 
     def _load(self):
         try:
-            filename = os.path.join(APPDATA_PATH, "auth.xml")
+            filename = os.path.join(constants.APPDATA_PATH, "auth.xml")
             d = libxml2.parseFile(filename)
             root = d.getRootElement()
             child = root.children

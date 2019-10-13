@@ -31,7 +31,7 @@ from gi.repository import GObject
 
 sys.path.append("/usr/lib64/torrent-search")
 import lang
-import AboutDialog
+import wnd_about
 import wnd_menus
 import wnd_plugin
 import wnd_preference
@@ -981,7 +981,7 @@ class Application(Gtk.Window):
         self._maximized = False
         self.connect('window_state_event', self._on_window_state_event)
         self.connect('configure_event', self._on_window_configure_event)
-        self.about_dialog = AboutDialog.AboutDialog(self)
+        self.about_dialog = wnd_about.AboutDialog(self)
         self.torrent_infos_dialog = TorrentInfosDialog(self)
         self.torrent_details_loading_dialog = TorrentDetailsLoadingDialog(self)
         self.set_title(APPNAME)
