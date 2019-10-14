@@ -130,7 +130,8 @@ class FileList(list):
 
 class PluginResult(object):
 
-    def __init__(self, label, date, size, seeders=-1, leechers=-1, magnet_link=None, hashvalue=None, category="", nb_comments=0, orig_url=""):
+    def __init__(self, label, date, size, seeders=-1, leechers=-1, magnet_link=None,
+                 hashvalue=None, category="", nb_comments=0, orig_url=""):
         self.label = label
         self.date = date
         self.size = size
@@ -138,6 +139,7 @@ class PluginResult(object):
         self.leechers = leechers
         self.category = category
         self.nb_comments = nb_comments
+
         self._comments_loaded = False
         self._filelist_loaded = False
         self._poster_loaded = False
