@@ -91,19 +91,19 @@ def load_plugin(app, path):
         plugin_class = getattr(m, metadata["classname"])
     except:
         raise exceptions.PluginSyntaxError(filename)
-    plugin_class.ID = metadata["id"]
-    plugin_class.TITLE = metadata['title']
-    plugin_class.VERSION = metadata["version"]
-    plugin_class.AUTHOR = metadata["author"]
-    plugin_class.RELEASED_TIME = metadata["released_time"]
-    plugin_class.ICON_URL = metadata["icon_url"]
+
+    # create plugin object
+    plugin_obj = Plugin(app, app.get_plugin_credentials, plugin_class)
+    plugin_obj.ID = metadata["id"]
+    plugin_obj.TITLE = metadata['title']
+    plugin_obj.VERSION = metadata["version"]
+    plugin_obj.AUTHOR = metadata["author"]
+    plugin_obj.RELEASED_TIME = metadata["released_time"]
+    plugin_obj.ICON_URL = metadata["icon_url"]
     if True:
         fn = os.path.join(path, "icon.png")
         if os.path.exists(fn):
-            plugin_class.ICON_FILENAME = fn
-
-    # create plugin object
-    plugin_obj = plugin_class(app, app.get_plugin_credentials)
+            plugin_obj.ICON_FILENAME = fn
     plugin_obj.website_url = metadata["website_url"]
     plugin_obj.require_auth = metadata["require_auth"]
     plugin_obj.default_disable = metadata["default_disable"]
@@ -187,8 +187,8 @@ class PluginResult(object):
         self.comments_loading_progress_lock.acquire()
         self._comments_loading_progress = value
         self.comments_loading_progress_lock.release()
-    comments_loading_progress = property(
-        _get_comments_loading_progress, _set_comments_loading_progress)
+
+    comments_loading_progress = property(_get_comments_loading_progress, _set_comments_loading_progress)
 
     def _get_comments_loaded(self):
         self.comments_loaded_lock.acquire()
@@ -343,17 +343,24 @@ class ResultsList(object):
 
 class Plugin(object):
 
-    ID = ""
-    TITLE = "No title"
-    VERSION = ""
-    AUTHOR = ""
-    RELEASED_TIME = ""
-    ICON_URL = None
-    ICON_FILENAME = None
-
-    def __init__(self, app, func_get_credentials):
+    def __init__(self, app, func_get_credentials, plugin_class):
         self._app = app
         self._func_get_credentials = func_get_credentials
+
+        self.ID = ""
+        self.TITLE = "No title"
+        self.VERSION = ""
+        self.AUTHOR = ""
+        self.RELEASED_TIME = ""
+        self.ICON_URL = None
+        self.ICON_FILENAME = None
+
+        self.website_url = None
+        self.require_auth = None
+        self.default_disable = None
+
+        self.realObj = plugin_class(_PluginApi(self))
+        
 
         self.login_status = None
         self.search_status = None
@@ -451,38 +458,63 @@ class Plugin(object):
         try:
             if self.require_auth:
                 if self._login_cookie is None:
-                    self._login_cookie = self.plugin_try_login()
+                    self._login_cookie = self.realObj.try_login()
                     if self._login_cookie is None:
                         self.login_status = constants.LOGIN_STATUS_FAILED
                         return
             self.login_status = constants.LOGIN_STATUS_OK
-            self.plugin_run_search(pattern)
+            self.realObj.run_search(pattern)
             self.search_status = constants.SEARCH_STATUS_OK
         except:
             self.search_status = constants.SEARCH_STATUS_FAILED
 
+
+class _PluginApi:
+
+    def __init__(self, parent):
+        self.parent = parent
+
     def api_http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
-        return self._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
+        return self.parent._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
 
     def api_get_credentials(self):
-        return self._func_get_credentials(self.ID)
+        return self.parent._func_get_credentials(self.ID)
 
-    def api_get__login_cookie(self):
-        return self._login_cookie
+    def api_get_login_cookie(self):
+        return self.parent._login_cookie
 
     def api_add_result(self, result):
-        self.new_results.append(result)
-        self.results_loaded += 1
-        if self._app.config["stop_search_when_nb_plugin_results_reaches_enabled"] and self.results_loaded >= self._app.config["stop_search_when_nb_plugin_results_reaches_value"]:
-            self.search_status = constants.SEARCH_STATUS_STOPPING
+        self.parent.new_results.append(result)
+        self.parent.results_loaded += 1
+        if self.parent._app.config["stop_search_when_nb_plugin_results_reaches_enabled"] and self.parent.results_loaded >= self.parent._app.config["stop_search_when_nb_plugin_results_reaches_value"]:
+            self.parent.search_status = constants.SEARCH_STATUS_STOPPING
 
-    def plugin_try_login(self):
-        # implemented by plugin
-        assert False
+    def api_find_elements(self, node, elname=None, maxdepth=-1, **params):
+        res = []
+        if elname is None or node.name == elname:
+            add = True
+            for i in params:
+                if node.prop(i) != params[i]:
+                    add = False
+                    break
+            if add:
+                res.append(node)
+        if maxdepth != 0:
+            child = node.children
+            while child:
+                res += find_elements(child, elname, maxdepth-1, **params)
+                child = child.__next__    # FIXME
+        return res
 
-    def plugin_run_search(self, pattern):
-        # implemented by plugin
-        assert False
+# plugin template
+
+# def try_login(self):
+#     # implemented by plugin
+#     assert False
+
+# def run_search(self, pattern):
+#     # implemented by plugin
+#     assert False
 
 
     # def _set_icon_url(self, url):
