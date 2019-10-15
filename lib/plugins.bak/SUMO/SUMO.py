@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -11,10 +11,10 @@ import datetime
 import os
 import httplib2
 import http.client
-from TorrentSearch import htmltools
 
 
-class SUMOTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
+
+class SUMOTorrentPluginResult:
     def __init__(self, label, date, size, seeders, leechers, reflink, refinfo, nb_comments, details_url):
         try:
             magnet = self._get_magnet(refinfo)
@@ -155,7 +155,7 @@ class SUMOTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
         return res
 
 
-class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
+class SUMOTorrentPlugin:
     TITLE = "SUMOTorrent.com"
 
     def _parseDate(self, data):

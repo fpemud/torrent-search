@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,10 +10,10 @@ import datetime
 import time
 import os
 import httplib2
-from TorrentSearch import htmltools
 
 
-class TorrentHoundTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
+
+class TorrentHoundTorrentPluginResult:
     def __init__(self, label, date, size, seeders, leechers, reflink, hashvalue, nb_comments):
         TorrentSearch.Plugin.PluginResult.__init__(
             self, label, date, size, seeders, leechers, hashvalue=hashvalue, nb_comments=nb_comments)
@@ -79,7 +79,7 @@ class TorrentHoundTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
         return res
 
 
-class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
+class TorrentHoundTorrentPlugin:
     def _parseDate(self, data):
         day, month, year = data.split(' ')
         i = 0

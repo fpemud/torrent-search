@@ -11,7 +11,7 @@ import time
 import httplib2
 
 
-class JishakuPlugin(TorrentSearch.Plugin.Plugin):
+class JishakuPlugin:
 
     def __init__(self, api):
         self.api = api

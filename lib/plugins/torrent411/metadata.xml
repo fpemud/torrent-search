@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000012_torrent411" version="0.2.0">
+<plugin id="torrent411" version="0.2.0">
   <title>Torrent411</title>
   <released_time>2011-10-19 11:25:59</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>

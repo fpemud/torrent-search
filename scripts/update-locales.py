@@ -25,7 +25,7 @@ import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 import libxml2
-from TorrentSearch import htmltools
+
 
 PATH = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
 

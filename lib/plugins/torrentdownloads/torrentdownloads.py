@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,23 +10,17 @@ import os
 import datetime
 import time
 import httplib2
-import TorrentSearch.htmltools
 
 
-class TorrentDownloadsPluginResult(TorrentSearch.Plugin.PluginResult):
+class TorrentDownloadsPlugin:
 
-    def __init__(self, label, date, size, seeders, leechers, torrent_url):
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers)
-        self.torrent_url = torrent_url
+    def __init__(self, api):
+        self.api = api
 
-    def _do_get_link(self):
-        return self.torrent_url
+    def run_search(self, pattern, param, page_url=""):
+        self.api_notify_results_total_count = param["notify-results-total-count"]
+        self.api_notify_one_result = param["notify-one-result"]
 
-
-class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
-
-    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://www.torrentdownloads.net/search/?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -34,15 +28,16 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
-            title_bar = TorrentSearch.htmltools.find_elements(
+            title_bar = self.api.find_elements(
                 tree.getRootElement(), "div", **{'class': 'title_bar1'})[0]
-            self.results_count = int(TorrentSearch.htmltools.find_elements(
+            count = int(self.api.find_elements(
                 title_bar, "span", **{'class': 'num'})[0].getContent().rstrip().lstrip())
+            self.api_notify_results_total_count(count)
         except:
             pass
 
         results_list = title_bar.parent
-        results = TorrentSearch.htmltools.find_elements(results_list, "div", 1)
+        results = self.api.find_elements(results_list, "div", 1)
         i = 0
         while i < len(results):
             if results[i].prop("class").startswith("grey_bar3"):
@@ -59,9 +54,9 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
             if self.stop_search:
                 return
 
-        pagination_box = TorrentSearch.htmltools.find_elements(
+        pagination_box = self.api.find_elements(
             results_list, "div", **{'class': 'pagination_box'})[0]
-        pager_links = TorrentSearch.htmltools.find_elements(
+        pager_links = self.api.find_elements(
             pagination_box, "a")
         for i in pager_links:
             if i.getContent() == ">>":
@@ -69,12 +64,12 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
                 return
 
     def _parse_result(self, result_line):
-        link = TorrentSearch.htmltools.find_elements(result_line, "a")[0]
+        link = self.api.find_elements(result_line, "a")[0]
         label = link.getContent()
         link = link.prop('href')
         if not link.startswith("http://www.torrentdownloads.net"):
             return
-        health, leechers, seeders, size = TorrentSearch.htmltools.find_elements(
+        health, leechers, seeders, size = self.api.find_elements(
             result_line, "span", 1)[:4]
         seeders = eval(seeders.getContent())
         leechers = eval(leechers.getContent())
@@ -82,8 +77,8 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
 
         resp, content = self.api.http_queue_request(link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        for i in TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1'})+TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1 back_none'}):
-            span = TorrentSearch.htmltools.find_elements(i, "span")
+        for i in self.api.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1'})+self.api.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1 back_none'}):
+            span = self.api.find_elements(i, "span")
             if span:
                 span = span[0]
                 key = span.getContent()
@@ -93,8 +88,15 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
         date = time.strptime(date, "%Y-%m-%d %H:%M:%S")
         date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        torrent_url = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(tree.getRootElement(
+        torrent_url = self.api.find_elements(self.api.find_elements(tree.getRootElement(
         ), "ul", **{'class': 'download'})[0], "img", src="/templates/new//images/download_button1.jpg")[0].parent.prop("href")
 
-        self.api.notify_one_result(TorrentDownloadsPluginResult(
-            label, date, size, seeders, leechers, torrent_url))
+        self.api_notify_one_result({
+            "id": "",
+            "label": label,
+            "date": date,
+            "size": size,
+            "seeders": seeders,
+            "leechers": leechers,
+            "link": torrent_url,
+        })

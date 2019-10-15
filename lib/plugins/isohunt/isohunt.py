@@ -12,7 +12,7 @@ import time
 import http.client
 
 
-class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
+class isoHuntPlugin:
 
     def __init__(self, api):
         self.api = api

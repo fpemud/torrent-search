@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000005_torrentHound" version="0.5.0">
+<plugin id="torrentHound" version="0.5.0">
   <title>torrentHound</title>
   <released_time>2011-10-19 10:59:07</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>

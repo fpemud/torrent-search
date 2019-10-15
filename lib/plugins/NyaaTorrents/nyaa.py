@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,47 +9,43 @@ import datetime
 import os
 import httplib2
 import time
-from TorrentSearch import htmltools
 
 
-class NyaaTorrentsPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent_url):
-        self.torrent_url = torrent_url
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers)
+class NyaaTorrentsPlugin:
 
-    def _do_get_link(self):
-        return self.torrent_url
+    def __init__(self, api):
+        self.api = api
 
+    def run_search(self, pattern, param, href=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
 
-class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
-    def run_search(self, pattern, href=None):
         if href == None:
             href = "http://www.nyaatorrents.org/?page=search&term=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
-            span = htmltools.find_elements(
+            span = self.api.find_elements(
                 tree.getRootElement(), "span", **{'class': 'notice'})[0]
             data = span.getContent()
             i = data.index(" ")
-            self.results_count = eval(data[:i])
+            api_notify_results_total_count(eval(data[:i]))
         except:
             pass
-        restable = htmltools.find_elements(
+        restable = self.api.find_elements(
             tree.getRootElement(), "table", **{'class': 'tlist'})[0]
-        lines = htmltools.find_elements(restable, "tr")[1:]
+        lines = self.api.find_elements(restable, "tr")[1:]
         for i in lines:
             try:
-                cells = htmltools.find_elements(i, "td")
+                cells = self.api.find_elements(i, "td")
                 name = cells[1]
                 torrent_link = cells[2]
                 size = cells[3]
-                link = htmltools.find_elements(name, "a")[0]
+                link = self.api.find_elements(name, "a")[0]
                 label = link.getContent().rstrip().lstrip()
                 link = link.prop('href')
-                torrent_link = htmltools.find_elements(
+                torrent_link = self.api.find_elements(
                     torrent_link, "a")[0].prop('href')
                 size = size.getContent().replace('i', '')
                 try:
@@ -63,7 +58,7 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                     leechers = -1
                 resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
-                tds = htmltools.find_elements(itemtree.getRootElement(), "td")
+                tds = self.api.find_elements(itemtree.getRootElement(), "td")
                 date = ""
                 for j in tds:
                     if j.getContent() == "Date:":
@@ -78,17 +73,24 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                 day = eval(day)
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                self.api.notify_one_result(NyaaTorrentsPluginResult(
-                    label, date, size, seeders, leechers, torrent_link))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link,
+                })
             except:
                 pass
             if self.stop_search:
                 return
         if not self.stop_search:
             try:
-                pager = htmltools.find_elements(
+                pager = self.api.find_elements(
                     tree.getRootElement(), "table", **{'class': 'tlistpages'})[0]
-                links = htmltools.find_elements(
+                links = self.api.find_elements(
                     pager, "a", **{'class': 'page'})
                 next_link = None
                 for i in links:
@@ -96,6 +98,6 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                         next_link = i
                         break
                 url = next_link.prop('href')
-                self.run_search(pattern, url)
+                self.run_search(pattern, param, url)
             except:
                 pass

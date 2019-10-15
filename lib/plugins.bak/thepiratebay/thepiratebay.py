@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,10 +10,10 @@ import os
 import datetime
 import time
 import httplib2
-import TorrentSearch.htmltools
+.htmltools
 
 
-class ThePirateBayTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
+class ThePirateBayTorrentPluginResult:
 
     def __init__(self, label, date, size, seeders, leechers, torrent_url, magnet_url, category, nb_comments, details_page_url):
         TorrentSearch.Plugin.PluginResult.__init__(
@@ -125,7 +125,7 @@ class ThePirateBayTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
         return res
 
 
-class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
+class ThePirateBayTorrentPlugin:
 
     def run_search(self, pattern, page_url=""):
         if page_url == "":

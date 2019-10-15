@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,35 +10,29 @@ import os
 import datetime
 import time
 import httplib2
-import TorrentSearch.htmltools
 
 
-class TokyoToshokanPluginResult(TorrentSearch.Plugin.PluginResult):
+class TokyoToshokanPlugin:
 
-    def __init__(self, label, date, size, seeders, leechers, torrent_url):
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers)
-        self.torrent_url = torrent_url
+    def __init__(self, api):
+        self.api = api
 
-    def _do_get_link(self):
-        return self.torrent_url
+    def run_search(self, pattern, param, page_url=""):
+        self.api_notify_results_total_count = param["notify-results-total-count"]
+        self.api_notify_one_result = param["notify-one-result"]
 
-
-class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
-
-    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://tokyotosho.info/search.php?terms=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
-        results_table = TorrentSearch.htmltools.find_elements(
+        results_table = self.api.find_elements(
             tree.getRootElement(), "table", **{'class': 'listing'})[0]
-        results = TorrentSearch.htmltools.find_elements(
+        results = self.api.find_elements(
             results_table, "a", **{'type': "application/x-bittorrent"})
-        results = TorrentSearch.htmltools.find_elements(results_table, "tr", 1)
-        self.results_count = len(results)/2
+        results = self.api.find_elements(results_table, "tr", 1)
+        self.api_notify_results_total_count(len(results) / 2)
 
         for i in range(len(results)/2):
             try:
@@ -48,16 +42,16 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
             if self.stop_search:
                 return
 
-        pager = TorrentSearch.htmltools.find_elements(
+        pager = self.api.find_elements(
             tree.getRootElement(), "ul", **{'class': 'main-pagination'})[0]
-        next_page_link = TorrentSearch.htmltools.find_elements(
-            TorrentSearch.htmltools.find_elements(pager, "li")[-2], "a")[0]
+        next_page_link = self.api.find_elements(
+            self.api.find_elements(pager, "li")[-2], "a")[0]
         if next_page_link.getContent() == ">":
             url = urllib.basejoin(page_url, next_page_link.prop('href'))
             self.run_search(pattern, url)
 
     def _parse_result(self, url, result):
-        links = TorrentSearch.htmltools.find_elements(result, "a")
+        links = self.api.find_elements(result, "a")
         if len(links) == 3:
             category, result_link, details_link = links
         else:
@@ -66,9 +60,9 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
         details_link = urllib.basejoin(url, details_link.prop('href'))
         resp, content = self.api.http_queue_request(details_link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        infotable = TorrentSearch.htmltools.find_elements(
+        infotable = self.api.find_elements(
             tree.getRootElement(), "div", **{'class': 'details'})[0]
-        infolines = TorrentSearch.htmltools.find_elements(infotable, "li")
+        infolines = self.api.find_elements(infotable, "li")
         infodic = {}
         for i in range(len(infolines)/2):
             try:
@@ -103,5 +97,12 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
         size = size[:i]+' '+size[i:]
         torrent_link = urllib.basejoin(url, result_link.prop('href'))
 
-        self.api.notify_one_result(TokyoToshokanPluginResult(
-            label, date, size, seeders, leechers, torrent_link))
+        self.api_notify_one_result({
+            "id": "",
+            "label": label,
+            "date": date,
+            "size": size,
+            "seeders": seeders,
+            "leechers": leechers,
+            "link": torrent_link,
+        })

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,20 +10,13 @@ import datetime
 import os
 import time
 import httplib2
-from TorrentSearch import htmltools
 
 
-class TNTVillagePluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent_link, hashvalue):
-        self.torrent_link = torrent_link
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, hashvalue=hashvalue)
+class TNTVillagePlugin:
 
-    def _do_get_link(self):
-        return self.torrent_link
+    def __init__(self, api):
+        self.api = api
 
-
-class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
     def try_login(self):
         c = httplib2.Http()
         username, password = self.api.get_credential
@@ -40,13 +33,16 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        url = htmltools.find_elements(tree.getRootElement(), "a")[
+        url = self.api.find_elements(tree.getRootElement(), "a")[
             0].prop('href')
         headers = {'Cookie': cookie}
         resp, content = c.request(url, 'GET', headers=headers)
         return cookie
 
-    def run_search(self, pattern, stp=0, stn=20, first_page=True):
+    def run_search(self, pattern, param, stp=0, stn=20, first_page=True):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         headers = {'Content-type': 'application/x-www-form-urlencoded',
                    'Cookie': self.api.get_login_cookie}
         data = {'sb': '0', 'sd': '0', 'cat': '0',
@@ -60,10 +56,10 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
         resp, content = self.api.http_queue_request(
             "http://forum.tntvillage.scambioetico.org/tntforum/index.php?act=allreleases", 'POST', data, headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        ucpcontent = htmltools.find_elements(
+        ucpcontent = self.api.find_elements(
             tree.getRootElement(), "div", id="ucpcontent")[0]
         try:
-            data = htmltools.find_elements(htmltools.find_elements(
+            data = self.api.find_elements(self.api.find_elements(
                 ucpcontent, "table")[1], "td")[1].getContent()
             i = 0
             while data[i] not in "0123456789":
@@ -71,23 +67,23 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
             j = i
             while data[j] in "0123456789":
                 j += 1
-            self.results_count = eval(data[i:j])
+            api_notify_results_total_count(eval(data[i:j]))
         except:
             pass
-        restable = htmltools.find_elements(ucpcontent, "table")[3]
-        lines = htmltools.find_elements(restable, "tr", **{'class': 'row4'})
+        restable = self.api.find_elements(ucpcontent, "table")[3]
+        lines = self.api.find_elements(restable, "tr", **{'class': 'row4'})
         for i in lines:
             try:
-                category_link, title, releaser, group, leechers, seeders, complete, dim, peers = htmltools.find_elements(
+                category_link, title, releaser, group, leechers, seeders, complete, dim, peers = self.api.find_elements(
                     i, "td")
-                link = htmltools.find_elements(category_link, "a")[0]
+                link = self.api.find_elements(category_link, "a")[0]
                 label = link.getContent()
                 link = link.prop('href')
                 leechers = eval(leechers.getContent()[1:-1].rstrip().lstrip())
                 seeders = eval(seeders.getContent()[1:-1].rstrip().lstrip())
                 resp, content = self.api.http_queue_request(link, headers=headers)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
-                date = htmltools.find_elements(htmltools.find_elements(itemtree.getRootElement(
+                date = self.api.find_elements(self.api.find_elements(itemtree.getRootElement(
                 ), "span", **{'class': 'postdetails'})[0], "b")[0].next.getContent()
                 j = date.index(',')
                 date = date[:j].rstrip().lstrip()
@@ -97,16 +93,16 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                 day = eval(day)
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                torrent_link = htmltools.find_elements(
+                torrent_link = self.api.find_elements(
                     itemtree.getRootElement(), "a", title="Scarica allegato")[0]
                 details_table = torrent_link.parent.parent.parent
-                details = htmltools.find_elements(details_table, "tr")[1:]
+                details = self.api.find_elements(details_table, "tr")[1:]
                 hashvalue = None
                 for i in details:
                     try:
-                        key = htmltools.find_elements(
+                        key = self.api.find_elements(
                             i, "td")[0].getContent().rstrip().lstrip()
-                        value = htmltools.find_elements(
+                        value = self.api.find_elements(
                             i, "td")[1].getContent().rstrip().lstrip()
                         if key == "Dimensione:":
                             size = value.upper()
@@ -114,19 +110,27 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                             hashvalue = value
                     except:
                         pass
-                self.api.notify_one_result(TNTVillagePluginResult(
-                    label, date, size, seeders, leechers, torrent_link.prop('href'), hashvalue))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link.prop('href'),
+                    "hashvalue": hashvalue,
+                })
             except:
                 pass
             if self.stop_search:
                 return
         if not self.stop_search:
-            if htmltools.find_elements(tree.getRootElement(), "input", name="next"):
-                stn = eval(htmltools.find_elements(
+            if self.api.find_elements(tree.getRootElement(), "input", name="next"):
+                stn = eval(self.api.find_elements(
                     tree.getRootElement(), "input", name="stn")[0].prop('value'))
                 try:
-                    stp = eval(htmltools.find_elements(
+                    stp = eval(self.api.find_elements(
                         tree.getRootElement(), "input", name="stp")[0].prop('value'))
                 except:
                     stp = 0
-                self.run_search(pattern, stp, stn, False)
+                self.run_search(pattern, param, stp, stn, False)

@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,28 +10,24 @@ import datetime
 import os
 import time
 import httplib2
-from TorrentSearch import htmltools
 
 
-class TorrentbitPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent, magnet):
-        self.torrent = torrent
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, magnet)
+class TorrentbitPlugin:
 
-    def _do_get_link(self):
-        return self.torrent
+    def __init__(self, api):
+        self.api = api
 
+    def run_search(self, pattern, param, page=1, href=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
 
-class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
-    def run_search(self, pattern, page=1, href=None):
         if href is None:
             href = "http://www.torrentbit.net/search/?torrent=" + urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        td = htmltools.find_elements(tree.getRootElement(), "td", id="main")[0]
+        td = self.api.find_elements(tree.getRootElement(), "td", id="main")[0]
         try:
-            h = htmltools.find_elements(td, "h1")[0]
+            h = self.api.find_elements(td, "h1")[0]
             data = h.getContent().rstrip().lstrip()
             i = len(data)-1
             while i >= 0 and data[i] not in "0123456789":
@@ -39,15 +35,15 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
             j = i
             while j >= 0 and data[j] in "0123456789":
                 j -= 1
-            self.results_count = eval(data[j+1:i+1])
+            api_notify_results_total_count(eval(data[j+1:i+1]))
         except:
             pass
-        div = htmltools.find_elements(htmltools.find_elements(
+        div = self.api.find_elements(self.api.find_elements(
             td, "div", **{'class': 't_list'})[0], "tbody")[0]
-        lines = htmltools.find_elements(div, "tr")
+        lines = self.api.find_elements(div, "tr")
         for i in lines:
             try:
-                date, descr, title, size, rts, seeders, leechers, dl, cat = htmltools.find_elements(
+                date, descr, title, size, rts, seeders, leechers, dl, cat = self.api.find_elements(
                     i, "td")
                 date = date.getContent().replace(chr(194)+chr(160), " ")
                 day, month, year = date.split(" ")
@@ -58,7 +54,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                          "Aug", "Sep", "Oct", "Nov", "Dec"].index(month)+1
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                link = htmltools.find_elements(title, "a")[0]
+                link = self.api.find_elements(title, "a")[0]
                 label = link.getContent()
                 link = urllib.basejoin(
                     href, urllib.parse.quote(link.prop('href')))
@@ -67,19 +63,27 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                 leechers = eval(leechers.getContent())
                 resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
-                table = htmltools.find_elements(
+                table = self.api.find_elements(
                     itemtree.getRootElement(), "table", **{'class': 'tor_item'})[0]
-                thislines = htmltools.find_elements(table, "tr")
+                thislines = self.api.find_elements(table, "tr")
                 for j in thislines:
-                    if htmltools.find_elements(j, "th")[0].getContent() == "Download torrent:":
+                    if self.api.find_elements(j, "th")[0].getContent() == "Download torrent:":
                         itemlink = urllib.basejoin(
-                            link, htmltools.find_elements(j, "a")[0].prop('href'))
+                            link, self.api.find_elements(j, "a")[0].prop('href'))
                         break
-                hashvalue = htmltools.find_elements(
+                hashvalue = self.api.find_elements(
                     lines[4], "td")[0].getContent()
                 magnet = "magnet:?xt=urn:btih:"+hashvalue
-                self.api.notify_one_result(TorrentbitPluginResult(
-                    label, date, size, seeders, leechers, itemlink, magnet))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": itemlink,
+                    "magnet_link": magnet,
+                })
             except:
                 pass
             if self.stop_search:
@@ -87,16 +91,16 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
         if not self.stop_search:
             try:
                 try:
-                    pager = htmltools.find_elements(
+                    pager = self.api.find_elements(
                         tree.getRootElement(), "div", id="pagination")[0]
                 except:
                     pager = None
                 if pager:
-                    nextlink = htmltools.find_elements(
+                    nextlink = self.api.find_elements(
                         pager, "a", title="Next page")
                     if nextlink:
                         nextlink = urllib.basejoin(
                             href, nextlink[0].prop('href'))
-                        self.run_search(pattern, 1, nextlink)
+                        self.run_search(pattern, param, 1, nextlink)
             except:
                 pass

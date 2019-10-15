@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000002_SUMO" version="0.5.1">
+<plugin id="SUMO" version="0.5.1">
   <title>SUMOTorrent.com</title>
   <released_time>2011-10-19 10:54:37</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>

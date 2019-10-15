@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000007_torrentzap" version="0.3.3">
+<plugin id="torrentzap" version="0.3.3">
   <title>Torrentzap</title>
   <released_time>2011-12-28 12:08:18</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>

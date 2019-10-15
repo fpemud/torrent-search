@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,20 +10,13 @@ import datetime
 import os
 import time
 import httplib2
-from TorrentSearch import htmltools
 
 
-class xtremespeedsPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent_link):
-        self.torrent_link = torrent_link
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers)
+class xtremespeedsPlugin:
 
-    def _do_get_link(self):
-        return self.torrent_link
+    def __init__(self, api):
+        self.api = api
 
-
-class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
     def try_login(self):
         c = httplib2.Http()
         resp, content = c.request("http://xtremespeeds.net/")
@@ -40,7 +33,10 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def run_search(self, pattern, href=None):
+    def run_search(self, pattern, param, href=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         http = httplib2.Http()
         if href == None:
             href = "http://xtremespeeds.net/browse.php"
@@ -55,34 +51,41 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
             resp, content = http.request(href, 'POST', headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
-            a = htmltools.find_elements(
+            a = self.api.find_elements(
                 tree.getRootElement(), "a", **{'class': 'current'})[0]
             data = a.prop('title')
             i = len(data)-1
             while data[i] in "0123456789":
                 i -= 1
-            self.results_count = eval(data[i+1:])
+            api_notify_results_total_count(eval(data[i+1:]))
         except:
             pass
-        restable = htmltools.find_elements(
+        restable = self.api.find_elements(
             tree.getRootElement(), "table", id="sortabletable")[0]
-        lines = htmltools.find_elements(restable, "tr")[1:]
+        lines = self.api.find_elements(restable, "tr")[1:]
         for i in lines:
             try:
-                category, name, torrent_link, comments, size, snatched, seeders, leechers, uploader = htmltools.find_elements(
+                category, name, torrent_link, comments, size, snatched, seeders, leechers, uploader = self.api.find_elements(
                     i, "td")
-                label = htmltools.find_elements(name, "a")[0].getContent()
-                date = htmltools.find_elements(
+                label = self.api.find_elements(name, "a")[0].getContent()
+                date = self.api.find_elements(
                     name, "div")[0].getContent().rstrip().lstrip().split(' ')[0]
                 date = time.strptime(date, "%m-%d-%Y")
                 date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
-                torrent_link = htmltools.find_elements(
+                torrent_link = self.api.find_elements(
                     torrent_link, "a")[0].prop('href')
                 size = size.getContent().rstrip().lstrip()
                 seeders = eval(seeders.getContent().rstrip().lstrip())
                 leechers = eval(leechers.getContent().rstrip().lstrip())
-                self.api.notify_one_result(xtremespeedsPluginResult(
-                    label, date, size, seeders, leechers, torrent_link))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link,
+                })
             except:
                 pass
             if self.stop_search:
@@ -90,15 +93,15 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         if not self.stop_search:
             try:
                 next_link = None
-                pager = htmltools.find_elements(
+                pager = self.api.find_elements(
                     tree.getRootElement(), "div", id="navcontainer_f")[0]
-                links = htmltools.find_elements(pager, "a")
+                links = self.api.find_elements(pager, "a")
                 for i in links:
                     if i.getContent() == ">":
                         next_link = i
                         break
                 if next_link:
-                    self.run_search(pattern, urllib.basejoin(
+                    self.run_search(pattern, param, urllib.basejoin(
                         href, next_link.prop('href')))
             except:
                 pass

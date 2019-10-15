@@ -2,7 +2,7 @@
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 
-import TorrentSearch
+
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -12,10 +12,10 @@ import time
 import os
 import httplib2
 
-from TorrentSearch import htmltools
 
 
-class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
+
+class RARBGTorrentPluginResult:
 
     def __init__(self, label, date, size, seeders, leechers, reflink, hashvalue, category, nb_comments):
 
@@ -32,10 +32,10 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
-        self._link = urllib.basejoin(self.reflink, htmltools.find_elements(tree.getRootElement(
+        self._link = urllib.basejoin(self.reflink, self.api.find_elements(tree.getRootElement(
         ), "a", onmouseover="return overlib('Click here to download torrent')")[0].prop('href'))
 
-        img = htmltools.find_elements(
+        img = self.api.find_elements(
             tree.getRootElement(), "img", alt=self.label)
 
         if img:
@@ -48,7 +48,7 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
         self.poster_loaded = True
 
-        files_div = htmltools.find_elements(
+        files_div = self.api.find_elements(
             tree.getRootElement(), "div", id="files")
 
         filelist = TorrentSearch.Plugin.FileList()
@@ -57,9 +57,9 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
             files_div = files_div[0]
 
-            for i in htmltools.find_elements(files_div, "tr")[1:]:
+            for i in self.api.find_elements(files_div, "tr")[1:]:
 
-                filename, size = htmltools.find_elements(i, "td")
+                filename, size = self.api.find_elements(i, "td")
 
                 filename = filename.getContent()
 
@@ -71,7 +71,7 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
         self.filelist_loaded = True
 
-        comments_link = htmltools.find_elements(
+        comments_link = self.api.find_elements(
             tree.getRootElement(), "a", name="comments")
 
         comments = TorrentSearch.Plugin.CommentsList()
@@ -86,11 +86,11 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
                     node = node.__next__
 
-                comments_lines = htmltools.find_elements(node, "tr")
+                comments_lines = self.api.find_elements(node, "tr")
 
                 for i in range(len(comments_lines)/2):
 
-                    username, date = htmltools.find_elements(
+                    username, date = self.api.find_elements(
                         comments_lines[2*i], "td")
 
                     username = username.getContent()
@@ -144,7 +144,7 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
                         date = None
 
-                    content = htmltools.find_elements(
+                    content = self.api.find_elements(
                         comments_lines[2*i+1], "td")[1].getContent()
 
                     comments.append(TorrentSearch.Plugin.TorrentResultComment(
@@ -191,79 +191,51 @@ class RARBGTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
         return self._link
 
 
-class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
+class RARBGTorrentPlugin:
+
+    def __init__(self, api):
+        self.api = api
 
     def _parseDate(self, data):
-
         res = time.strptime(data, "%Y-%m-%d %H:%M:%S")
-
         return datetime.date(res.tm_year, res.tm_mon, res.tm_mday)
 
     def _parseCat(self, cat):
-
         catsmap = {
-
             "XXX (18+)": "video/xxx",
-
             "Music/MP3": "audio/music",
-
             "Music/FLAC": "audio/music",
-
             "Movies/DVD-R": "video/movie",
-
             "Movies/XVID": "video/movie",
-
             "Movies/Anime&Manga": "video/manga",
-
             "Movies/HDTV": "video/tv",
-
             "Sports": "video/sports",
-
             "Movies/TV-episodes": "video/tv",
-
             "Music/Video": "video/music",
-
             "Music/DVD": "video/music",
-
             "Software/PC ISO": "software/pc",
-
             "Software/PDA/Smartphone": "software/pda",
-
             "Movies/x264": "video/movie",
-
             "Movies/Documentaries": "video/documentary",
-
             "BG TV": "video/tv",
-
             "Games/PS2": "software/game/ps2",
-
             "Games/PC ISO": "software/game/pc",
-
             "Games/PC RIP": "software/game/pc",
-
             "Games/PSP": "software/game/psp",
-
             "Games/XBOX-360": "software/game/xbox360",
-
             "Games/XBOX": "software/game/xbox",
-
             "e-Books": "ebooks",
-
             "Movies/TV-Boxset": "video/tv",
-
             "Movies/VCD/SVCD": "video/movie",
-
         }
-
         if cat in catsmap:
-
             return catsmap[cat]
-
         else:
-
             return ""
 
-    def run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, param, page=1, href=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
 
         if href == None:
 
@@ -276,10 +248,10 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
         try:
 
-            div = htmltools.find_elements(
+            div = self.api.find_elements(
                 tree.getRootElement(), "div", **{'class': 'wp-pagenavi'})[0]
 
-            data = htmltools.find_elements(div, "a")[-1].getContent()
+            data = self.api.find_elements(div, "a")[-1].getContent()
 
             i = len(data)-1
 
@@ -287,32 +259,32 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
                 i -= 1
 
-            self.results_count = eval(data[i+1:])
+            api_notify_results_total_count(eval(data[i+1:]))
 
         except:
 
             pass
 
-        cats = htmltools.find_elements(
+        cats = self.api.find_elements(
             tree.getRootElement(), "select", name="category")[0]
 
         categories = {}
 
-        for i in htmltools.find_elements(cats, "option"):
+        for i in self.api.find_elements(cats, "option"):
 
             categories[i.prop('value')] = i.getContent()
 
-        lines = htmltools.find_elements(
+        lines = self.api.find_elements(
             tree.getRootElement(), "tr", **{'class': 'lista2'})
 
         for i in lines:
 
             try:
 
-                cat, link, date, size, seeders, leechers, comments, c = htmltools.find_elements(
+                cat, link, date, size, seeders, leechers, comments, c = self.api.find_elements(
                     i, "td")
 
-                cat = htmltools.find_elements(cat, "a")[0].prop('href')
+                cat = self.api.find_elements(cat, "a")[0].prop('href')
 
                 j = cat.index('=')
 
@@ -328,7 +300,7 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
                 cat = self._parseCat(cat)
 
-                link = htmltools.find_elements(link, "a")[0]
+                link = self.api.find_elements(link, "a")[0]
 
                 label = link.getContent()
 
@@ -361,10 +333,10 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
             try:
 
-                div = htmltools.find_elements(
+                div = self.api.find_elements(
                     tree.getRootElement(), "div", **{'class': 'wp-pagenavi'})[0]
 
-                cspan = htmltools.find_elements(
+                cspan = self.api.find_elements(
                     div, "span", **{"class": "current"})[0]
 
                 a = cspan.next.__next__

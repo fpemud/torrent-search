@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import libxml2
 import datetime
 import os
@@ -9,19 +8,13 @@ import httplib2
 import urllib.request
 import urllib.parse
 import urllib.error
-from TorrentSearch import htmltools
 
 
-class MonovaPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, torrent_link):
-        self.torrent_link = torrent_link
-        TorrentSearch.Plugin.PluginResult.__init__(self, label, date, size)
+class MonovaPlugin:
 
-    def _do_get_link(self):
-        return self.torrent_link
+    def __init__(self, api):
+        self.api = api
 
-
-class MonovaPlugin(TorrentSearch.Plugin.Plugin):
     def _formatSize(self, data):
         data = eval(data)
         units = ['B', 'KB', 'MB', 'GB', 'TB']
@@ -31,16 +24,19 @@ class MonovaPlugin(TorrentSearch.Plugin.Plugin):
             data /= 1024.
         return "%.1f %s" % (data, units[ui])
 
-    def run_search(self, pattern):
+    def run_search(self, pattern, param):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         url = "http://www.monova.org/rss.php?search=" + \
             urllib.parse.quote(pattern)+"&order=added"
         resp, content = self.api.http_queue_request(url)
         tree = libxml2.parseDoc(content)
-        results = htmltools.find_elements(tree.getRootElement(), "item")
-        self.results_count = len(results)
+        results = self.api.find_elements(tree.getRootElement(), "item")
+        api_notify_results_total_count(len(results))
         for i in results:
-            title = htmltools.find_elements(i, "title")[0].getContent()
-            date = htmltools.find_elements(i, "pubDate")[0].getContent()
+            title = self.api.find_elements(i, "title")[0].getContent()
+            date = self.api.find_elements(i, "pubDate")[0].getContent()
             day, month, year = date.split(" ")[1:4]
             while day[0] == "0":
                 day = day[1:]
@@ -49,10 +45,15 @@ class MonovaPlugin(TorrentSearch.Plugin.Plugin):
             month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
                      'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].index(month)+1
             date = datetime.date(year, month, day)
-            link = htmltools.find_elements(i, "enclosure")[0]
+            link = self.api.find_elements(i, "enclosure")[0]
             size = self._formatSize(link.prop('length'))
             torrent_link = link.prop('url')
-            self.api.notify_one_result(MonovaPluginResult(
-                title, date, size, torrent_link))
+            api_notify_one_result({
+                "id": "",
+                "label": title,
+                "date": date,
+                "size": size,
+                "link": torrent_link,
+            })
             if self.stop_search:
                 return
