@@ -19,17 +19,12 @@
 """
 
 import os
-import re
 import gi
 import sys
 import threading
 import time
 import tempfile
 import datetime
-import urllib.request
-import urllib.parse
-import urllib.error
-import httplib2
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
 from gi.repository import GObject
@@ -46,12 +41,11 @@ import wnd_plugin
 import wnd_preference
 import _thread
 import downloads
-import locale
 import HttpQueue
 import webbrowser
 import torrentApps
-from informations import *
-from constants import *
+import informations
+import constants
 import exceptions
 
 
@@ -102,7 +96,7 @@ class ResultsWidget(Gtk.ScrolledWindow):
         self._stars_icons = {0: None}
         for i in range(1, 6):
             try:
-                icon_path = os.path.join(PATH_ICONS_DIR, "stars", "%d.png" % i)
+                icon_path = os.path.join(constants.PATH_ICONS_DIR, "stars", "%d.png" % i)
                 self._stars_icons[i] = Gtk.Image.new_from_file(icon_path)
             except:
                 self._stars_icons[i] = None
@@ -962,7 +956,7 @@ class Application(Gtk.Window):
 
         self.options = options
 
-        self.categories = categories.CategoriesList(PATH_CATEGORIES_FILE)
+        self.categories = categories.CategoriesList(constants.PATH_CATEGORIES_FILE)
         self.config = config.AppConfig(self)
 
         self._tempfiles = []
@@ -989,7 +983,7 @@ class Application(Gtk.Window):
         self.about_dialog = wnd_about.AboutDialog(self)
         self.torrent_infos_dialog = TorrentInfosDialog(self)
         self.torrent_details_loading_dialog = TorrentDetailsLoadingDialog(self)
-        self.set_title(APPNAME)
+        self.set_title(informations.APPNAME)
         vbox = Gtk.VBox()
         self.add(vbox)
         self.mainmenu = wnd_menus.MainMenu(self)
@@ -1199,9 +1193,9 @@ class Application(Gtk.Window):
         while len(self.search_plugins):
             del self.search_plugins[0]
 
-        if os.path.exists(PATH_PLUGIN_DIR):
-            for i in os.listdir(PATH_PLUGIN_DIR):
-                path = os.path.join(PATH_PLUGIN_DIR, i)
+        if os.path.exists(constants.PATH_PLUGIN_DIR):
+            for i in os.listdir(constants.PATH_PLUGIN_DIR):
+                path = os.path.join(constants.PATH_PLUGIN_DIR, i)
                 if os.path.isdir(path):
                     self._load_search_plugin_from_path(path)
 
@@ -1268,17 +1262,17 @@ class Application(Gtk.Window):
         if not threaded:
             _thread.start_new_thread(
                 self.stop_search, (plugins, True))      # FIXME
-            self.set_title(APPNAME)
+            self.set_title(informations.APPNAME)
             self.search_results_label.set_markup(
                 "<b>%s</b>" % _("SEARCH_RESULTS"))
             try:
-                self.set_title("%s - %s - " % (APPNAME, self.search_pattern) +
+                self.set_title("%s - %s - " % (informations.APPNAME, self.search_pattern) +
                                _("NB_RESULTS") % len(self.results_widget))
                 self.search_results_label.set_markup("<b>"+_("SEARCH_RESULTS")+" - "+_("NB_RESULTS") % len(
                     self.results_widget)+" ("+_("NB_RESULTS_SHOWN") % self.results_widget.nb_results_shown+")"+"</b>")
             except:
                 self.set_title("%s - %s - %s" %
-                               (APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
+                               (informations.APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
             self.searchbar.stop_button.set_sensitive(False)
             self.load_search_plugins()
             return
@@ -1333,7 +1327,7 @@ class Application(Gtk.Window):
         self.search_results_label.set_markup(
             "<b>%s</b>" % _("SEARCH_RESULTS_INIT"))
         self.set_title("%s - %s - %s" %
-                       (APPNAME, pattern, _("SEARCH_RUNNING")))
+                       (informations.APPNAME, pattern, _("SEARCH_RUNNING")))
         self.nb_plugins_search_finished = 0
         for i in plugins:
             i.search(pattern)
@@ -1363,16 +1357,16 @@ class Application(Gtk.Window):
         if self.nb_plugins_search_finished == self.plugins_count and len(self.results_widget) == 0:
             self.searchbar.stop_button.set_sensitive(False)
             self.search_results_label.set_markup("<b>%s</b>" % _("SEARCH_RESULTS_NO_RESULTS"))
-            self.set_title("%s - %s - %s" % (APPNAME, self.search_pattern, _("NO_RESULTS")))
+            self.set_title("%s - %s - %s" % (informations.APPNAME, self.search_pattern, _("NO_RESULTS")))
         elif self.nb_plugins_search_finished == self.plugins_count:
             self.searchbar.stop_button.set_sensitive(False)
             try:
-                self.set_title("%s - %s - " % (APPNAME, self.search_pattern) +
+                self.set_title("%s - %s - " % (informations.APPNAME, self.search_pattern) +
                                _("NB_RESULTS") % len(self.results_widget))
                 self.search_results_label.set_markup("<b>"+_("SEARCH_RESULTS")+" - "+_("NB_RESULTS") % len(
                     self.results_widget)+" ("+_("NB_RESULTS_SHOWN") % self.results_widget.nb_results_shown+")"+"</b>")
             except:
-                self.set_title("%s - %s - %s" % (APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
+                self.set_title("%s - %s - %s" % (informations.APPNAME, self.search_pattern, _("SEARCH_FINISHED")))
 
     def check_plugin_updates(self):
         # TODO!: Handle the possibility of removing deprecated plugins
@@ -1448,14 +1442,14 @@ class Application(Gtk.Window):
     def load_icons(self):
         sizes = [16, 22, 32, 48, 64, 128]
         for size in sizes:
-            sizepath = os.path.join(PATH_ICONS_DIR, "%dx%d" % (size, size))
+            sizepath = os.path.join(constants.PATH_ICONS_DIR, "%dx%d" % (size, size))
             try:
                 for filename in os.listdir(sizepath):
                     try:
                         fullfilename = os.path.join(sizepath, filename)
                         iconname, ext = filename.split(".")
                         if ext == "png":
-                            gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.Image.new_from_file(fullfilename))
+                            Gtk.icon_theme_add_builtin_icon(iconname, size, Gtk.Image.new_from_file(fullfilename))
                     except:
                         pass
             except:

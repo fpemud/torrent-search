@@ -5,10 +5,8 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
-import os
 import datetime
 import time
-import httplib2
 
 
 class AhaSharePlugin:
