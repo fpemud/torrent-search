@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -11,31 +10,17 @@ import datetime
 import time
 import httplib2
 
-import TorrentSearch.htmltools
 
+class AhaSharePlugin:
 
-class AhaSharePluginResult(TorrentSearch.Plugin.PluginResult):
+    def __init__(self, api):
+        self.api = api
 
-    def __init__(self, label, date, size, seeders, leechers, torrent_url, details_page_url):
-
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers)
-
-        self.torrent_url = torrent_url
-
-        self.details_page_url = details_page_url
-
-    def _do_get_link(self):
-
-        return self.torrent_url
-
-
-class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
-
-    def run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, param, page_url=""):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
 
         if page_url == "":
-
             page_url = "http://www.ahashare.com/torrents-search.php?search=" + \
                 urllib.parse.quote_plus(pattern)
 
@@ -43,7 +28,7 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
-        results_table = TorrentSearch.htmltools.find_elements(
+        results_table = self.api.find_elements(
             tree.getRootElement(), "table", **{'class': 'ttable_headinner'})[0]
 
         next_page_link = None
@@ -58,7 +43,7 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
             count_elem = None
 
-            for i in TorrentSearch.htmltools.find_elements(elem, "b"):
+            for i in self.api.find_elements(elem, "b"):
 
                 if "-" in i.getContent():
 
@@ -74,30 +59,28 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
             i = len(data)-1
 
             while data[i] in "0123456789":
-
                 i -= 1
-
-            self.results_count = int(data[i+1:])
+            api_notify_results_total_count(int(data[i+1:]))
 
         except:
 
             pass
 
-        for result in TorrentSearch.htmltools.find_elements(results_table, "tr")[1:]:
+        for result in self.api.find_elements(results_table, "tr")[1:]:
 
             try:
 
-                category, name, dl_link, uploader, size, seeders, leechers, health = TorrentSearch.htmltools.find_elements(
+                category, name, dl_link, uploader, size, seeders, leechers, health = self.api.find_elements(
                     result, "td")
 
                 title = name.getContent().rstrip().lstrip()[2:].replace(
                     chr(226)+chr(150)+chr(136), "")
 
                 details_link = urllib.basejoin(
-                    page_url, TorrentSearch.htmltools.find_elements(name, "a")[0].prop('href'))
+                    page_url, self.api.find_elements(name, "a")[0].prop('href'))
 
                 dl_link = urllib.basejoin(
-                    page_url, TorrentSearch.htmltools.find_elements(dl_link, "a")[0].prop('href'))
+                    page_url, self.api.find_elements(dl_link, "a")[0].prop('href'))
 
                 size = size.getContent().rstrip().lstrip()
 
@@ -109,16 +92,16 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
 
-                details_table = TorrentSearch.htmltools.find_elements(
+                details_table = self.api.find_elements(
                     itemtree.getRootElement(), "table", width="95%", cellpadding="3", border="0")[1]
 
                 details = {}
 
-                for i in TorrentSearch.htmltools.find_elements(details_table, "tr"):
+                for i in self.api.find_elements(details_table, "tr"):
 
                     try:
 
-                        key, value = TorrentSearch.htmltools.find_elements(
+                        key, value = self.api.find_elements(
                             i, "td")
 
                         details[key.getContent()] = value.getContent()
@@ -139,13 +122,19 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
                     date = None
 
-                self.api.notify_one_result(AhaSharePluginResult(
-                    title, date, size, seeders, leechers, dl_link, details_link))
-
+                self.api.notify_one_result({
+                    "id": "",
+                    "label": title,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": dl_link,
+                    "orig_url": details_link,
+                })
             except:
-
                 pass
 
         if next_page_link and next_page_link != page_url and not self.stop_search:
 
-            self.run_search(pattern, next_page_link)
+            self.run_search(pattern, param, next_page_link)
