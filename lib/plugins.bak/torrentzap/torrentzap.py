@@ -49,7 +49,7 @@ class TorrentzapPlugin(TorrentSearch.Plugin.Plugin):
         year = eval(year)
         return datetime.date(year, month, day)
 
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.torrentzap.com/search.php?q=" + \
                 urllib.parse.quote_plus(pattern)
@@ -98,6 +98,6 @@ class TorrentzapPlugin(TorrentSearch.Plugin.Plugin):
                 link = div.lastElementChild()
                 if link.name == "a":
                     url = urllib.basejoin(href, link.prop('href'))
-                    self.plugin_run_search(pattern, 0, url)
+                    self.run_search(pattern, 0, url)
             except:
                 pass

@@ -31,7 +31,7 @@ class MonovaPlugin(TorrentSearch.Plugin.Plugin):
             data /= 1024.
         return "%.1f %s" % (data, units[ui])
 
-    def plugin_run_search(self, pattern):
+    def run_search(self, pattern):
         url = "http://www.monova.org/rss.php?search=" + \
             urllib.parse.quote(pattern)+"&order=added"
         resp, content = self.api.http_queue_request(url)

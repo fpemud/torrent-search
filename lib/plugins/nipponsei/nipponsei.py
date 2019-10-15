@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,32 +9,26 @@ import os
 import datetime
 import time
 import httplib2
-import TorrentSearch.htmltools
 
 
-class NipponseiPluginResult(TorrentSearch.Plugin.PluginResult):
+class NipponseiPlugin:
 
-    def __init__(self, label, date, size, seeders, leechers, torrent_url):
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, category="audio/music")
-        self.torrent_url = torrent_url
+    def __init__(self, api):
+        self.api = api
 
-    def _do_get_link(self):
-        return self.torrent_url
+    def run_search(self, pattern, param, page_url=""):
+        self.api_notify_results_total_count = param["notify-results-total-count"]
+        self.api_notify_one_result = param["notify-one-result"]
 
-
-class NipponseiPlugin(TorrentSearch.Plugin.Plugin):
-
-    def plugin_run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "https://nipponsei.minglong.org/index.php?section=Tracker&search=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
-        results = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(
+        results = self.api.find_elements(self.api.find_elements(
             tree.getRootElement(), "td", id="main")[0], "a", **{'class': 'download'})
-        self.results_count = len(results)
+        api_notify_results_total_count(len(results))
         for i in range(len(results)):
             results[i] = results[i].parent.parent
 
@@ -48,9 +41,9 @@ class NipponseiPlugin(TorrentSearch.Plugin.Plugin):
                 return
 
     def _parse_result(self, result_line):
-        link, date, size, seeders, leechers, downloads, transferred = TorrentSearch.htmltools.find_elements(
+        link, date, size, seeders, leechers, downloads, transferred = self.api.find_elements(
             result_line, "td")
-        link = TorrentSearch.htmltools.find_elements(link, "a")[0]
+        link = self.api.find_elements(link, "a")[0]
         label = link.getContent()
         torrent_url = link.prop('href')
         size = size.getContent()
@@ -59,5 +52,12 @@ class NipponseiPlugin(TorrentSearch.Plugin.Plugin):
         date = time.strptime(date.getContent().split(" ")[0], "%Y-%m-%d")
         date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        self.api.notify_one_result(NipponseiPluginResult(
-            label, date, size, seeders, leechers, torrent_url))
+        self.api_notify_one_result({
+            "id": "",
+            "label": label,
+            "date": date,
+            "size": size,
+            "seeders": seeders,
+            "leechers": leechers,
+            "link": torrent_url,
+        })

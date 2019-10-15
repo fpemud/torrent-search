@@ -24,7 +24,7 @@ class NyaaTorrentsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_run_search(self, pattern, href=None):
+    def run_search(self, pattern, href=None):
         if href == None:
             href = "http://www.nyaatorrents.org/?page=search&term=" + \
                 urllib.parse.quote_plus(pattern)
@@ -96,6 +96,6 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                         next_link = i
                         break
                 url = next_link.prop('href')
-                self.plugin_run_search(pattern, url)
+                self.run_search(pattern, url)
             except:
                 pass

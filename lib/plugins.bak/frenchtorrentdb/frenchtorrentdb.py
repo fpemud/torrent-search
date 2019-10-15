@@ -240,7 +240,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
             guessword = guessword[1:]
         return guessword
 
-    def plugin_run_search(self, pattern, page_url='', year=None, prev_month=13):
+    def run_search(self, pattern, page_url='', year=None, prev_month=13):
         http = httplib2.Http()
         headers = {'Cookie': self.api.get_login_cookie}
         if page_url == "":
@@ -334,5 +334,5 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                 nav = htmltools.find_elements(
                     nav[0], "div", **{'class': 'right'})
                 if nav and nav[0].prop('style') != 'visibility: hidden':
-                    self.plugin_run_search(pattern, urllib.basejoin(page_url, htmltools.find_elements(
+                    self.run_search(pattern, urllib.basejoin(page_url, htmltools.find_elements(
                         nav[0], "a")[0].prop('href')), year, prev_month)

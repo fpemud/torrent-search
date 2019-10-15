@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,23 +9,6 @@ import os
 import datetime
 import time
 import httplib2
-
-
-class _1337XPluginResult(TorrentSearch.Plugin.PluginResult):
-
-    def __init__(self, label, date, size, seeders, leechers, torrent_url, magnet_url, category, nb_comments, details_page_url, comments, poster, filelist):
-        TorrentSearch.Plugin.PluginResult.__init__(self, label, date, size, seeders, leechers, magnet_url, category=category, nb_comments=nb_comments)
-        self.torrent_url = torrent_url
-        self.details_page_url = details_page_url
-        self.comments = comments
-        self.comments_loaded = True
-        self.poster = poster
-        self.poster_loaded = True
-        self.filelist = filelist
-        self.filelist_loaded = True
-
-    def _do_get_link(self):
-        return self.torrent_url
 
 
 class _1337XPlugin:
@@ -127,8 +109,11 @@ class _1337XPlugin:
                 comment, "dt", **{'class': 'author'})[0], "a")[0].getContent()
             content = self.api.find_elements(
                 comment, "div", **{'class': 'postright round'})[0].getContent()
-            res.insert(0, TorrentSearch.Plugin.TorrentResultComment(
-                content, date, username))
+            res.insert(0, {
+                "content": content,
+                "date": date,
+                "user_name": username,
+            })
         return res
 
     def _parseFileList(self, ul, path=""):

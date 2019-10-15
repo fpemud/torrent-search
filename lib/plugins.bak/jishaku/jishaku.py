@@ -26,7 +26,7 @@ class JishakuPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class JishakuPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://www.jishaku.net/?q=" + \
                 urllib.parse.quote_plus(pattern)+"&limit=150"
@@ -51,7 +51,7 @@ class JishakuPlugin(TorrentSearch.Plugin.Plugin):
             TorrentSearch.htmltools.find_elements(pager, "li")[-2], "a")[0]
         if next_page_link.getContent() == ">":
             url = urllib.basejoin(page_url, next_page_link.prop('href'))
-            self.plugin_run_search(pattern, url)
+            self.run_search(pattern, url)
 
     def _parse_result(self, result_line):
         category, infos, details = TorrentSearch.htmltools.find_elements(

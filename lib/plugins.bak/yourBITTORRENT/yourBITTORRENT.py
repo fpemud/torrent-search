@@ -40,7 +40,7 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 data = 0
         return datetime.date.today()-datetime.timedelta(data)
 
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.yourbittorrent.com/?q=" + \
                 urllib.parse.quote_plus(pattern)
@@ -138,6 +138,6 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     if must_continue:
                         url = "http://www.yourbittorrent.com/?q=%s&page=%d" % (
                             urllib.parse.quote_plus(pattern), pn)
-                        self.plugin_run_search(pattern, pn, url)
+                        self.run_search(pattern, pn, url)
             except:
                 pass

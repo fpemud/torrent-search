@@ -26,7 +26,7 @@ class ExtraTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://extratorrent.com/search.php?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -58,7 +58,7 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
             tree.getRootElement(), "a", **{'class': 'pager_link'})
         for i in nav_links:
             if i.getContent() == ">":
-                self.plugin_run_search(pattern, urllib.basejoin(
+                self.run_search(pattern, urllib.basejoin(
                     page_url, i.prop('href')))
                 break
 

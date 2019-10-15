@@ -38,7 +38,7 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def plugin_run_search(self, pattern, href=None, page=0):
+    def run_search(self, pattern, href=None, page=0):
         if href == None:
             href = "http://mononoke-bt.org/browse2.php?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -101,6 +101,6 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
                 if b.parent.name == "a":
                     url = "http://mononoke-bt.org/browse2.php?search=%s&page=%d" % (
                         urllib.parse.quote_plus(pattern), page+1)
-                    self.plugin_run_search(pattern, url, page+1)
+                    self.run_search(pattern, url, page+1)
             except:
                 pass

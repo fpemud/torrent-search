@@ -43,7 +43,7 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def plugin_run_search(self, pattern, page_url=''):
+    def run_search(self, pattern, page_url=''):
         http = httplib2.Http()
         headers = {'Cookie': self.api.get_login_cookie}
         if page_url == "":
@@ -101,5 +101,5 @@ class BakaBTPlugin(TorrentSearch.Plugin.Plugin):
             link = htmltools.find_elements(htmltools.find_elements(
                 tree.getRootElement(), "div", **{'class': 'pager'})[0], "a")[-1]
             if link.prop('class') != 'selected':
-                self.plugin_run_search(pattern, urllib.basejoin(
+                self.run_search(pattern, urllib.basejoin(
                     page_url, link.prop('href')))

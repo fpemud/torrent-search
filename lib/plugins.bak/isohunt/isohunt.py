@@ -33,7 +33,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
             day = day[1:]
         return datetime.date(eval(year), eval(month), eval(day))
 
-    def plugin_run_search(self, pattern, href=None):
+    def run_search(self, pattern, href=None):
         if href == None:
             href = "http://isohunt.com/torrents/?ihq=" + \
                 urllib.parse.quote_plus(pattern)
@@ -104,7 +104,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
             try:
                 link = htmltools.find_elements(pager, "a", title="Next page")
                 if link:
-                    self.plugin_run_search(pattern, urllib.basejoin(
+                    self.run_search(pattern, urllib.basejoin(
                         href, link[0].prop('href')))
             except:
                 pass

@@ -127,7 +127,7 @@ class ThePirateBayTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://thepiratebay.org/search/" + \
                 urllib.parse.quote_plus(pattern)
@@ -168,7 +168,7 @@ class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
             next_page_link = next_page_img[0].parent
             next_page_url = urllib.basejoin(
                 page_url, next_page_link.prop('href'))
-            self.plugin_run_search(pattern, next_page_url)
+            self.run_search(pattern, next_page_url)
 
     def _parse_date(self, data):
         try:  # Date this year ?

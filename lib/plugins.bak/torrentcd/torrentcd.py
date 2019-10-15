@@ -31,7 +31,7 @@ class TorrentCDPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://torrent.cd/torrents/search/?q=" + \
                 urllib.parse.quote_plus(pattern)
@@ -64,7 +64,7 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         if next_page_link_li.prop("class") == "page":
             next_page_link = urllib.basejoin(page_url, TorrentSearch.htmltools.find_elements(
                 next_page_link_li, "a")[0].prop("href"))
-            self.plugin_run_search(pattern, next_page_link)
+            self.run_search(pattern, next_page_link)
 
     def _parseCat(self, cat):
         return ""

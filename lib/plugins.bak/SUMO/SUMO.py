@@ -166,7 +166,7 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                  "Aug", "Sep", "Oct", "Nov", "Dec"].index(month)+1
         return datetime.date(eval(year), month, eval(day))
 
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.sumotorrent.com/searchResult.php?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -174,7 +174,7 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
             resp, content = self.api.http_queue_request(href)
         except httplib2.FailedToDecompressContent:
             if not self.stop_search:
-                self.plugin_run_search(pattern, page, href)
+                self.run_search(pattern, page, href)
             return
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
@@ -242,6 +242,6 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self.plugin_run_search(pattern, pn, pages[i].prop('href'))
+                        self.run_search(pattern, pn, pages[i].prop('href'))
             except:
                 pass

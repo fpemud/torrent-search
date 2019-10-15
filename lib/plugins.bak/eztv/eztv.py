@@ -24,7 +24,7 @@ class EZTVPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class EZTVPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_run_search(self, pattern):
+    def run_search(self, pattern):
         # TODO; Retrieve number of seeders and leechers when available
         href = "http://eztv.it/search/"
         headers = {'Content-type': 'application/x-www-form-urlencoded'}

@@ -39,7 +39,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def plugin_run_search(self, pattern, href=None):
+    def run_search(self, pattern, href=None):
         if href == None:
             href = "http://www.torrent411.com/search/" + \
                 urllib.parse.quote_plus(pattern)
@@ -101,6 +101,6 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
                 if next_link:
                     link = urllib.basejoin(
                         "http://www.torrent411.com", next_link.prop('href'))
-                    self.plugin_run_search(pattern, link)
+                    self.run_search(pattern, link)
             except:
                 pass

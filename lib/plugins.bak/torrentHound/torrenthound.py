@@ -91,7 +91,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
         year = eval("20"+year)
         return datetime.date(year, month, day)
 
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "http://www.torrenthound.com/search/" + \
                 urllib.parse.quote_plus(pattern)
@@ -193,7 +193,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self.plugin_run_search(pattern, pn, urllib.basejoin(
+                        self.run_search(pattern, pn, urllib.basejoin(
                             href, pages[i].prop('href')))
             except:
                 pass

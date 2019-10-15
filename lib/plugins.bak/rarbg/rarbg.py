@@ -263,7 +263,7 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
             return ""
 
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
 
         if href == None:
 
@@ -371,7 +371,7 @@ class RARBGTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
                 if a.name == "a":
 
-                    self.plugin_run_search(
+                    self.run_search(
                         pattern, 0, urllib.basejoin(href, a.prop('href')))
 
             except:

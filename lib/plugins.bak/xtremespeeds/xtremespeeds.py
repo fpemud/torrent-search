@@ -40,7 +40,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         else:
             return None
 
-    def plugin_run_search(self, pattern, href=None):
+    def run_search(self, pattern, href=None):
         http = httplib2.Http()
         if href == None:
             href = "http://xtremespeeds.net/browse.php"
@@ -98,7 +98,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
                         next_link = i
                         break
                 if next_link:
-                    self.plugin_run_search(pattern, urllib.basejoin(
+                    self.run_search(pattern, urllib.basejoin(
                         href, next_link.prop('href')))
             except:
                 pass

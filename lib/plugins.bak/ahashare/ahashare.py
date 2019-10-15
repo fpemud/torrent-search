@@ -32,7 +32,7 @@ class AhaSharePluginResult(TorrentSearch.Plugin.PluginResult):
 
 class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
 
         if page_url == "":
 
@@ -148,4 +148,4 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
         if next_page_link and next_page_link != page_url and not self.stop_search:
 
-            self.plugin_run_search(pattern, next_page_link)
+            self.run_search(pattern, next_page_link)

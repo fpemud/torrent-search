@@ -23,7 +23,7 @@ class KickassTorrentsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href == None:
             href = "https://kickass.to/usearch/%s/" % urllib.parse.quote(
                 pattern)
@@ -114,7 +114,7 @@ class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                         except:
                             i += 1
                     if must_continue:
-                        self.plugin_run_search(pattern, pn, urllib.basejoin(
+                        self.run_search(pattern, pn, urllib.basejoin(
                             href, pages[i].prop('href')))
             except:
                 pass

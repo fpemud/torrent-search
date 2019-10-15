@@ -25,7 +25,7 @@ class linuxTRACKERPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_run_search(self, pattern, href=None):
+    def run_search(self, pattern, href=None):
         if href == None:
             href = "http://linuxtracker.org/index.php?page=torrents&search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -86,6 +86,6 @@ class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
                     if i < len(spans):
                         link = htmltools.find_elements(spans[i], "a")[0]
                         link = urllib.basejoin(href, link.prop('href'))
-                        self.plugin_run_search(pattern, link)
+                        self.run_search(pattern, link)
             except:
                 pass

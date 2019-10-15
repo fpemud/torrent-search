@@ -26,7 +26,7 @@ class TokyoToshokanPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://tokyotosho.info/search.php?terms=" + \
                 urllib.parse.quote_plus(pattern)
@@ -54,7 +54,7 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
             TorrentSearch.htmltools.find_elements(pager, "li")[-2], "a")[0]
         if next_page_link.getContent() == ">":
             url = urllib.basejoin(page_url, next_page_link.prop('href'))
-            self.plugin_run_search(pattern, url)
+            self.run_search(pattern, url)
 
     def _parse_result(self, url, result):
         links = TorrentSearch.htmltools.find_elements(result, "a")

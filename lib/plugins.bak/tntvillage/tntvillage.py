@@ -46,7 +46,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
         resp, content = c.request(url, 'GET', headers=headers)
         return cookie
 
-    def plugin_run_search(self, pattern, stp=0, stn=20, first_page=True):
+    def run_search(self, pattern, stp=0, stn=20, first_page=True):
         headers = {'Content-type': 'application/x-www-form-urlencoded',
                    'Cookie': self.api.get_login_cookie}
         data = {'sb': '0', 'sd': '0', 'cat': '0',
@@ -129,4 +129,4 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
                         tree.getRootElement(), "input", name="stp")[0].prop('value'))
                 except:
                     stp = 0
-                self.plugin_run_search(pattern, stp, stn, False)
+                self.run_search(pattern, stp, stn, False)

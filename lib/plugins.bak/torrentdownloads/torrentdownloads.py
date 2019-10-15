@@ -26,7 +26,7 @@ class TorrentDownloadsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
 
-    def plugin_run_search(self, pattern, page_url=""):
+    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://www.torrentdownloads.net/search/?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -65,7 +65,7 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
             pagination_box, "a")
         for i in pager_links:
             if i.getContent() == ">>":
-                self.plugin_run_search(pattern, i.prop('href'))
+                self.run_search(pattern, i.prop('href'))
                 return
 
     def _parse_result(self, result_line):

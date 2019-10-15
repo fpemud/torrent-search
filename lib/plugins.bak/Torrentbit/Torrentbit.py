@@ -24,7 +24,7 @@ class TorrentbitPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_run_search(self, pattern, page=1, href=None):
+    def run_search(self, pattern, page=1, href=None):
         if href is None:
             href = "http://www.torrentbit.net/search/?torrent=" + urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
@@ -97,6 +97,6 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                     if nextlink:
                         nextlink = urllib.basejoin(
                             href, nextlink[0].prop('href'))
-                        self.plugin_run_search(pattern, 1, nextlink)
+                        self.run_search(pattern, 1, nextlink)
             except:
                 pass
