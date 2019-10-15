@@ -105,7 +105,7 @@ class FrenchTorrentDBPluginResult(TorrentSearch.Plugin.PluginResult):
 class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
     vector_compare = VectorCompare()
 
-    def plugin_try_login(self):
+    def try_login(self):
         if len(IMAGESET) == 0:
             for letter in ICONSET:
                 letter_filename = os.path.join(
@@ -124,7 +124,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
         c.request('GET', '/')
         resp = c.getresponse()
         resp.read()
-        cookie = self._app.parse_cookie(
+        cookie = self.api.parse_cookie(
             resp.getheader('set-cookie')).split(';')[0]
         c.request('GET', '/?check_cookie=1', headers={'Cookie': cookie})
         resp = c.getresponse()

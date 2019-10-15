@@ -24,7 +24,7 @@ class TNTVillagePluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_try_login(self):
+    def try_login(self):
         c = httplib2.Http()
         username, password = self.api.get_credential
         resp, content = c.request(
@@ -36,7 +36,7 @@ class TNTVillagePlugin(TorrentSearch.Plugin.Plugin):
         resp, content = c.request(
             "http://forum.tntvillage.scambioetico.org/tntforum/index.php?act=Login&CODE=01", "POST", data, headers)
         if 'set-cookie' in resp and 'member_id' in resp['set-cookie']:
-            cookie = self._app.parse_cookie(resp['set-cookie'])
+            cookie = self.api.parse_cookie(resp['set-cookie'])
         else:
             return None
         tree = libxml2.htmlParseDoc(content, "utf-8")

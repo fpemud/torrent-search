@@ -24,7 +24,7 @@ class MononokeBTPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_try_login(self):
+    def try_login(self):
         c = httplib2.Http()
         username, password = self.api.get_credential
         data = urllib.parse.urlencode(
@@ -43,7 +43,7 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
             href = "http://mononoke-bt.org/browse2.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(
-            href, headers={'Cookie': self._app.parse_cookie(self.api.get_login_cookie)})
+            href, headers={'Cookie': self.api.parse_cookie(self.api.get_login_cookie)})
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(tree.getRootElement(
         ), "div", **{'class': 'animecoversfan'})[0].parent.__next__
@@ -82,7 +82,7 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
                 resp, content = self.api.http_queue_request(
-                    link, headers={'Cookie': self._app.parse_cookie(self.api.get_login_cookie)})
+                    link, headers={'Cookie': self.api.parse_cookie(self.api.get_login_cookie)})
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 tds = htmltools.find_elements(itemtree.getRootElement(), "td")
                 hashvalue = None

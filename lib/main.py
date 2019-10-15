@@ -975,9 +975,12 @@ class Application(Gtk.Window):
         self.config["name_does_not_contain"] = ""
         self.config["name_contains"] = ""
         self.config.register_listener(self.on_config_changed)
+
         self.load_icons()
         self.set_icon_name("torrent-search")
+
         self.load_search_plugins()
+
         self._accel_group = Gtk.AccelGroup()
         self.add_accel_group(self._accel_group)
         self._maximized = False
@@ -1035,45 +1038,6 @@ class Application(Gtk.Window):
 
     def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         return self._http_queue.request(uri, method, body, headers, redirections, connection_type)
-
-    def parse_cookie(self, set_cookie):
-        """Format a received cookie correctly in order for it to be sent back to the server
-
-        Parameters:
-           * set_cookie : cookie to parse (str)
-
-        Return value : formatted cookie (str)"""
-
-        cookies = []
-        cur = ""
-        for i in range(len(set_cookie)):
-            if set_cookie[i] == "," and not re.match("expires=(Mon|Tue|Wed|Thu|Fri|Sat|Sun)", set_cookie[i-11:i]):
-                cookies.append(cur)
-                cur = ""
-            else:
-                cur += set_cookie[i]
-        if cur:
-            cookies.append(cur)
-        d = {}
-        for i in cookies:
-            params = i.rstrip().lstrip().split(";")
-            for p in params:
-                try:
-                    key, value = p.rstrip().lstrip().split("=")
-                    if key not in ["expires", "path"] and value != 'deleted':
-                        d[key] = value
-                        if cookie:
-                            cookie += "; "
-                        cookie += key+"="+value
-                except:
-                    pass
-        cookie = ""
-        for key in d:
-            value = d[key]
-            if cookie:
-                cookie += "; "
-            cookie += key+"="+value
-        return cookie
 
     def show_torrent_infos(self, torrent_result):
         if self.comments_loading_timer:
@@ -1234,11 +1198,13 @@ class Application(Gtk.Window):
             self.search_plugins = []
         while len(self.search_plugins):
             del self.search_plugins[0]
+
         if os.path.exists(PATH_PLUGIN_DIR):
             for i in os.listdir(PATH_PLUGIN_DIR):
                 path = os.path.join(PATH_PLUGIN_DIR, i)
                 if os.path.isdir(path):
-                    self.load_search_plugin_from_path(path)
+                    self._load_search_plugin_from_path(path)
+
         not_confirmed = []
         for i in self.search_plugins:
             if i.require_auth and i.ID not in self.config["confirmed_plugins"]:
@@ -1253,7 +1219,7 @@ class Application(Gtk.Window):
         self.config["confirmed_plugins"] = l
         ConfirmPluginsDialog(self, plugins).run()
 
-    def load_search_plugin_from_path(self, path):
+    def _load_search_plugin_from_path(self, path):
         try:
             id = os.path.basename(path)
             param = dict()
@@ -1377,8 +1343,8 @@ class Application(Gtk.Window):
         if plugin in self.auth_memory:
             return self.auth_memory[plugin]
         else:
-            if plugin not in self.config["disabled_plugins"]:
-                self.config["disabled_plugins"].append(plugin)
+            # if plugin not in self.config["disabled_plugins"]:
+            #     self.config["disabled_plugins"].append(plugin)
             return None
 
     def show_about_dialog(self):
@@ -1418,6 +1384,7 @@ class Application(Gtk.Window):
             for i in self.search_plugins:
                 if i.default_disable and i.ID not in old_plugin_ids:
                     # TODO: Add notification dialog about default disabled plugins
+                    print("debug")
                     if i.ID not in self.config["disabled_plugins"]:
                         self.config["disabled_plugins"].append(i.ID)
 

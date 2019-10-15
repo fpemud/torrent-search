@@ -1,46 +1,14 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import libxml2
 import datetime
-import os
 import httplib2
 import urllib.request
 import urllib.parse
 import urllib.error
 import time
 import datetime
-from TorrentSearch import htmltools
-
-
-class BTSCENETorrentPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, reflink, nb_comments, filelist):
-        self.reflink, magnet = self._parseLinks(reflink)
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, magnet, nb_comments=nb_comments)
-        self.filelist = filelist
-        self.filelist_loaded = True
-
-    def _do_get_link(self):
-        return self.reflink
-
-    def _parseLinks(self, url):
-        c = httplib2.Http()
-        resp, content = c.request(url)
-        tree = libxml2.htmlParseDoc(content, "utf-8")
-        links = self.api.find_elements(tree.getRootElement(), "a")
-        reflink = ""
-        magnet = None
-        for i in links:
-            if i.getContent().lstrip().rstrip().lower() == "download torrent":
-                reflink = urllib.basejoin(url, i.prop('href'))
-            if i.getContent().lstrip().rstrip() == "magnet link":
-                magnet = urllib.basejoin(url, i.prop('href'))
-                if "&" in magnet:
-                    j = magnet.index("&")
-                    magnet = magnet[:j]
-        return reflink, magnet
 
 
 class BTSCENETorrentPlugin:
@@ -112,7 +80,7 @@ class BTSCENETorrentPlugin:
                                 filesize = data[j:].rstrip().lstrip()
                                 filelist.append({
                                     "filename": fn,
-                                    "size", size,
+                                    "size": size,
                                 })
                     except:
                         pass

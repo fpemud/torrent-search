@@ -24,7 +24,7 @@ class Torrent411PluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
-    def plugin_try_login(self):
+    def try_login(self):
         c = httplib2.Http()
         username, password = self.api.get_credential
         username = username

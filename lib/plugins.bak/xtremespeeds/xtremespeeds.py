@@ -24,10 +24,10 @@ class xtremespeedsPluginResult(TorrentSearch.Plugin.PluginResult):
 
 
 class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
-    def plugin_try_login(self):
+    def try_login(self):
         c = httplib2.Http()
         resp, content = c.request("http://xtremespeeds.net/")
-        init_cookie = self._app.parse_cookie(resp['set-cookie'])
+        init_cookie = self.api.parse_cookie(resp['set-cookie'])
         username, password = self.api.get_credential
         data = urllib.parse.urlencode(
             {'username': username, 'password': password})
@@ -36,7 +36,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         resp, content = c.request(
             "http://xtremespeeds.net/takelogin.php", "POST", data, headers)
         if resp.status == 302 and 'set-cookie' in resp:
-            return init_cookie+"; "+self._app.parse_cookie(resp['set-cookie'])+"; ts_username="+username
+            return init_cookie+"; "+self.api.parse_cookie(resp['set-cookie'])+"; ts_username="+username
         else:
             return None
 

@@ -29,6 +29,7 @@ from gi.repository import GObject
 from gi.repository import Gtk
 import constants
 import exceptions
+import htmltools
 
 
 class Plugin(object):
@@ -77,8 +78,6 @@ class Plugin(object):
 
         # plugin properties
         if True:
-            print(id)
-            print(metadata["id"])
             assert id == metadata["id"]
             self.ID = metadata["id"]
         self.TITLE = metadata['title']
@@ -92,7 +91,7 @@ class Plugin(object):
                 self.ICON_FILENAME = fn                         # FIXME: should move to ICON_URL, like file://
             else:
                 self.ICON_FILENAME = None
-        self.WEBSITE_URL = metadata["WEBSITE_URL"]
+        self.WEBSITE_URL = metadata["website_url"]
         self.require_auth = metadata["require_auth"]            # FIXME
         self.default_disable = metadata["default_disable"]      # FIXME
 
@@ -168,7 +167,7 @@ class Plugin(object):
         self._results_loaded = 0
 
         # create working thread
-        threading.Thread(target=self._do_search, kwargs=(pattern,)).start()
+        threading.Thread(target=self._do_search, args=(pattern,)).start()
         GObject.timeout_add(200, self._check_results)
 
     def stop(self):
@@ -255,6 +254,8 @@ class _PluginApi:
 
     def __init__(self, parent):
         self.parent = parent
+        self.find_element = htmltools.find_element
+        self.parse_cookie = htmltools.parse_cookie
 
     def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         return self.parent._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
@@ -265,23 +266,6 @@ class _PluginApi:
 
     def get_login_cookie(self):
         return self.parent._login_cookie
-
-    def find_elements(self, node, elname=None, maxdepth=-1, **params):
-        res = []
-        if elname is None or node.name == elname:
-            add = True
-            for i in params:
-                if node.prop(i) != params[i]:
-                    add = False
-                    break
-            if add:
-                res.append(node)
-        if maxdepth != 0:
-            child = node.children
-            while child:
-                res += self.find_elements(child, elname, maxdepth-1, **params)
-                child = child.next
-        return res
 
     # FIXME
     @property

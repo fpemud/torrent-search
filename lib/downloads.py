@@ -224,7 +224,7 @@ class DownloadManager(Gtk.VBox):
         host, path = urllib.parse.splithost(path)
         c = http.client.HTTPConnection(host)
         if item.plugin.require_auth and not cookie:
-            cookie = self._app.parse_cookie(item.plugin.login_cookie)
+            cookie = htmltools.parse_cookie(item.plugin.login_cookie)
         headers = {'User-Agent': 'torrent-search'}
         if cookie:
             headers['Cookie'] = cookie
@@ -236,7 +236,7 @@ class DownloadManager(Gtk.VBox):
         content_encoding = None
         for key, value in resp.getheaders():
             if key == "set-cookie":
-                cookie = self._app.parse_cookie(value)
+                cookie = htmltools.parse_cookie(value)
             if key == "location":
                 redirect_url = value
             if key == "content-type":
