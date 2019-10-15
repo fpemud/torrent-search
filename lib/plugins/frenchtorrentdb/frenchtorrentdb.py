@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -14,7 +13,6 @@ import http.client
 import tempfile
 import subprocess
 import math
-from TorrentSearch import htmltools
 from PIL import Image
 from operator import itemgetter
 
@@ -54,56 +52,11 @@ class VectorCompare:
         return topvalue / (self.magnitude(concordance1) * self.magnitude(concordance2))
 
 
-class FrenchTorrentDBPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent_link, poster, comments):
-        self.reflink = torrent_link
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, nb_comments=len(comments))
-        self.poster = poster
-        self.poster_loaded = True
-        self.comments = comments
-        self.comments_loaded = True
-
-    def _do_get_link(self):
-        return self.reflink
-
-    def _get_site_id(self):
-        i = len(self.reflink)-1
-        while self.reflink[i] != "=":
-            i -= 1
-        return self.reflink[i+1:]
-
-    def _do_load_filelist(self):
-        res = TorrentSearch.Plugin.FileList()
-        http = httplib2.Http()
-        headers = {'Cookie': self.plugin.api.get_login_cookie}
-        resp, content = http.request(
-            "http://www2.frenchtorrentdb.com/?section=INFOS&id="+self._get_site_id()+"&type=1", headers=headers)
-        tree = libxml2.htmlParseDoc(content, "utf-8")
-        div = htmltools.find_elements(
-            tree.getRootElement(), "div", id="mod_infos")[0]
-        pre = htmltools.find_elements(div, "pre")[0]
-        files = htmltools.find_elements(pre, "p")
-        cur_folder = ""
-        for i in files:
-            if htmltools.find_elements(i, "img")[0].prop("src") == "/themes/images/files/folder.gif":
-                cur_folder = i.getContent().strip().lstrip()
-                continue
-            data = i.getContent().strip().lstrip()
-            j = len(data)-1
-            while data[j] != '(':
-                j -= 1
-            filename, size = data[:j], data[j+1:-1]
-            filename = filename.strip().lstrip()
-            if cur_folder:
-                filename = cur_folder+"/"+filename
-            size = size.strip().lstrip()
-            res.append(filename, size)
-        return res
-
-
-class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
+class FrenchTorrentDBPlugin:
     vector_compare = VectorCompare()
+
+    def __init__(self, api):
+        self.api = api
 
     def try_login(self):
         if len(IMAGESET) == 0:
@@ -165,6 +118,43 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                 data = urllib.parse.urlencode(
                     {'username': username, 'password': password, 'code': self._decode_captcha(filename), 'submit': 'Connexion'})
         return None
+
+    def load_filelist(self, result_id):
+        res = []
+        http = httplib2.Http()
+        headers = {'Cookie': self.plugin.api.get_login_cookie}
+        resp, content = http.request(
+            "http://www2.frenchtorrentdb.com/?section=INFOS&id="+self._get_site_id(result_id)+"&type=1", headers=headers)
+        tree = libxml2.htmlParseDoc(content, "utf-8")
+        div = self.api.find_elements(
+            tree.getRootElement(), "div", id="mod_infos")[0]
+        pre = self.api.find_elements(div, "pre")[0]
+        files = self.api.find_elements(pre, "p")
+        cur_folder = ""
+        for i in files:
+            if self.api.find_elements(i, "img")[0].prop("src") == "/themes/images/files/folder.gif":
+                cur_folder = i.getContent().strip().lstrip()
+                continue
+            data = i.getContent().strip().lstrip()
+            j = len(data)-1
+            while data[j] != '(':
+                j -= 1
+            filename, size = data[:j], data[j+1:-1]
+            filename = filename.strip().lstrip()
+            if cur_folder:
+                filename = cur_folder+"/"+filename
+            size = size.strip().lstrip()
+            res.append({
+                "filename": filename,
+                "size": size,
+            })
+        return res
+
+    def _get_site_id(self, reflink):
+        i = len(reflink)-1
+        while reflink[i] != "=":
+            i -= 1
+        return reflink[i+1:]
 
     def _parseDate(self, date, year, prev_month):
         i = date.index('à')
@@ -240,7 +230,10 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
             guessword = guessword[1:]
         return guessword
 
-    def run_search(self, pattern, page_url='', year=None, prev_month=13):
+    def run_search(self, pattern, param, page_url='', year=None, prev_month=13):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         http = httplib2.Http()
         headers = {'Cookie': self.api.get_login_cookie}
         if page_url == "":
@@ -249,20 +242,21 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
         resp, content = http.request(page_url, headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
-            self.results_count = int(htmltools.find_elements(htmltools.find_elements(
+            count = int(self.api.find_elements(self.api.find_elements(
                 tree.getRootElement(), "div", **{'class': 'results'})[0], "b")[0].getContent())
+            api_notify_results_total_count(count)
         except:
             pass
-        results_table = htmltools.find_elements(
+        results_table = self.api.find_elements(
             tree.getRootElement(), "div", **{'class': 'DataGrid'})[0]
-        lines = htmltools.find_elements(results_table, "ul")
+        lines = self.api.find_elements(results_table, "ul")
         if year == None:
             year = int(time.strftime("%Y"))
         for i in range(len(lines)):
             try:
-                sub_cat, cat, name, size, seeders, leechers, health = htmltools.find_elements(
+                sub_cat, cat, name, size, seeders, leechers, health = self.api.find_elements(
                     lines[i], 'li')
-                alink = htmltools.find_elements(name, "a")[0]
+                alink = self.api.find_elements(name, "a")[0]
                 link = urllib.basejoin(page_url, alink.prop('href'))
                 label = alink.getContent().rstrip().lstrip()
                 size = size.getContent()
@@ -271,44 +265,44 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                 itemresp, itemcontent = http.request(link, headers=headers)
                 itemtree = libxml2.htmlParseDoc(itemcontent, "utf-8")
                 try:
-                    posters = htmltools.find_elements(
+                    posters = self.api.find_elements(
                         itemtree.getRootElement(), "img", **{'class': 'bbcode_img'})
                     if posters:
                         poster = posters[0].prop('src')
                 except:
                     poster = None
-                links = htmltools.find_elements(htmltools.find_elements(
+                links = self.api.find_elements(self.api.find_elements(
                     itemtree.getRootElement(), "div", id="mod_infos_menu")[0], "a")
                 torrent_link = ''
                 for j in links:
                     if j.prop('href').startswith('/?section=DOWNLOAD'):
                         torrent_link = urllib.basejoin(link, j.prop('href'))
-                divs = htmltools.find_elements(htmltools.find_elements(
+                divs = self.api.find_elements(self.api.find_elements(
                     itemtree.getRootElement(), "div", id="mod_infos_menu")[0], "div")
                 date = ''
                 for j in divs:
-                    l = htmltools.find_elements(j, "label")
+                    l = self.api.find_elements(j, "label")
                     if l and l[0].getContent() == "Date d'ajout:":
-                        date = htmltools.find_elements(
+                        date = self.api.find_elements(
                             j, "span")[0].getContent()
                 if date:
                     date, year, prev_month = self._parseDate(
                         date, year, prev_month)
-                comments = TorrentSearch.Plugin.CommentsList()
+                comments = []
                 comment_year = int(time.strftime("%Y"))
                 comment_prev_month = 13
                 try:
-                    comments_div = htmltools.find_elements(
+                    comments_div = self.api.find_elements(
                         itemtree.getRootElement(), "div", id="mod_comments_torrent")[0]
                     comments_list = []
-                    for l in htmltools.find_elements(comments_div, "ul"):
+                    for l in self.api.find_elements(comments_div, "ul"):
                         comments_list.insert(0, l)
                     for comment in comments_list:
-                        username = htmltools.find_elements(htmltools.find_elements(
+                        username = self.api.find_elements(self.api.find_elements(
                             comment, "li", **{'class': 'username'})[0], "a")[0].getContent()
                         comment_txt = ""
                         comment_date = ""
-                        for line in htmltools.find_elements(htmltools.find_elements(comment, "li", **{'class': 'text'})[0], "p"):
+                        for line in self.api.find_elements(self.api.find_elements(comment, "li", **{'class': 'text'})[0], "p"):
                             if line.prop("class") == "date":
                                 d = line.getContent()
                                 k = d.index(':')
@@ -317,22 +311,34 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                                     d, comment_year, comment_prev_month)
                             if line.prop('class') == None:
                                 comment_txt += line.getContent()+"n"
-                        comments.append(TorrentSearch.Plugin.TorrentResultComment(
-                            comment_txt[:-1], comment_date, username))
+                        comments.append({
+                            "content": comment_txt[:-1],
+                            "date": comment_date,
+                            "user_name": username,
+                        })
                 except:
                     pass
-                self.api.notify_one_result(FrenchTorrentDBPluginResult(
-                    label, date, size, seeders, leechers, torrent_link, poster, comments))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link,
+                    "poster": poster,
+                    "comments": comments,
+                })
             except:
                 pass
             if self.stop_search:
                 return
         if not self.stop_search:
-            nav = htmltools.find_elements(
+            nav = self.api.find_elements(
                 tree.getRootElement(), "div", id="nav_mod_torrents")
             if nav:
-                nav = htmltools.find_elements(
+                nav = self.api.find_elements(
                     nav[0], "div", **{'class': 'right'})
                 if nav and nav[0].prop('style') != 'visibility: hidden':
-                    self.run_search(pattern, urllib.basejoin(page_url, htmltools.find_elements(
+                    self.run_search(pattern, param, urllib.basejoin(page_url, self.api.find_elements(
                         nav[0], "a")[0].prop('href')), year, prev_month)

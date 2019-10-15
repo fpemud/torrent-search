@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -11,20 +10,13 @@ import os
 import httplib2
 import time
 import http.client
-from TorrentSearch import htmltools
-
-
-class isoHuntPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, seeders, leechers, torrent_url, hashvalue):
-        self.torrent_url = torrent_url
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, hashvalue=hashvalue)
-
-    def _do_get_link(self):
-        return self.torrent_url
 
 
 class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
+
+    def __init__(self, api):
+        self.api = api
+
     def _parseDate(self, data):
         year, month, day = data.split("-")
         while month[0] == "0":
@@ -33,25 +25,28 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
             day = day[1:]
         return datetime.date(eval(year), eval(month), eval(day))
 
-    def run_search(self, pattern, href=None):
+    def run_search(self, pattern, param, href=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         if href == None:
             href = "http://isohunt.com/torrents/?ihq=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        pager = htmltools.find_elements(
+        pager = self.api.find_elements(
             tree.getRootElement(), "table", **{'class': 'pager'})[0]
         try:
-            b = htmltools.find_elements(pager, "b")[0]
-            self.results_count = eval(b.getContent())
+            b = self.api.find_elements(pager, "b")[0]
+            api_notify_results_total_count(eval(b.getContent()))
         except:
             pass
-        restable = htmltools.find_elements(
+        restable = self.api.find_elements(
             tree.getRootElement(), "table", id="serps")[0]
-        lines = htmltools.find_elements(restable, "tr")[1:]
+        lines = self.api.find_elements(restable, "tr")[1:]
         for i in lines:
             try:
-                category, age, links, size, seeders, leechers = htmltools.find_elements(
+                category, age, links, size, seeders, leechers = self.api.find_elements(
                     i, "td")
                 size = size.getContent()
                 try:
@@ -62,9 +57,9 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                     leechers = eval(leechers.getContent())
                 except:
                     leechers = 0
-                links = htmltools.find_elements(links, "a")
+                links = self.api.find_elements(links, "a")
                 link = links[1]
-                br = htmltools.find_elements(link, "br")
+                br = self.api.find_elements(link, "br")
                 if br:
                     label = ""
                     node = br[0].__next__
@@ -85,26 +80,34 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                 resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 torrent_link = None
-                for i in htmltools.find_elements(itemtree.getRootElement(), "a"):
+                for i in self.api.find_elements(itemtree.getRootElement(), "a"):
                     if i.getContent() == " Download .torrent":
                         torrent_link = i
                 torrent_link = urllib.basejoin(link, torrent_link.prop('href'))
-                span = htmltools.find_elements(
+                span = self.api.find_elements(
                     itemtree.getRootElement(), "span", id="SL_desc")[0]
                 data = span.getContent()[11:]
                 j = data.index(" ")
                 hashvalue = data[:j]
-                self.api.notify_one_result(isoHuntPluginResult(
-                    label, date, size, seeders, leechers, torrent_link, hashvalue))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link,
+                    "hashvalue": hashvalue,
+                })
             except:
                 pass
             if self.stop_search:
                 return
         if not self.stop_search:
             try:
-                link = htmltools.find_elements(pager, "a", title="Next page")
+                link = self.api.find_elements(pager, "a", title="Next page")
                 if link:
-                    self.run_search(pattern, urllib.basejoin(
+                    self.run_search(pattern, param, urllib.basejoin(
                         href, link[0].prop('href')))
             except:
                 pass
