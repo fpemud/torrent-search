@@ -249,12 +249,13 @@ class Plugin(object):
         if self._max_results_loaded is not None and self._results_loaded >= self._max_results_loaded:
             self._search_status = constants.SEARCH_STATUS_STOPPING
 
+
 # FIXME
 class _PluginApi:
 
     def __init__(self, parent):
         self.parent = parent
-        self.find_element = htmltools.find_element
+        self.find_elements = htmltools.find_elements
         self.parse_cookie = htmltools.parse_cookie
 
     def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):

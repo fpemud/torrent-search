@@ -752,25 +752,25 @@ class ConfirmPluginsDialog(Gtk.Dialog):
         hbox.set_spacing(10)
         img = Gtk.Image()
         img.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.DIALOG)
-        hbox.pack_start(img, False, False)
+        hbox.pack_start(img, False, False, 0)
         vbox = Gtk.VBox()
-        hbox.pack_start(vbox)
+        hbox.pack_start(vbox, False, False, 0)
         vbox.set_spacing(10)
         l = Gtk.Label()
         l.set_alignment(0, 0.5)
         l.set_markup("<span size='large'><b>%s</b></span>" %
                      _("SOME_NEW_PLUGINS_REQUIRE_AUTH"))
         l.set_line_wrap(True)
-        vbox.pack_start(l, False, False)
+        vbox.pack_start(l, False, False, 0)
         l = Gtk.Label(_("SELECT_ONES_TO_ENABLE"))
         l.set_alignment(0, 0.5)
         l.set_line_wrap(True)
-        vbox.pack_start(l, False, False)
+        vbox.pack_start(l, False, False, 0)
         self.plugins_cb = {}
         for i in plugins:
             cb = Gtk.CheckButton(i.TITLE+" ("+i.WEBSITE_URL+")")
             self.plugins_cb[i] = cb
-            vbox.pack_start(cb, False, False)
+            vbox.pack_start(cb, False, False, 0)
 
     def run(self):
         self.show_all()
@@ -1197,7 +1197,17 @@ class Application(Gtk.Window):
             for i in os.listdir(constants.PATH_PLUGIN_DIR):
                 path = os.path.join(constants.PATH_PLUGIN_DIR, i)
                 if os.path.isdir(path):
-                    self._load_search_plugin_from_path(path)
+                    try:
+                        id = os.path.basename(path)
+                        param = dict()
+                        param["credential"] = self.get_plugin_credentials(id)
+                        if self.config["stop_search_when_nb_plugin_results_reaches_enabled"]:
+                            param["max_results_loaded"] = self.config["stop_search_when_nb_plugin_results_reaches_value"]
+                        pobj = plugin.Plugin(self, id, path, param)
+                        self.search_plugins.append(pobj)
+                    except exceptions.PluginException:
+                        exc_class, exc, traceback = sys.exc_info()
+                        exc.handle()
 
         not_confirmed = []
         for i in self.search_plugins:
@@ -1207,24 +1217,11 @@ class Application(Gtk.Window):
             self.confirm_plugins(not_confirmed)
 
     def confirm_plugins(self, plugins):
-        l = self.config["confirmed_plugins"]
+        tl = self.config["confirmed_plugins"]
         for i in plugins:
-            l.append(i.ID)
-        self.config["confirmed_plugins"] = l
+            tl.append(i.ID)
+        self.config["confirmed_plugins"] = tl
         ConfirmPluginsDialog(self, plugins).run()
-
-    def _load_search_plugin_from_path(self, path):
-        try:
-            id = os.path.basename(path)
-            param = dict()
-            param["credential"] = self.get_plugin_credentials(id)
-            if self.config["stop_search_when_nb_plugin_results_reaches_enabled"]:
-                param["max_results_loaded"] = self.config["stop_search_when_nb_plugin_results_reaches_value"]
-            pobj = plugin.Plugin(self, id, path, param)
-            self.search_plugins.append(pobj)
-        except exceptions.PluginException:
-            exc_class, exc, traceback = sys.exc_info()
-            exc.handle()
 
     def add_result(self, plugin, result):
         if plugin not in self.search_plugins:
@@ -1351,8 +1348,6 @@ class Application(Gtk.Window):
         self.download_manager.append(result)
 
     def notify_search_finished(self, plugin):
-        assert plugin in self.search_plugins
-
         self.nb_plugins_search_finished += 1
         if self.nb_plugins_search_finished == self.plugins_count and len(self.results_widget) == 0:
             self.searchbar.stop_button.set_sensitive(False)

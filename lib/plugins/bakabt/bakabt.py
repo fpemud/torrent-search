@@ -1,18 +1,18 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import os
-import time
 import httplib2
 
 
 class BakaBTPlugin:
+
+    def __init__(self, api):
+        self.api = api
 
     def try_login(self):
         c = httplib2.Http()

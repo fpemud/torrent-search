@@ -19,7 +19,7 @@
 """
 
 import re
-import cookie
+
 
 def find_elements(node, elname=None, maxdepth=-1, **params):
     res = []

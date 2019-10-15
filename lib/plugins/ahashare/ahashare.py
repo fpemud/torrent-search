@@ -120,7 +120,7 @@ class AhaSharePlugin:
 
                     date = None
 
-                self.api.notify_one_result({
+                api_notify_one_result({
                     "id": "",
                     "label": title,
                     "date": date,
