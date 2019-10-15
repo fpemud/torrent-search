@@ -22,6 +22,7 @@ import os
 import re
 import gi
 import sys
+import threading
 import time
 import tempfile
 import datetime
@@ -51,7 +52,7 @@ import webbrowser
 import torrentApps
 from informations import *
 from constants import *
-from exceptions import *
+import exceptions
 
 
 class Searchbar(Gtk.HBox):
@@ -1261,7 +1262,7 @@ class Application(Gtk.Window):
                 param["max_results_loaded"] = self.config["stop_search_when_nb_plugin_results_reaches_value"]
             pobj = plugin.Plugin(self, id, path, param)
             self.search_plugins.append(pobj)
-        except PluginException:
+        except exceptions.PluginException:
             exc_class, exc, traceback = sys.exc_info()
             exc.handle()
 
@@ -1273,7 +1274,7 @@ class Application(Gtk.Window):
         total = 0
         exact_total = True
         for i in self.search_plugins:
-            if i.ID not in self.config["disabled_plugins"]
+            if i.ID not in self.config["disabled_plugins"]:
                 n = i.results_total_count
                 if n == -1:
                     exact_total = False
@@ -1355,7 +1356,7 @@ class Application(Gtk.Window):
         self.searchbar.stop_button.set_sensitive(True)
         plugins = []
         for i in self.search_plugins:
-            if i.ID not in self.config["disabled_plugins"]
+            if i.ID not in self.config["disabled_plugins"]:
                 plugins.append(i)
         if not plugins:
             self.error_mesg(_("NO_PLUGINS_ENABLED"), _("CHECK_CONFIG"))
@@ -1373,14 +1374,12 @@ class Application(Gtk.Window):
         self._search_id += 1
 
     def get_plugin_credentials(self, plugin):
-        assert plugin.require_auth
-
-        if plugin.ID in self.auth_memory:
-            return self.auth_memory[plugin.ID]
-
-        if plugin.ID not in self.config["disabled_plugins"]:
-            self.config["disabled_plugins"].append(plugin.ID)
-        return None
+        if plugin in self.auth_memory:
+            return self.auth_memory[plugin]
+        else:
+            if plugin not in self.config["disabled_plugins"]:
+                self.config["disabled_plugins"].append(plugin)
+            return None
 
     def show_about_dialog(self):
         self.about_dialog.run()

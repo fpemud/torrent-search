@@ -77,6 +77,8 @@ class Plugin(object):
 
         # plugin properties
         if True:
+            print(id)
+            print(metadata["id"])
             assert id == metadata["id"]
             self.ID = metadata["id"]
         self.TITLE = metadata['title']
