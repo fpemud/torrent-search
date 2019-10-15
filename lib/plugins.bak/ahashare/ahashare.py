@@ -39,7 +39,7 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
             page_url = "http://www.ahashare.com/torrents-search.php?search=" + \
                 urllib.parse.quote_plus(pattern)
 
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
 
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
@@ -105,7 +105,7 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
                 leechers = int(leechers.getContent().rstrip().lstrip())
 
-                resp, content = self.api_http_queue_request(details_link)
+                resp, content = self.api.http_queue_request(details_link)
 
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
 
@@ -139,7 +139,7 @@ class AhaSharePlugin(TorrentSearch.Plugin.Plugin):
 
                     date = None
 
-                self.api_add_result(AhaSharePluginResult(
+                self.api.notify_one_result(AhaSharePluginResult(
                     title, date, size, seeders, leechers, dl_link, details_link))
 
             except:

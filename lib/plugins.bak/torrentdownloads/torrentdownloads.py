@@ -30,7 +30,7 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
         if page_url == "":
             page_url = "http://www.torrentdownloads.net/search/?search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
@@ -80,7 +80,7 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
         leechers = eval(leechers.getContent())
         size = size.getContent().replace(chr(194)+chr(160), " ")
 
-        resp, content = self.api_http_queue_request(link)
+        resp, content = self.api.http_queue_request(link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         for i in TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1'})+TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", **{'class': 'grey_bar1 back_none'}):
             span = TorrentSearch.htmltools.find_elements(i, "span")
@@ -96,5 +96,5 @@ class TorrentDownloadsPlugin(TorrentSearch.Plugin.Plugin):
         torrent_url = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(tree.getRootElement(
         ), "ul", **{'class': 'download'})[0], "img", src="/templates/new//images/download_button1.jpg")[0].parent.prop("href")
 
-        self.api_add_result(TorrentDownloadsPluginResult(
+        self.api.notify_one_result(TorrentDownloadsPluginResult(
             label, date, size, seeders, leechers, torrent_url))

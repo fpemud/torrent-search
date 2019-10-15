@@ -28,7 +28,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         c = httplib2.Http()
         resp, content = c.request("http://xtremespeeds.net/")
         init_cookie = self._app.parse_cookie(resp['set-cookie'])
-        username, password = self.api_get_credentials
+        username, password = self.api.get_credential
         data = urllib.parse.urlencode(
             {'username': username, 'password': password})
         headers = {'Content-type': 'application/x-www-form-urlencoded',
@@ -45,12 +45,12 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://xtremespeeds.net/browse.php"
             headers = {'Content-type': 'application/x-www-form-urlencoded',
-                       'Cookie': self.api_get_login_cookie, "User-Agent": "Python-httplib2/$Rev$"}
+                       'Cookie': self.api.get_login_cookie, "User-Agent": "Python-httplib2/$Rev$"}
             data = urllib.parse.urlencode(
                 {'do': 'search', 'keywords': pattern, 'search_type': 't_name', 'category': '0'})
             resp, content = http.request(href, 'POST', data, headers)
         else:
-            headers = {'Cookie': self.api_get_login_cookie,
+            headers = {'Cookie': self.api.get_login_cookie,
                        "User-Agent": "Python-httplib2/$Rev$"}
             resp, content = http.request(href, 'POST', headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
@@ -81,7 +81,7 @@ class xtremespeedsPlugin(TorrentSearch.Plugin.Plugin):
                 size = size.getContent().rstrip().lstrip()
                 seeders = eval(seeders.getContent().rstrip().lstrip())
                 leechers = eval(leechers.getContent().rstrip().lstrip())
-                self.api_add_result(xtremespeedsPluginResult(
+                self.api.notify_one_result(xtremespeedsPluginResult(
                     label, date, size, seeders, leechers, torrent_link))
             except:
                 pass

@@ -144,7 +144,7 @@ class BTSCENETorrentPlugin(TorrentSearch.Plugin.Plugin):
                         leechers = eval(leechers.getContent())
                     except:
                         leechers = 0
-                    self.api_add_result(BTSCENETorrentPluginResult(
+                    self.api.notify_one_result(BTSCENETorrentPluginResult(
                         label, date, size, seeders, leechers, link, nb_comments, filelist))
             except:
                 pass

@@ -86,7 +86,7 @@ class KickassTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                     month = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul',
                              'Aug', 'Sep', 'Oct', 'Nov', 'Dec'].index(month)+1
                 date = datetime.date(year, month, day)
-                self.api_add_result(KickassTorrentsPluginResult(
+                self.api.notify_one_result(KickassTorrentsPluginResult(
                     label, date, size, seeders, leechers, torrent, magnet))
             except:
                 pass

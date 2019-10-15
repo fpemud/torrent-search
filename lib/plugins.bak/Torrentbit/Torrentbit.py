@@ -27,7 +27,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
     def plugin_run_search(self, pattern, page=1, href=None):
         if href is None:
             href = "http://www.torrentbit.net/search/?torrent=" + urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         td = htmltools.find_elements(tree.getRootElement(), "td", id="main")[0]
         try:
@@ -65,7 +65,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                 size = size.getContent().replace(chr(194)+chr(160), " ")
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 table = htmltools.find_elements(
                     itemtree.getRootElement(), "table", **{'class': 'tor_item'})[0]
@@ -78,7 +78,7 @@ class TorrentbitPlugin(TorrentSearch.Plugin.Plugin):
                 hashvalue = htmltools.find_elements(
                     lines[4], "td")[0].getContent()
                 magnet = "magnet:?xt=urn:btih:"+hashvalue
-                self.api_add_result(TorrentbitPluginResult(
+                self.api.notify_one_result(TorrentbitPluginResult(
                     label, date, size, seeders, leechers, itemlink, magnet))
             except:
                 pass

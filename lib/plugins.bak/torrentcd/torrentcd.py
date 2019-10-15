@@ -35,7 +35,7 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         if page_url == "":
             page_url = "http://torrent.cd/torrents/search/?q=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         titles = TorrentSearch.htmltools.find_elements(
@@ -85,5 +85,5 @@ class TorrentCDPlugin(TorrentSearch.Plugin.Plugin):
         leechers = int(leechers_cell.getContent())
         cat = self._parseCat(category_cell.getContent())
 
-        self.api_add_result(TorrentCDPluginResult(title, date, size,
+        self.api.notify_one_result(TorrentCDPluginResult(title, date, size,
                                               seeders, leechers, cat, details_page_url))

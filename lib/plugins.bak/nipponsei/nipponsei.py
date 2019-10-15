@@ -30,7 +30,7 @@ class NipponseiPlugin(TorrentSearch.Plugin.Plugin):
         if page_url == "":
             page_url = "https://nipponsei.minglong.org/index.php?section=Tracker&search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         results = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(
@@ -59,5 +59,5 @@ class NipponseiPlugin(TorrentSearch.Plugin.Plugin):
         date = time.strptime(date.getContent().split(" ")[0], "%Y-%m-%d")
         date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        self.api_add_result(NipponseiPluginResult(
+        self.api.notify_one_result(NipponseiPluginResult(
             label, date, size, seeders, leechers, torrent_url))

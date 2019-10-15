@@ -28,7 +28,7 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://www.nyaatorrents.org/?page=search&term=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
             span = htmltools.find_elements(
@@ -61,7 +61,7 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                     leechers = eval(cells[5].getContent())
                 except:
                     leechers = -1
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 tds = htmltools.find_elements(itemtree.getRootElement(), "td")
                 date = ""
@@ -78,7 +78,7 @@ class NyaaTorrentsPlugin(TorrentSearch.Plugin.Plugin):
                 day = eval(day)
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                self.api_add_result(NyaaTorrentsPluginResult(
+                self.api.notify_one_result(NyaaTorrentsPluginResult(
                     label, date, size, seeders, leechers, torrent_link))
             except:
                 pass

@@ -35,7 +35,7 @@ from constants import *
 
 class DownloadItem(object):
     def __init__(self, search_result):
-        self.status_lock = _thread.allocate_lock()        # FIXME
+        self.status_lock = threading.Lock()        # FIXME
         self._item = search_result
         self.title = search_result.label
         self._status = DOWNLOAD_TORRENT_STATUS_WAITING

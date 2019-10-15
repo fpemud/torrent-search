@@ -34,7 +34,10 @@ class _1337XPlugin:
     def __init__(self, api):
         self.api = api
 
-    def run_search(self, pattern, page_url=None):
+    def run_search(self, pattern, param, page_url=None):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
+
         if page_url is None:
             page_url = "http://1337x.org/search/%s/0/" % (urllib.parse.quote_plus(pattern))
         resp, content = self.api.http_queue_request(page_url)
@@ -47,7 +50,7 @@ class _1337XPlugin:
             i = len(data) - 1
             while data[i] in "0123456789":
                 i -= 1
-            self.results_count = int(data[i+1:])
+            api_notify_results_total_count(int(data[i+1:]))
         except:
             pass
 
@@ -92,7 +95,19 @@ class _1337XPlugin:
                 res_filelist = None
                 torrent_link = self.api.find_elements(itemtree.getRootElement(), "a", **{'class': 'torrentDw'})[0].prop("href")
                 magnet_link = self.api.find_elements(itemtree.getRootElement(), "a", **{'class': 'magnetDw'})[0].prop("href")
-                self.api.add_result(_1337XPluginResult(label, date, size, seeders, leechers, torrent_link, magnet_link, "", nb_comments, details_link, res_comments, poster, res_filelist))
+
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "seeders": seeders,
+                    "leechers": leechers,
+                    "link": torrent_link,
+                    "magnet_link": magnet_link,
+                    "nb_comments": nb_comments,
+                    "orig_url": details_link,
+                })
             except:
                 pass
             if self.stop_search:
@@ -101,7 +116,7 @@ class _1337XPlugin:
         if pager and not self.stop_search:
             url = urllib.basejoin(page_url, self.api.find_elements(self.api.find_elements(
                 pager, "a", **{'class': 'active'})[0].parent.__next__, "a")[0].prop("href"))
-            self.run_search(pattern, url)
+            self.run_search(pattern, param, url)
 
     def _parseCommentsDiv(self, div):
         res = []

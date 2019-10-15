@@ -108,7 +108,7 @@ class yourBITTORRENTTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
                 date = self._parseDate(date.getContent())
-                self.api_add_result(yourBITTORRENTTorrentPluginResult(
+                self.api.notify_one_result(yourBITTORRENTTorrentPluginResult(
                     label, date, size, seeders, leechers, link, hashvalue, filelist, poster))
             except:
                 pass

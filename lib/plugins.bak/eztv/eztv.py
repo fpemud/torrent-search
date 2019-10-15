@@ -30,7 +30,7 @@ class EZTVPlugin(TorrentSearch.Plugin.Plugin):
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
         data = urllib.parse.urlencode(
             {'SearchString1': pattern, 'SearchString': '', "search": "Search"})
-        resp, content = self.api_http_queue_request(href, "POST", data, headers)
+        resp, content = self.api.http_queue_request(href, "POST", data, headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         div = htmltools.find_elements(
             tree.getRootElement(), "div", id="tooltip")[0]
@@ -48,7 +48,7 @@ class EZTVPlugin(TorrentSearch.Plugin.Plugin):
                     htmltools.find_elements(i, "td")[1], "a")[0]
                 label = link.getContent()
                 link = urllib.basejoin(href, link.prop('href'))
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 torrent_link = htmltools.find_elements(
                     itemtree.getRootElement(), "a", **{'class': 'download_1'})[0].prop('href')
@@ -74,7 +74,7 @@ class EZTVPlugin(TorrentSearch.Plugin.Plugin):
                          "Aug", "Sep", "Oct", "Nov", "Dec"].index(month)+1
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                self.api_add_result(EZTVPluginResult(
+                self.api.notify_one_result(EZTVPluginResult(
                     label, date, size, torrent_link, magnet_link))
             except:
                 pass

@@ -30,7 +30,7 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
         if page_url == "":
             page_url = "http://tokyotosho.info/search.php?terms=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         results_table = TorrentSearch.htmltools.find_elements(
@@ -64,7 +64,7 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
             category, result_link, website, details_link = links
         label = result_link.getContent()
         details_link = urllib.basejoin(url, details_link.prop('href'))
-        resp, content = self.api_http_queue_request(details_link)
+        resp, content = self.api.http_queue_request(details_link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         infotable = TorrentSearch.htmltools.find_elements(
             tree.getRootElement(), "div", **{'class': 'details'})[0]
@@ -103,5 +103,5 @@ class TokyoToshokanPlugin(TorrentSearch.Plugin.Plugin):
         size = size[:i]+' '+size[i:]
         torrent_link = urllib.basejoin(url, result_link.prop('href'))
 
-        self.api_add_result(TokyoToshokanPluginResult(
+        self.api.notify_one_result(TokyoToshokanPluginResult(
             label, date, size, seeders, leechers, torrent_link))

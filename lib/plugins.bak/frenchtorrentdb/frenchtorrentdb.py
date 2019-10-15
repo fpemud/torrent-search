@@ -76,7 +76,7 @@ class FrenchTorrentDBPluginResult(TorrentSearch.Plugin.PluginResult):
     def _do_load_filelist(self):
         res = TorrentSearch.Plugin.FileList()
         http = httplib2.Http()
-        headers = {'Cookie': self.plugin.api_get_login_cookie}
+        headers = {'Cookie': self.plugin.api.get_login_cookie}
         resp, content = http.request(
             "http://www2.frenchtorrentdb.com/?section=INFOS&id="+self._get_site_id()+"&type=1", headers=headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
@@ -119,7 +119,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                     continue
                 im = Image.open(letter_filename)
                 IMAGESET.append({letter: [buildvector(im)]})
-        username, password = self.api_get_credentials
+        username, password = self.api.get_credential
         c = http.client.HTTPConnection('www2.frenchtorrentdb.com')
         c.request('GET', '/')
         resp = c.getresponse()
@@ -242,7 +242,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
 
     def plugin_run_search(self, pattern, page_url='', year=None, prev_month=13):
         http = httplib2.Http()
-        headers = {'Cookie': self.api_get_login_cookie}
+        headers = {'Cookie': self.api.get_login_cookie}
         if page_url == "":
             page_url = "http://www2.frenchtorrentdb.com/?name=%s&parent_cat_id=&section=TORRENTS&last_adv_cat_selected=&order_by=added&order=DESC&Rechercher=Rechercher" % urllib.parse.quote(
                 pattern)
@@ -321,7 +321,7 @@ class FrenchTorrentDBPlugin(TorrentSearch.Plugin.Plugin):
                             comment_txt[:-1], comment_date, username))
                 except:
                     pass
-                self.api_add_result(FrenchTorrentDBPluginResult(
+                self.api.notify_one_result(FrenchTorrentDBPluginResult(
                     label, date, size, seeders, leechers, torrent_link, poster, comments))
             except:
                 pass

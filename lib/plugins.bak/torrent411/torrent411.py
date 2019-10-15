@@ -26,7 +26,7 @@ class Torrent411PluginResult(TorrentSearch.Plugin.PluginResult):
 class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
     def plugin_try_login(self):
         c = httplib2.Http()
-        username, password = self.api_get_credentials
+        username, password = self.api.get_credential
         username = username
         data = urllib.parse.urlencode(
             {'username': username, 'password': password})
@@ -43,7 +43,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://www.torrent411.com/search/" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         content = content.decode("latin-1")[0].decode("utf-8")[0]
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(htmltools.find_elements(
@@ -75,7 +75,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
                 label = link.prop('title')
                 link = urllib.basejoin(
                     "http://www.torrent411.com", link.prop('href'))
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 content = content.decode("latin-1")[0].decode("utf-8")[0]
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 table = htmltools.find_elements(
@@ -85,7 +85,7 @@ class Torrent411Plugin(TorrentSearch.Plugin.Plugin):
                 torrent = htmltools.find_elements(torrent, "a")[0].prop('href')
                 hashvalue = htmltools.find_elements(
                     hashvalue, "td")[1].getContent()
-                self.api_add_result(Torrent411PluginResult(
+                self.api.notify_one_result(Torrent411PluginResult(
                     label, date, size, seeders, leechers, torrent, hashvalue))
             except:
                 pass

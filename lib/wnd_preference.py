@@ -269,7 +269,7 @@ class _PluginsPreferencesPage(Gtk.ScrolledWindow):
     def _url_data_func(self, column, cell, model, iter):
         plugin = model.get_value(iter, 0)
         cell.set_property(
-            'markup', "<span color='#0000FF'><u>%s</u></span>" % plugin.website_url)
+            'markup', "<span color='#0000FF'><u>%s</u></span>" % plugin.WEBSITE_URL)
 
     def enable_items(self, paths):
         for i in paths:
@@ -287,7 +287,7 @@ class _PluginsPreferencesPage(Gtk.ScrolledWindow):
                 if column.get_property('title') == _("URL"):
                     iter = self.lb.get_iter(path)
                     plugin = self.lb.get_value(iter, 0)
-                    webbrowser.open(plugin.website_url)
+                    webbrowser.open(plugin.WEBSITE_URL)
                     return True
         if event.button == 3:
             data = widget.get_path_at_pos(int(event.x), int(event.y))

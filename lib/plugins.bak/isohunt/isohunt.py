@@ -37,7 +37,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://isohunt.com/torrents/?ihq=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(
             tree.getRootElement(), "table", **{'class': 'pager'})[0]
@@ -82,7 +82,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                 if unit == "w":
                     value *= 7
                 date = datetime.date.today()-datetime.timedelta(value)
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 torrent_link = None
                 for i in htmltools.find_elements(itemtree.getRootElement(), "a"):
@@ -94,7 +94,7 @@ class isoHuntPlugin(TorrentSearch.Plugin.Plugin):
                 data = span.getContent()[11:]
                 j = data.index(" ")
                 hashvalue = data[:j]
-                self.api_add_result(isoHuntPluginResult(
+                self.api.notify_one_result(isoHuntPluginResult(
                     label, date, size, seeders, leechers, torrent_link, hashvalue))
             except:
                 pass

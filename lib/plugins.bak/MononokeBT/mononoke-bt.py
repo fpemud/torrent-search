@@ -26,7 +26,7 @@ class MononokeBTPluginResult(TorrentSearch.Plugin.PluginResult):
 class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
     def plugin_try_login(self):
         c = httplib2.Http()
-        username, password = self.api_get_credentials
+        username, password = self.api.get_credential
         data = urllib.parse.urlencode(
             {'username': username, 'password': password, 'returnto': '/'})
         headers = {'Content-type': 'application/x-www-form-urlencoded',
@@ -42,8 +42,8 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://mononoke-bt.org/browse2.php?search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(
-            href, headers={'Cookie': self._app.parse_cookie(self.api_get_login_cookie)})
+        resp, content = self.api.http_queue_request(
+            href, headers={'Cookie': self._app.parse_cookie(self.api.get_login_cookie)})
         tree = libxml2.htmlParseDoc(content, "utf-8")
         pager = htmltools.find_elements(tree.getRootElement(
         ), "div", **{'class': 'animecoversfan'})[0].parent.__next__
@@ -81,15 +81,15 @@ class MononokeBTPlugin(TorrentSearch.Plugin.Plugin):
                 size = strsize.replace('O', 'B')
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
-                resp, content = self.api_http_queue_request(
-                    link, headers={'Cookie': self._app.parse_cookie(self.api_get_login_cookie)})
+                resp, content = self.api.http_queue_request(
+                    link, headers={'Cookie': self._app.parse_cookie(self.api.get_login_cookie)})
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 tds = htmltools.find_elements(itemtree.getRootElement(), "td")
                 hashvalue = None
                 for j in tds:
                     if j.getContent() == "Info hash":
                         hashvalue = j.next.next.getContent()
-                self.api_add_result(MononokeBTPluginResult(
+                self.api.notify_one_result(MononokeBTPluginResult(
                     label, date, size, seeders, leechers, torrent_link, hashvalue))
             except:
                 pass

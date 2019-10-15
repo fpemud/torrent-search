@@ -29,7 +29,7 @@ class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://linuxtracker.org/index.php?page=torrents&search=" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
             pager = htmltools.find_elements(
@@ -69,7 +69,7 @@ class linuxTRACKERPlugin(TorrentSearch.Plugin.Plugin):
                 seeders = int(data["Seeds"])
                 leechers = int(data["Leechers"])
                 size = data["Size:"]
-                self.api_add_result(linuxTRACKERPluginResult(
+                self.api.notify_one_result(linuxTRACKERPluginResult(
                     label, date, size, seeders, leechers, torrent_link, magnet_link))
             except:
                 pass

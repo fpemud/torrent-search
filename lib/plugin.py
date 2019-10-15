@@ -20,7 +20,6 @@
 
 import os
 import imp
-import time
 import libxml2
 import threading
 import urllib.error
@@ -28,468 +27,244 @@ import urllib.parse
 import urllib.request
 from gi.repository import GObject
 from gi.repository import Gtk
-import _thread
 import constants
 import exceptions
 
 
-def load_plugin(app, path):
-    # get metadata.xml file
-    metadata_file = os.path.join(path, "metadata.xml")
-    if not os.path.exists(metadata_file):
-        raise exceptions.PluginFileNotFound(metadata_file)
-    if not os.path.isfile(metadata_file):
-        raise exceptions.PluginFileNotFile(metadata_file)
-    if not os.access(metadata_file, os.R_OK):
-        raise exceptions.PluginFileNotReadable(metadata_file)
-
-    # check metadata.xml file content
-    dtd = libxml2.parseDTD(None, constants.PATH_PLUGIN_DTD_FILE)
-    tree = libxml2.parseFile(metadata_file)
-    if True:
-        ctxt = libxml2.newValidCtxt()
-        messages = []
-        ctxt.setValidityErrorHandler(lambda item, msgs: msgs.append(item), None, messages)
-        if tree.validateDtd(ctxt, dtd) != 1:
-            msg = ""
-            for i in messages:
-                msg += i
-            raise exceptions.IncorrectPluginMetaFile(metadata_file, msg)
-
-    # get values from metadata.xml file
-    root = tree.getRootElement()
-    metadata = {}
-    metadata["id"] = root.prop("id")
-    metadata["version"] = root.prop("version")
-    metadata["icon_url"] = None
-    metadata["require_auth"] = False
-    metadata["default_disable"] = False
-    child = root.children
-    while child:
-        if child.name == "require_auth":
-            metadata["require_auth"] = (child.getContent() == "true")
-        elif child.name == "default_disable":
-            metadata["default_disable"] = (child.getContent() == "true")
-        elif child.type == "element":
-            metadata[child.name] = child.getContent()
-        child = child.next
-
-    # get plugin module file
-    filename = os.path.join(path, metadata["filename"])
-    if not os.path.exists(filename):
-        raise exceptions.PluginFileNotFound(filename)
-    if not os.path.isfile(filename):
-        raise exceptions.PluginFileNotFile(filename)
-    if not os.access(filename, os.R_OK):
-        raise exceptions.PluginFileNotReadable(filename)
-
-    # create plugin class
-    plugin_class = None
-    try:
-        f = open(filename)
-        m = imp.load_module(metadata["filename"][:-3], f, filename, ('.py', 'r', imp.PY_SOURCE))
-        plugin_class = getattr(m, metadata["classname"])
-    except:
-        raise exceptions.PluginSyntaxError(filename)
-
-    # create plugin object
-    plugin_obj = Plugin(app, app.get_plugin_credentials, plugin_class)
-    plugin_obj.ID = metadata["id"]
-    plugin_obj.TITLE = metadata['title']
-    plugin_obj.VERSION = metadata["version"]
-    plugin_obj.AUTHOR = metadata["author"]
-    plugin_obj.RELEASED_TIME = metadata["released_time"]
-    plugin_obj.ICON_URL = metadata["icon_url"]
-    if True:
-        fn = os.path.join(path, "icon.png")
-        if os.path.exists(fn):
-            plugin_obj.ICON_FILENAME = fn
-    plugin_obj.website_url = metadata["website_url"]
-    plugin_obj.require_auth = metadata["require_auth"]
-    plugin_obj.default_disable = metadata["default_disable"]
-
-    return plugin_obj
-
-
-class TorrentResultComment(object):
-    def __init__(self, content, comment_date=None, user_name="", user_url=""):
-        self.content = content
-        self.date = comment_date
-        self.user_name = user_name
-        self.user_url = user_url
-
-
-class CommentsList(list):
-    pass
-
-
-class FileList(list):
-    def append(self, filename, size):
-        list.append(self, (filename, size))
-
-
-class PluginResult(object):
-
-    def __init__(self, label, date, size, seeders=-1, leechers=-1, magnet_link=None,
-                 hashvalue=None, category="", nb_comments=0, orig_url=""):
-        self.label = label
-        self.date = date
-        self.size = size
-        self.seeders = seeders
-        self.leechers = leechers
-        self.category = category
-        self.nb_comments = nb_comments
-
-        self._comments_loaded = False
-        self._filelist_loaded = False
-        self._poster_loaded = False
-        self._poster_pix_loaded = False
-        self.comments_loaded_lock = _thread.allocate_lock()    # FIXME
-        self.filelist_loaded_lock = _thread.allocate_lock()    # FIXME
-        self.poster_loaded_lock = _thread.allocate_lock()    # FIXME
-        self.poster_pix_loaded_lock = _thread.allocate_lock()    # FIXME
-        self.comments_loading_progress_lock = _thread.allocate_lock()    # FIXME
-        self._comments_loading_progress = 0
-        if magnet_link:
-            self.magnet_link = magnet_link.lower()
-            if "&" in self.magnet_link:
-                i = self.magnet_link.index("&")
-                self.magnet_link = self.magnet_link[:i]
-        elif hashvalue:
-            self.magnet_link = "magnet:?xt=urn:btih:"+hashvalue.lower()
-        else:
-            self.magnet_link = None
-        self.orig_url = orig_url
-
-    def load_poster_pix(self):
-        _thread.start_new_thread(self._do_load_poster_pix, ())    # FIXME
-
-    def _do_load_poster_pix(self):
-        res = None
-        if self.poster:
-            try:
-                filename, msg = urllib.request.urlretrieve(self.poster)
-#            res = Gtk.Image.new_from_file_at_size(filename, 300, 300)
-                res = Gtk.Image.new_from_file(filename)
-                os.unlink(filename)
-            except:
-                res = None
-        self.poster_pix = res
-        self.poster_pix_loaded = True
-
-    def _get_comments_loading_progress(self):
-        self.comments_loading_progress_lock.acquire()
-        res = self._comments_loading_progress
-        self.comments_loading_progress_lock.release()
-        return res
-
-    def _set_comments_loading_progress(self, value):
-        self.comments_loading_progress_lock.acquire()
-        self._comments_loading_progress = value
-        self.comments_loading_progress_lock.release()
-
-    comments_loading_progress = property(_get_comments_loading_progress, _set_comments_loading_progress)
-
-    def _get_comments_loaded(self):
-        self.comments_loaded_lock.acquire()
-        res = self._comments_loaded
-        self.comments_loaded_lock.release()
-        return res
-
-    def _set_comments_loaded(self, value):
-        self.comments_loaded_lock.acquire()
-        self._comments_loaded = value
-        self.comments_loaded_lock.release()
-    comments_loaded = property(_get_comments_loaded, _set_comments_loaded)
-
-    def _get_filelist_loaded(self):
-        self.filelist_loaded_lock.acquire()
-        res = self._filelist_loaded
-        self.filelist_loaded_lock.release()
-        return res
-
-    def _set_filelist_loaded(self, value):
-        self.filelist_loaded_lock.acquire()
-        self._filelist_loaded = value
-        self.filelist_loaded_lock.release()
-    filelist_loaded = property(_get_filelist_loaded, _set_filelist_loaded)
-
-    def _get_poster_loaded(self):
-        self.poster_loaded_lock.acquire()
-        res = self._poster_loaded
-        self.poster_loaded_lock.release()
-        return res
-
-    def _set_poster_loaded(self, value):
-        self.poster_loaded_lock.acquire()
-        self._poster_loaded = value
-        self.poster_loaded_lock.release()
-    poster_loaded = property(_get_poster_loaded, _set_poster_loaded)
-
-    def _get_poster_pix_loaded(self):
-        self.poster_pix_loaded_lock.acquire()
-        res = self._poster_pix_loaded
-        self.poster_pix_loaded_lock.release()
-        return res
-
-    def _set_poster_pix_loaded(self, value):
-        self.poster_pix_loaded_lock.acquire()
-        self._poster_pix_loaded = value
-        self.poster_pix_loaded_lock.release()
-    poster_pix_loaded = property(_get_poster_pix_loaded, _set_poster_pix_loaded)
-
-    def load_comments(self):
-        _thread.start_new_thread(self._load_comments, ())    # FIXME
-
-    def _load_comments(self):
-        try:
-            self.comments = self._do_load_comments()
-        except:
-            self.comments = CommentsList()
-        self.comments_loaded = True
-
-    def _do_load_comments(self):
-        return CommentsList()
-
-    def load_filelist(self):
-        _thread.start_new_thread(self._load_filelist, ())    # FIXME
-
-    def _load_filelist(self):
-        try:
-            self.filelist = self._do_load_filelist()
-        except:
-            self.filelist = FileList()
-        self.filelist_loaded = True
-
-    def _do_load_filelist(self):
-        return FileList()
-
-    def load_poster(self):
-        _thread.start_new_thread(self._load_poster, ())    # FIXME
-
-    def _load_poster(self):
-        try:
-            self.poster = self._do_load_poster()
-        except:
-            self.poster = None
-        self.poster_loaded = True
-
-    def _do_load_poster(self):
-        return None
-
-    def _get_poster(self):
-        if not hasattr(self, "_poster"):
-            self._poster = self._do_get_poster()
-        return self._poster
-
-    def _get_link(self):
-        if not hasattr(self, "_link"):
-            self._link = self._do_get_link()
-        return self._link
-    link = property(_get_link)
-
-    # def _get_icon(self):
-    #     return self.plugin.icon
-    # icon = property(_get_icon)
-
-    def _get_rate(self):
-        if not hasattr(self, "_rate"):
-            self._rate = self._load_rate()
-        return self._rate
-    rate = property(_get_rate)
-
-    def _load_rate(self):
-        return 0
-
-
-class ResultsList(object):
-    def __init__(self):
-        self._list = []
-        self._lock = _thread.allocate_lock()    # FIXME
-
-    def append(self, item):
-        self._lock.acquire()
-        self._list.append(item)
-        self._lock.release()
-
-    def __getitem__(self, index):
-        self._lock.acquire()
-        res = self._list[index]
-        self._lock.release()
-        return res
-
-    def __setitem__(self, index, value):
-        self._lock.acquire()
-        self._list[index] = value
-        self._lock.release()
-
-    def __delitem__(self, index):
-        self._lock.acquire()
-        del self._list[index]
-        self._lock.release()
-
-    def __iter__(self):
-        self._lock.acquire()
-        res = iter(self._list)
-        self._lock.release()
-        return res
-
-    def __len__(self):
-        self._lock.acquire()
-        res = len(self._list)
-        self._lock.release()
-        return res
-
-
 class Plugin(object):
 
-    def __init__(self, app, func_get_credentials, plugin_class):
-        self._app = app
-        self._func_get_credentials = func_get_credentials
+    def __init__(self, app, id, path, param):
+        # get metadata.xml file
+        metadata_file = os.path.join(path, "metadata.xml")
+        if not os.path.exists(metadata_file):
+            raise exceptions.PluginFileNotFound(metadata_file)
+        if not os.path.isfile(metadata_file):
+            raise exceptions.PluginFileNotFile(metadata_file)
+        if not os.access(metadata_file, os.R_OK):
+            raise exceptions.PluginFileNotReadable(metadata_file)
 
-        self.ID = ""
-        self.TITLE = "No title"
-        self.VERSION = ""
-        self.AUTHOR = ""
-        self.RELEASED_TIME = ""
-        self.ICON_URL = None
-        self.ICON_FILENAME = None
+        # check metadata.xml file content
+        tree = libxml2.parseFile(metadata_file)
+        if True:
+            dtd = libxml2.parseDTD(None, constants.PATH_PLUGIN_DTD_FILE)
+            ctxt = libxml2.newValidCtxt()
+            messages = []
+            ctxt.setValidityErrorHandler(lambda item, msgs: msgs.append(item), None, messages)
+            if tree.validateDtd(ctxt, dtd) != 1:
+                msg = ""
+                for i in messages:
+                    msg += i
+                raise exceptions.IncorrectPluginMetaFile(metadata_file, msg)
 
-        self.website_url = None
-        self.require_auth = None
-        self.default_disable = None
+        # get metadata from metadata.xml file
+        metadata = {}
+        if True:
+            root = tree.getRootElement()
+            metadata["id"] = root.prop("id")
+            metadata["version"] = root.prop("version")
+            metadata["icon_url"] = None
+            metadata["require_auth"] = False
+            metadata["default_disable"] = False
+            child = root.children
+            while child:
+                if child.name == "require_auth":
+                    metadata["require_auth"] = (child.getContent() == "true")
+                elif child.name == "default_disable":
+                    metadata["default_disable"] = (child.getContent() == "true")
+                elif child.type == "element":
+                    metadata[child.name] = child.getContent()
+                child = child.next
 
-        self.realObj = plugin_class(_PluginApi(self))
-        
+        # plugin properties
+        if True:
+            assert id == metadata["id"]
+            self.ID = metadata["id"]
+        self.TITLE = metadata['title']
+        self.VERSION = metadata["version"]
+        self.AUTHOR = metadata["author"]
+        self.RELEASED_TIME = metadata["released_time"]
+        self.ICON_URL = metadata["icon_url"]
+        if True:
+            fn = os.path.join(path, "icon.png")
+            if os.path.exists(fn):
+                self.ICON_FILENAME = fn                         # FIXME: should move to ICON_URL, like file://
+            else:
+                self.ICON_FILENAME = None
+        self.WEBSITE_URL = metadata["WEBSITE_URL"]
+        self.require_auth = metadata["require_auth"]            # FIXME
+        self.default_disable = metadata["default_disable"]      # FIXME
 
-        self.login_status = None
-        self.search_status = None
+        # create real plugin object
+        self._obj = None
+        if True:
+            filename = os.path.join(path, metadata["filename"])
+            if not os.path.exists(filename):
+                raise exceptions.PluginFileNotFound(filename)
+            if not os.path.isfile(filename):
+                raise exceptions.PluginFileNotFile(filename)
+            if not os.access(filename, os.R_OK):
+                raise exceptions.PluginFileNotReadable(filename)
+
+            plugin_class = None
+            try:
+                f = open(filename)
+                m = imp.load_module(metadata["filename"][:-3], f, filename, ('.py', 'r', imp.PY_SOURCE))
+                plugin_class = getattr(m, metadata["classname"])
+            except:
+                raise exceptions.PluginSyntaxError(filename)
+            self._obj = plugin_class(_PluginApi(self))
+
+        # static variables
+        self._app = app                                                 # FIXME
+        self._credential = param.get("credential", None)
+        self._max_results_loaded = param.get("max_results_loaded", None)
+
+        # status variables
+        self._login_status = None
         self._login_cookie = None
+        self._search_status = None
 
-        self.results_count_lock = _thread.allocate_lock()    # FIXME
-        self._results_count = -1
-        self.results_loaded = 0
+        # search results total count
+        self._results_total_count_lock = threading.Lock()
+        self._results_total_count = None
+
+        # loaded search result
+        self._results_tmp_queue_lock = threading.Lock()
+        self._results_tmp_queue = None
+
+        # loaded result total count
+        self._results_loaded = None     # only used in working thread, no lock needed
+
+    @property
+    def login_status(self):
+        return self._login_status
 
     @property
     def login_cookie(self):
         return self._login_cookie
 
-    def _get_enabled(self):
-        return self.ID not in self._app.config["disabled_plugins"]
-
-    def _set_enabled(self, value):
-        tl = self._app.config["disabled_plugins"]
-        if value:
-            while self.ID in tl:
-                i = tl.index(self.ID)
-                del tl[i]
-        else:
-            tl.append(self.ID)
-        self._app.config["disabled_plugins"] = tl
-
-    enabled = property(_get_enabled, _set_enabled)
-
     @property
-    def stop_search(self):
-        return self.search_status == constants.SEARCH_STATUS_STOPPING
+    def search_status(self):
+        return self._search_status
 
-    def _get_results_count(self):
-        self.results_count_lock.acquire()
-        res = self._results_count
-        self.results_count_lock.release()
-        return res
-
-    def _set_results_count(self, value):
-        self.results_count_lock.acquire()
-        if type(value) == int:
-            self._results_count = value
-        self.results_count_lock.release()
-
-    results_count = property(_get_results_count, _set_results_count)
+    # FIXME should notify to application, like 
+    @property
+    def results_total_count(self):
+        self._results_total_count_lock.acquire()
+        try:
+            return self._results_total_count
+        finally:
+            self._results_total_count_lock.release()
 
     def search(self, pattern):
-        if not hasattr(self, "new_results"):
-            self.new_results = ResultsList()
-        while len(self.new_results):
-            del self.new_results[0]
+        # initialize variables
+        self._login_status = constants.LOGIN_STATUS_WAITING
+        self._login_cookie = None
+        self._search_status = constants.SEARCH_STATUS_WORKING
+        self._results_total_count = 0
+        self._results_tmp_queue = []
+        self._results_loaded = 0
 
-        self.login_status = constants.LOGIN_STATUS_WAITING
-        self.search_status = constants.SEARCH_STATUS_WORKING
-        self.results_count = -1
-        self.results_loaded = 0
-
+        # create working thread
         threading.Thread(target=self._do_search, kwargs=(pattern,)).start()
-        GObject.timeout_add(50, self._check_login_status)
         GObject.timeout_add(200, self._check_results)
 
     def stop(self):
-        self.search_status = constants.SEARCH_STATUS_STOPPING
-
-        while self.search_status not in [constants.SEARCH_STATUS_OK, constants.SEARCH_STATUS_FAILED]:
-            time.sleep(0.1)
-
-        while len(self.new_results):
-            del self.new_results[0]
-        self.login_status = None
-        self.search_status = None
-
-    def _check_login_status(self):
-        if self.login_status == constants.LOGIN_STATUS_WAITING:
-            return True
-        if self.login_status == constants.LOGIN_STATUS_FAILED:
-            self._app.notify_plugin_login_failed(self)
-        return False
-
-    def _check_results(self):
-        while len(self.new_results):
-            item = self.new_results[0]
-            item.plugin = self
-            item.category = self._app.categories[item.category]
-            del self.new_results[0]
-            self._app.add_result_2(self, item)
-            del item
-        if self.search_status in [constants.SEARCH_STATUS_OK, constants.SEARCH_STATUS_FAILED]:
-            self._app.notify_search_finished(self)
-            return False
-        else:
-            return True
+        if self._search_status != constants.SEARCH_STATUS_WORKING:
+            return
+        self._search_status = constants.SEARCH_STATUS_STOPPING
 
     def _do_search(self, pattern):
         try:
             if self.require_auth:
+                self._login_cookie = self._obj.try_login()
                 if self._login_cookie is None:
-                    self._login_cookie = self.realObj.try_login()
-                    if self._login_cookie is None:
-                        self.login_status = constants.LOGIN_STATUS_FAILED
-                        return
-            self.login_status = constants.LOGIN_STATUS_OK
-            self.realObj.run_search(pattern)
-            self.search_status = constants.SEARCH_STATUS_OK
+                    self._login_status = constants.LOGIN_STATUS_FAILED
+                    self._search_status = constants.SEARCH_STATUS_FAILED
+                    return
+            self._login_status = constants.LOGIN_STATUS_OK
+
+            param = {
+                "notify-results-total-count": self.__notify_results_total_count,
+                "notify-one-result": self.__notify_one_result,
+            }
+            self._obj.run_search(pattern, param)
+
+            self._search_status = constants.SEARCH_STATUS_OK
         except:
-            self.search_status = constants.SEARCH_STATUS_FAILED
+            self._search_status = constants.SEARCH_STATUS_FAILED
 
+    def _check_results(self):
+        # check login status
+        if self._login_status == constants.LOGIN_STATUS_FAILED:
+            self._app.notify_plugin_login_failed(self)
 
+        # send all results in temporary queue to application
+        self._results_tmp_queue_lock.acquire()
+        try:
+            while len(self._results_tmp_queue):
+                item = self._results_tmp_queue[0]
+                item.plugin = self
+                item.category = self._app.categories[item.category]
+                del self._results_tmp_queue[0]
+                self._app.add_result(self, item)
+        finally:
+            self._results_tmp_queue_lock.release()
+
+        # search finished?
+        if self._search_status in [constants.SEARCH_STATUS_OK, constants.SEARCH_STATUS_FAILED]:
+            self._app.notify_search_finished(self)
+            self._login_status = None
+            self._login_cookie = None
+            self._search_status = None
+            self._results_total_count = None
+            self._results_tmp_queue = None
+            self._results_loaded = None
+            return False
+
+        return True
+
+    def __notify_results_total_count(self, value):
+        assert type(value) == int
+        self._results_total_count_lock.acquire()
+        try:
+            self._results_total_count = value
+        finally:
+            self._results_total_count_lock.release()
+
+    def __notify_one_result(self, result):
+        # create result object from dict data
+        result = _PluginResult(result)
+
+        # add result to temp list
+        self._results_tmp_queue_lock.acquire()
+        try:
+            self._results_tmp_queue.append(result)
+        finally:
+            self._results_tmp_queue_lock.release()
+
+        # check if we have enough results
+        self._results_loaded += 1
+        if self._max_results_loaded is not None and self._results_loaded >= self._max_results_loaded:
+            self._search_status = constants.SEARCH_STATUS_STOPPING
+
+# FIXME
 class _PluginApi:
 
     def __init__(self, parent):
         self.parent = parent
 
-    def api_http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
+    def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         return self.parent._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
 
-    def api_get_credentials(self):
-        return self.parent._func_get_credentials(self.ID)
+    def get_credential(self):
+        assert self.parent.require_auth
+        return self.parent._credential
 
-    def api_get_login_cookie(self):
+    def get_login_cookie(self):
         return self.parent._login_cookie
 
-    def api_add_result(self, result):
-        self.parent.new_results.append(result)
-        self.parent.results_loaded += 1
-        if self.parent._app.config["stop_search_when_nb_plugin_results_reaches_enabled"] and self.parent.results_loaded >= self.parent._app.config["stop_search_when_nb_plugin_results_reaches_value"]:
-            self.parent.search_status = constants.SEARCH_STATUS_STOPPING
-
-    def api_find_elements(self, node, elname=None, maxdepth=-1, **params):
+    def find_elements(self, node, elname=None, maxdepth=-1, **params):
         res = []
         if elname is None or node.name == elname:
             add = True
@@ -502,57 +277,303 @@ class _PluginApi:
         if maxdepth != 0:
             child = node.children
             while child:
-                res += find_elements(child, elname, maxdepth-1, **params)
-                child = child.__next__    # FIXME
+                res += self.find_elements(child, elname, maxdepth-1, **params)
+                child = child.next
         return res
+
+    # FIXME
+    @property
+    def stop_search(self):
+        return self.parent._search_status == constants.SEARCH_STATUS_STOPPING
+
+
+class _PluginResult(object):
+
+    def __init__(self, plugin, data):
+        self.plugin = plugin
+
+        # basic properties
+        self.id = data["id"]
+        self.label = data["label"]
+        self.date = data["date"]
+        self.size = data["size"]
+        self.seeders = data.get("seeders", -1)
+        self.leechers = data.get("leechers", -1)
+        self.category = data.get("category", "")
+        self.orig_url = data.get("orig_url", "")
+        self.link = data.get("link", "")
+        self.rate = data.get("rate", None)
+        self.nb_comments = data.get("nb_comments", 0)       # FIXME
+
+        # comments
+        self._comments_loaded_lock = threading.Lock()
+        self._comments_loaded = False
+        self._comments = []
+
+        self._comments_loading_progress_lock = threading.Lock()
+        self._comments_loading_progress = None
+
+        if "comments" in data:
+            for item in data["comments"]:
+                self.comments.append(_PluginResultComment(item))
+        self._comments_loaded = True
+
+        # filelist
+        self._filelist_loaded_lock = threading.Lock()
+        self._filelist_loaded = False
+        self._filelist = []
+
+        if "filelist" in data:
+            for item in data["filelist"]:
+                self.filelist.append(item)
+        self._filelist_loaded = True
+
+        # poster
+        self._poster_lock = threading.Lock()
+        self._poster_loaded = False
+        self._poster = None
+
+        # poster pixmap
+        self._poster_pix_lock = threading.Lock()
+        self._poster_pix_loaded = False
+        self._poster_pix = None
+
+        # magnet link
+        self.magnet_link = None
+        if "magnet_link" in data:
+            self.magnet_link = data["magnet_link"].lower()
+            if "&" in self.magnet_link:
+                i = self.magnet_link.index("&")
+                self.magnet_link = self.magnet_link[:i]
+        elif "hashvalue" in data:
+            self.magnet_link = "magnet:?xt=urn:btih:" + data["hashvalue"].lower()
+
+    def load_comments(self):
+        threading.Thread(self._load_comments, ()).start()
+
+    def _load_comments(self):
+        # do work
+        res = []
+        if hasattr(self.plugin._obj, "load_comments"):
+            param = {
+                "notify-progress": self.__notify_comments_loading_progress,
+            }
+            res = self.plugin._obj.load_comments(self.id, param)
+
+        # assign value with lock
+        self._comments_lock.acquire()
+        try:
+            self._comments = []
+            for item in res:
+                self._comments.append(_PluginResultComment(item))
+            self._comments_loaded = True
+        finally:
+            self._comments_lock.release()
+
+    def __notify_comments_loading_progress(self, value):
+        self._comments_loading_progress_lock.acquire()
+        try:
+            self._comments_loading_progress = value
+        finally:
+            self._comments_loading_progress_lock.release()
+
+    def load_filelist(self):
+        threading.Thread(self._load_filelist, ()).start()
+
+    def _load_filelist(self):
+        # do work
+        res = []
+        if hasattr(self.plugin._obj, "load_filelist"):
+            res = self.plugin._obj.load_filelist(self.id)
+
+        # assign value with lock
+        self._filelist_lock.acquire()
+        try:
+            self._filelist = []
+            for item in res:
+                self._filelist.append(_PluginResultFile(item))
+            self._filelist_loaded = True
+        finally:
+            self._filelist_lock.release()
+
+    def load_poster(self):
+        threading.Thread(self._load_poster, ()).start()
+
+    def _load_poster(self):
+        # do work
+        res = None
+        if hasattr(self.plugin._obj, "load_poster"):
+            res = self.plugin._obj.load_poster(self.id)
+
+        # assign value with lock
+        self._poster_lock.acquire()
+        try:
+            self._poster = res
+            self._poster_loaded = True
+        finally:
+            self._poster_lock.release()
+
+    def load_poster_pix(self):
+        threading.Thread(self._load_poster_pix, ()).start()
+
+    def _load_poster_pix(self):
+        # do work
+        res = None
+        if self._poster:
+            try:
+                filename, msg = urllib.request.urlretrieve(self._poster)
+#            res = Gtk.Image.new_from_file_at_size(filename, 300, 300)
+                res = Gtk.Image.new_from_file(filename)
+                os.unlink(filename)
+            except:
+                res = None
+
+        # assign value with lock
+        self._poster_pix_lock.acquire()
+        try:
+            self._poster_pix = res
+            self._poster_pix_loaded = True
+        finally:
+            self._poster_pix_lock.release()
+
+    @property
+    def comments(self):
+        self._comments_lock.acquire()
+        try:
+            return self._comments
+        finally:
+            self._comments_lock.release()
+
+    @property
+    def comments_loading_progress(self):
+        self._comments_loading_progress_lock.acquire()
+        try:
+            return self._comments_loading_progress
+        finally:
+            self._comments_loading_progress_lock.release()
+
+    @property
+    def comments_loaded(self):
+        self._comments_lock.acquire()
+        try:
+            return self._comments_loaded
+        finally:
+            self._comments_lock.release()
+
+    @property
+    def filelist(self):
+        self._filelist_lock.acquire()
+        try:
+            return self._filelist
+        finally:
+            self._filelist_lock.release()
+
+    @property
+    def filelist_loaded(self):
+        self._filelist_lock.acquire()
+        try:
+            return self._filelist_loaded
+        finally:
+            self._filelist_lock.release()
+
+    @property
+    def poster(self):
+        self._poster_lock.acquire()
+        try:
+            return self._poster
+        finally:
+            self._poster_lock.release()
+
+    @property
+    def poster_loaded(self):
+        self._poster_lock.acquire()
+        try:
+            return self._poster_loaded
+        finally:
+            self._poster_lock.release()
+
+    @property
+    def poster_fix(self):
+        self._poster_pix_lock.acquire()
+        try:
+            return self._poster_pix
+        finally:
+            self._poster_pix_lock.release()
+
+    @property
+    def poster_pix_loaded(self):
+        self._poster_pix_lock.acquire()
+        try:
+            return self._poster_pix_loaded
+        finally:
+            self._poster_pix_lock.release()
+
+
+class _PluginResultComment:
+
+    def __init__(self, data):
+        self.content = data["content"]
+        self.date = data.get("comment_date", None)
+        self.user_name = data.get("user_name", "")
+        self.user_url = data.get("user_url", "")
+
+
+class _PluginResultFile:
+
+    def __init__(self, data):
+        self.filename = data["filename"]
+        self.size = int(data["size"])           # in bytes
+
+
+
+
+
+
+
+
+
 
 # plugin template
 
 # def try_login(self):
 #     # implemented by plugin
 #     assert False
-
-# def run_search(self, pattern):
+#
+# def run_search(self, pattern, notify_results_total_count, notify_one_result):
 #     # implemented by plugin
 #     assert False
+#
+# def load_comments(self, result_id, notify_progress):
+#     # implemented by plugin
+#     assert False
+#
+# def load_filelist(self, result_id):
+#     # implemented by plugin
+#     assert False
+#
+# def load_poster(self, result_id):
+#     # implemented by plugin
+#     assert False
+#
+# def load_poster_pix(self, result_id):
+#     # implemented by plugin
+#     assert False
+#
 
 
-    # def _set_icon_url(self, url):
-    #     if url:
-    #         _thread.start_new_thread(self._try_load_icon, (url,))    # FIXME
-    #         GObject.timeout_add(100, self._watch_load_icon)
 
-    # icon_url = property(None, _set_icon_url)
+# {
+#     "label": "xxxxx",
+#     "title": "xxxx",
+#     "comments": "xxxx",
+#     "torrent_url": "XXXX",  # torrent file download url
+#     "magnet_link": "XXXX",  # magnet link url
+#     "date": "2010-01-01",
+#     "size": 100,            # in bytes
+#     "seeders": 10,          # how many seeders (optional)
+#     "leechers": 10,         # how many leechers (optional)
+#     "hash": XXX,            # optional
+# }
 
-    # def _watch_load_icon(self):
-    #     self.icon_lock.acquire()
-    #     res = not hasattr(self, "_icon")
-    #     self.icon_lock.release()
-    #     if not res:
-    #         self._app.notify_plugin_icon(self)
-    #     return res
+#there should be at least one of torrent_url or magnet_link
 
-#     def _try_load_icon(self, url):
-#         try:
-#             filename, msg = urllib.request.urlretrieve(url)
-# #         self.icon=Gtk.gdk.pixbuf_new_from_file_at_size(filename,16,16)
-#             self.icon = Gtk.Image_new_from_file(filename)
-#             os.unlink(filename)
-#         except:
-#             self.icon = None
-
-    # def _get_icon(self):
-    #     self.icon_lock.acquire()
-    #     if hasattr(self, '_icon'):
-    #         res = self._icon
-    #     else:
-    #         res = None
-    #     self.icon_lock.release()
-    #     return res
-
-    # def _set_icon(self, value):
-    #     self.icon_lock.acquire()
-    #     self._icon = value
-    #     self.icon_lock.release()
-
-    # icon = property(_get_icon, _set_icon)

@@ -144,9 +144,9 @@
       <title>Core of the plugin</title>
       <sect1>
          <title>Sending results to the application</title>
-         <para>The <classname>TorrentSearch.Plugin.Plugin</classname> class has a method called <function>api_add_result</function> :</para>
+         <para>The <classname>TorrentSearch.Plugin.Plugin</classname> class has a method called <function>add_result</function> :</para>
          <programlisting>
-def api_add_result(self, result)
+def add_result(self, result)
          </programlisting>
          <para>Each time a new result is found, we will have to make a call to this method, passing it an object of class <classname>MyPluginResult</classname>.</para>
       </sect1>
@@ -582,7 +582,7 @@ def api_add_result(self, result)
          size_data = size_data[6:]
          size = size_data.replace("i","")
          
-         self.api_add_result(MyPluginResult(title, date, size, seeders, leechers, torrent_url, magnet_url))
+         self.api.add_result(MyPluginResult(title, date, size, seeders, leechers, torrent_url, magnet_url))
          
       </programlisting>
    </appendix>

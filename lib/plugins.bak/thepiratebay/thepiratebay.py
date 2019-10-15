@@ -131,7 +131,7 @@ class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
         if page_url == "":
             page_url = "http://thepiratebay.org/search/" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(page_url)
+        resp, content = self.api.http_queue_request(page_url)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
@@ -264,5 +264,5 @@ class ThePirateBayTorrentPlugin(TorrentSearch.Plugin.Plugin):
         size_data = size_data[6:]
         size = size_data.replace("i", "")
 
-        self.api_add_result(ThePirateBayTorrentPluginResult(title, date, size, seeders,
+        self.api.notify_one_result(ThePirateBayTorrentPluginResult(title, date, size, seeders,
                                                         leechers, torrent_url, magnet_url, cat, nb_comments, details_page_url))

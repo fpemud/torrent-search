@@ -22,6 +22,7 @@ import os
 import libxml2
 import httplib2
 import time
+import threading
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import Gtk
@@ -35,10 +36,10 @@ class PluginsUpdatesChecker(Gtk.Dialog):
 
     def __init__(self, app):
         self._app = app
-        self.plugins_list_lock = _thread.allocate_lock()    # FIXME
-        self.status_lock = _thread.allocate_lock()    # FIXME
-        self.submesg_lock = _thread.allocate_lock()    # FIXME
-        self.progress_lock = _thread.allocate_lock()    # FIXME
+        self.plugins_list_lock = threading.Lock()    # FIXME
+        self.status_lock = threading.Lock()    # FIXME
+        self.submesg_lock = threading.Lock()    # FIXME
+        self.progress_lock = threading.Lock()    # FIXME
         self.submesg = ""
         self.progress = None
         self._status = 0
@@ -205,7 +206,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
                     tree.setRootElement(root)
                     root.setProp("id", i["id"])
                     root.setProp("version", i["version"])
-                    for j in ["title", "released_time", "author", "filename", "classname", "download_url", "website_url", "icon_url", "require_auth", "default_disable"]:
+                    for j in ["title", "released_time", "author", "filename", "classname", "download_url", "WEBSITE_URL", "icon_url", "require_auth", "default_disable"]:
                         if j in i:
                             root.newTextChild(None, j, i[j])
                     tree.saveFormatFileEnc(metafile, "utf-8", True)

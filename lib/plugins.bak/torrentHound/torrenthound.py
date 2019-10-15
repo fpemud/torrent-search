@@ -95,7 +95,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
         if href == None:
             href = "http://www.torrenthound.com/search/" + \
                 urllib.parse.quote_plus(pattern)
-        resp, content = self.api_http_queue_request(href)
+        resp, content = self.api.http_queue_request(href)
         tree = libxml2.htmlParseDoc(content, "utf-8")
         try:
             count_div = htmltools.find_elements(
@@ -140,7 +140,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 while j < len(data) and data[j] in "0123456789":
                     j += 1
                 leechers = eval(data[:j])
-                resp, content = self.api_http_queue_request(link)
+                resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
                 div = htmltools.find_elements(
                     itemtree.getRootElement(), "div", id="torrent")[0]
@@ -166,7 +166,7 @@ class TorrentHoundTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     nb_comments = int(data[:j])
                 except:
                     nb_comments = 0
-                self.api_add_result(TorrentHoundTorrentPluginResult(
+                self.api.notify_one_result(TorrentHoundTorrentPluginResult(
                     label, date, size, seeders, leechers, link, hashvalue, nb_comments))
             except:
                 pass

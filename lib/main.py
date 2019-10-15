@@ -773,7 +773,7 @@ class ConfirmPluginsDialog(Gtk.Dialog):
         vbox.pack_start(l, False, False)
         self.plugins_cb = {}
         for i in plugins:
-            cb = Gtk.CheckButton(i.TITLE+" ("+i.website_url+")")
+            cb = Gtk.CheckButton(i.TITLE+" ("+i.WEBSITE_URL+")")
             self.plugins_cb[i] = cb
             vbox.pack_start(cb, False, False)
 
@@ -967,7 +967,7 @@ class Application(Gtk.Window):
         self._tempfiles = []
         self._search_id = 0
         self.comments_loading_timer = 0
-        self.searches_to_clean_lock = _thread.allocate_lock()      # FIXME
+        self.searches_to_clean_lock = threading.Lock()      # FIXME
         self.searches_to_clean = 0
         self.search_pattern = ""
         self.auth_memory = auth.AuthMemory(self)
@@ -1254,12 +1254,18 @@ class Application(Gtk.Window):
 
     def load_search_plugin_from_path(self, path):
         try:
-            self.search_plugins.append(plugin.load_plugin(self, path))
+            id = os.path.basename(path)
+            param = dict()
+            param["credential"] = self.get_plugin_credentials(id)
+            if self.config["stop_search_when_nb_plugin_results_reaches_enabled"]:
+                param["max_results_loaded"] = self.config["stop_search_when_nb_plugin_results_reaches_value"]
+            pobj = plugin.Plugin(self, id, path, param)
+            self.search_plugins.append(pobj)
         except PluginException:
             exc_class, exc, traceback = sys.exc_info()
             exc.handle()
 
-    def add_result_2(self, plugin, result):
+    def add_result(self, plugin, result):
         if plugin not in self.search_plugins:
             return
         self.results_widget.append(plugin, result)
@@ -1267,8 +1273,8 @@ class Application(Gtk.Window):
         total = 0
         exact_total = True
         for i in self.search_plugins:
-            if i.enabled:
-                n = i.results_count
+            if i.ID not in self.config["disabled_plugins"]
+                n = i.results_total_count
                 if n == -1:
                     exact_total = False
                 else:
@@ -1349,7 +1355,7 @@ class Application(Gtk.Window):
         self.searchbar.stop_button.set_sensitive(True)
         plugins = []
         for i in self.search_plugins:
-            if i.enabled:
+            if i.ID not in self.config["disabled_plugins"]
                 plugins.append(i)
         if not plugins:
             self.error_mesg(_("NO_PLUGINS_ENABLED"), _("CHECK_CONFIG"))
@@ -1371,9 +1377,10 @@ class Application(Gtk.Window):
 
         if plugin.ID in self.auth_memory:
             return self.auth_memory[plugin.ID]
-        else:
-            plugin.enabled = False
-            return None
+
+        if plugin.ID not in self.config["disabled_plugins"]:
+            self.config["disabled_plugins"].append(plugin.ID)
+        return None
 
     def show_about_dialog(self):
         self.about_dialog.run()
@@ -1411,7 +1418,9 @@ class Application(Gtk.Window):
             self.load_search_plugins()
             for i in self.search_plugins:
                 if i.default_disable and i.ID not in old_plugin_ids:
-                    i.enabled = False  # TODO: Add notification dialog about default disabled plugins
+                    # TODO: Add notification dialog about default disabled plugins
+                    if i.ID not in self.config["disabled_plugins"]:
+                        self.config["disabled_plugins"].append(i.ID)
 
     def run(self):
         GObject.threads_init()

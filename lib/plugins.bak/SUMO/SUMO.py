@@ -171,7 +171,7 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
             href = "http://www.sumotorrent.com/searchResult.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         try:
-            resp, content = self.api_http_queue_request(href)
+            resp, content = self.api.http_queue_request(href)
         except httplib2.FailedToDecompressContent:
             if not self.stop_search:
                 self.plugin_run_search(pattern, page, href)
@@ -218,7 +218,7 @@ class SUMOTorrentPlugin(TorrentSearch.Plugin.Plugin):
                     leeches = eval(leeches.getContent().lstrip().rstrip())
                     result = SUMOTorrentPluginResult(name, date, size, seeds, leeches, htmltools.find_elements(
                         links, "a")[0].prop('href'), refmagnet, nb_comments, details_url)
-                    self.api_add_result(result)
+                    self.api.notify_one_result(result)
             except:
                 pass
             if self.stop_search:

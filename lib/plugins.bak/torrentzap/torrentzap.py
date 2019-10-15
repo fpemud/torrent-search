@@ -85,7 +85,7 @@ class TorrentzapPlugin(TorrentSearch.Plugin.Plugin):
                     size = size[:j]+" "+size[j:]
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
-                self.api_add_result(TorrentzapPluginResult(
+                self.api.notify_one_result(TorrentzapPluginResult(
                     label, date, size, seeders, leechers, link))
             except:
                 pass

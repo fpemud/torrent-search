@@ -3,6 +3,7 @@
 
 import httplib2
 from gi.repository import GObject
+import threading
 import _thread
 
 
@@ -11,13 +12,13 @@ class HttpQueueClient(object):
         self._queue = queue
         self._client = httplib2.Http()
         self._busy = False
-        self._busy_lock = _thread.allocate_lock()          # FIXME
+        self._busy_lock = threading.Lock()          # FIXME
         self._finished = False
-        self._finished_lock = _thread.allocate_lock()          # FIXME
+        self._finished_lock = threading.Lock()          # FIXME
         self._request = None
         self._result = None
         self._request_id = None
-        self._result_lock = _thread.allocate_lock()          # FIXME
+        self._result_lock = threading.Lock()          # FIXME
 
     def _get_busy(self):
         self._busy_lock.acquire()
@@ -86,12 +87,12 @@ class HttpQueue(object):
             self._clients.append(HttpQueueClient(self))
         self._queue = []
         self._timer = None
-        self._queue_lock = _thread.allocate_lock()          # FIXME
+        self._queue_lock = threading.Lock()          # FIXME
         self._running = False
         self._request_id = 0
-        self._request_id_lock = _thread.allocate_lock()          # FIXME
+        self._request_id_lock = threading.Lock()          # FIXME
         self._results = {}
-        self._results_lock = _thread.allocate_lock()          # FIXME
+        self._results_lock = threading.Lock()          # FIXME
         self._requests_locks = {}
 
     def _do_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
@@ -107,7 +108,7 @@ class HttpQueue(object):
         self._request_id += 1
         request_id = self._request_id
         # FIXME
-        self._requests_locks[request_id] = _thread.allocate_lock()
+        self._requests_locks[request_id] = threading.Lock()
         self._request_id_lock.release()
         self._queue_lock.acquire()
         self._queue.append((request_id, uri, method, body,
