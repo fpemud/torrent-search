@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,23 +9,17 @@ import os
 import datetime
 import time
 import httplib2
-import TorrentSearch.htmltools
 
 
-class ExtraTorrentPluginResult(TorrentSearch.Plugin.PluginResult):
+class ExtraTorrentPlugin:
 
-    def __init__(self, label, date, size, seeders, leechers, torrent_url, hashvalue, category):
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, seeders, leechers, hashvalue=hashvalue, category=category)
-        self.torrent_url = torrent_url
+    def __init__(self, api):
+        self.api = api
 
-    def _do_get_link(self):
-        return self.torrent_url
+    def run_search(self, pattern, param, page_url=""):
+        self.api_notify_results_total_count = param["notify-results-total-count"]
+        self.api_notify_one_result = param["notify-one-result"]
 
-
-class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
-
-    def run_search(self, pattern, page_url=""):
         if page_url == "":
             page_url = "http://extratorrent.com/search.php?search=" + \
                 urllib.parse.quote_plus(pattern)
@@ -35,15 +28,16 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         try:
-            results_count_element = TorrentSearch.htmltools.find_elements(
+            results_count_element = self.api.find_elements(
                 tree.getRootElement(), "h2")[0].next.__next__
-            self.results_count = eval(results_count_element.getContent())
+            count = eval(results_count_element.getContent())
+            api_notify_results_total_count(count)
         except:
             pass
 
-        results_table = TorrentSearch.htmltools.find_elements(
+        results_table = self.api.find_elements(
             tree.getRootElement(), "table", **{'class': 'tl'})[0]
-        results = TorrentSearch.htmltools.find_elements(results_table, "tr")[
+        results = self.api.find_elements(results_table, "tr")[
             2:]
 
         for result in results:
@@ -54,7 +48,7 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
             if self.stop_search:
                 return
 
-        nav_links = TorrentSearch.htmltools.find_elements(
+        nav_links = self.api.find_elements(
             tree.getRootElement(), "a", **{'class': 'pager_link'})
         for i in nav_links:
             if i.getContent() == ">":
@@ -94,14 +88,14 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
 
     def _parse_result(self, page_url, result_line):
 
-        torrent_link, category, title, size, seeders, leechers, health = TorrentSearch.htmltools.find_elements(
+        torrent_link, category, title, size, seeders, leechers, health = self.api.find_elements(
             result_line, "td")
-        torrent_url = urllib.basejoin(page_url, TorrentSearch.htmltools.find_elements(
+        torrent_url = urllib.basejoin(page_url, self.api.find_elements(
             torrent_link, "a")[0].prop('href').replace('/torrent_download/', '/download/'))
-        if len(TorrentSearch.htmltools.find_elements(title, "a")) == 2:
-            details_link = TorrentSearch.htmltools.find_elements(title, "a")[0]
+        if len(self.api.find_elements(title, "a")) == 2:
+            details_link = self.api.find_elements(title, "a")[0]
         else:
-            details_link = TorrentSearch.htmltools.find_elements(title, "a")[1]
+            details_link = self.api.find_elements(title, "a")[1]
         title = details_link.getContent()
         details_link = urllib.basejoin(page_url, details_link.prop('href'))
         size = size.getContent()
@@ -109,16 +103,16 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
         seeders = eval(seeders.getContent())
         leechers = eval(leechers.getContent())
 
-        category = self._parse_category(TorrentSearch.htmltools.find_elements(
+        category = self._parse_category(self.api.find_elements(
             category, "a")[0].prop('href').split('/')[-2])
 
         c = httplib2.Http()
         resp, content = self.api.http_queue_request(details_link)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        lines = TorrentSearch.htmltools.find_elements(TorrentSearch.htmltools.find_elements(
+        lines = self.api.find_elements(self.api.find_elements(
             tree, "td", **{'class': 'tabledata0'})[0].parent.parent, "tr")
         for i in lines:
-            cells = TorrentSearch.htmltools.find_elements(i, "td")
+            cells = self.api.find_elements(i, "td")
             if cells[0].getContent() == "Info hash:":
                 hashvalue = cells[1].getContent()
             elif cells[0].getContent() == "Torrent added:":
@@ -126,5 +120,14 @@ class ExtraTorrentPlugin(TorrentSearch.Plugin.Plugin):
                 date = time.strptime(date, "%Y-%m-%d")
                 date = datetime.date(date.tm_year, date.tm_mon, date.tm_mday)
 
-        self.api.notify_one_result(ExtraTorrentPluginResult(
-            title, date, size, seeders, leechers, torrent_url, hashvalue, category))
+        self.api_notify_one_result({
+            "id": "",
+            "label": title,
+            "date": date,
+            "size": size,
+            "seeders": seeders,
+            "leechers": leechers,
+            "link": torrent_link,
+            "hashvalue": hashvalue,
+            "category": category,
+        })

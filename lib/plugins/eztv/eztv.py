@@ -1,7 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-import TorrentSearch
 import urllib.request
 import urllib.parse
 import urllib.error
@@ -10,21 +9,17 @@ import datetime
 import os
 import time
 import httplib2
-from TorrentSearch import htmltools
 
 
-class EZTVPluginResult(TorrentSearch.Plugin.PluginResult):
-    def __init__(self, label, date, size, torrent_link, magnet):
-        self.torrent_link = torrent_link
-        TorrentSearch.Plugin.PluginResult.__init__(
-            self, label, date, size, magnet_link=magnet, category="video/tv")
+class EZTVPlugin:
 
-    def _do_get_link(self):
-        return self.torrent_link
+    def __init__(self, api):
+        self.api = api
 
+    def run_search(self, pattern, param):
+        api_notify_results_total_count = param["notify-results-total-count"]
+        api_notify_one_result = param["notify-one-result"]
 
-class EZTVPlugin(TorrentSearch.Plugin.Plugin):
-    def run_search(self, pattern):
         # TODO; Retrieve number of seeders and leechers when available
         href = "http://eztv.it/search/"
         headers = {'Content-type': 'application/x-www-form-urlencoded'}
@@ -32,27 +27,25 @@ class EZTVPlugin(TorrentSearch.Plugin.Plugin):
             {'SearchString1': pattern, 'SearchString': '', "search": "Search"})
         resp, content = self.api.http_queue_request(href, "POST", data, headers)
         tree = libxml2.htmlParseDoc(content, "utf-8")
-        div = htmltools.find_elements(
-            tree.getRootElement(), "div", id="tooltip")[0]
+        div = self.api.find_elements(tree.getRootElement(), "div", id="tooltip")[0]
         restable = div.nextElementSibling()
         try:
-            self.results_count = len(htmltools.find_elements(
-                restable, "tr", 1, **{'class': 'forum_header_border'}))
+            count = len(self.api.find_elements(restable, "tr", 1, **{'class': 'forum_header_border'}))
+            api_notify_results_total_count(count)
         except:
             pass
-        lines = htmltools.find_elements(
-            restable, "tr", 1, **{'class': 'forum_header_border'})
+        lines = self.api.find_elements(restable, "tr", 1, **{'class': 'forum_header_border'})
         for i in lines:
             try:
-                link = htmltools.find_elements(
-                    htmltools.find_elements(i, "td")[1], "a")[0]
+                link = self.api.find_elements(
+                    self.api.find_elements(i, "td")[1], "a")[0]
                 label = link.getContent()
                 link = urllib.basejoin(href, link.prop('href'))
                 resp, content = self.api.http_queue_request(link)
                 itemtree = libxml2.htmlParseDoc(content, "utf-8")
-                torrent_link = htmltools.find_elements(
+                torrent_link = self.api.find_elements(
                     itemtree.getRootElement(), "a", **{'class': 'download_1'})[0].prop('href')
-                magnet_link = htmltools.find_elements(
+                magnet_link = self.api.find_elements(
                     itemtree.getRootElement(), "a", **{'class': 'magnet'})[0].prop('href')
                 data = str(itemtree)
                 j = data.index("Filesize:")
@@ -74,8 +67,14 @@ class EZTVPlugin(TorrentSearch.Plugin.Plugin):
                          "Aug", "Sep", "Oct", "Nov", "Dec"].index(month)+1
                 year = eval(year)
                 date = datetime.date(year, month, day)
-                self.api.notify_one_result(EZTVPluginResult(
-                    label, date, size, torrent_link, magnet_link))
+                api_notify_one_result({
+                    "id": "",
+                    "label": label,
+                    "date": date,
+                    "size": size,
+                    "link": torrent_link,
+                    "magnet_link": magnet_link,
+                })
             except:
                 pass
             if self.stop_search:

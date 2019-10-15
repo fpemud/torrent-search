@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000011_linuxtracker" version="0.3.0">
+<plugin id="linuxtracker" version="0.3.0">
   <title>linuxTRACKER</title>
   <released_time>2013-09-10 21:52:25</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>
