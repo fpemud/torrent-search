@@ -11,10 +11,8 @@ import time
 import httplib2
 import http.client
 import tempfile
-import subprocess
 import math
 from PIL import Image
-from operator import itemgetter
 
 
 def buildvector(im):
@@ -37,6 +35,7 @@ if not os.path.exists(CAPTCHA_LETTERS_PATH):
 
 
 class VectorCompare:
+
     def magnitude(self, concordance):
         total = 0
         for word, count in concordance.items():

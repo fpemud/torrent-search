@@ -5,7 +5,6 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
-import time
 
 
 class _1337XPlugin:

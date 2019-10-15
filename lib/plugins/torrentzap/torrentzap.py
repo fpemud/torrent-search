@@ -7,8 +7,6 @@ import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import time
-import os
 import httplib2
 
 
@@ -67,7 +65,7 @@ class TorrentzapPlugin:
                 seeders = eval(seeders.getContent())
                 leechers = eval(leechers.getContent())
 
-                reflink, magnet = self._parseLinks(reflink)
+                reflink, magnet = self._parseLinks(link)
 
                 api_notify_one_result({
                     "id": "",

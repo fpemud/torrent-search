@@ -5,7 +5,6 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
-import os
 import datetime
 import time
 import httplib2
@@ -31,7 +30,7 @@ class ExtraTorrentPlugin:
             results_count_element = self.api.find_elements(
                 tree.getRootElement(), "h2")[0].next.__next__
             count = eval(results_count_element.getContent())
-            api_notify_results_total_count(count)
+            self.api_notify_results_total_count(count)
         except:
             pass
 

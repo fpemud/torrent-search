@@ -6,7 +6,6 @@ import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import os
 import time
 import httplib2
 
@@ -34,7 +33,7 @@ class MononokeBTPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://mononoke-bt.org/browse2.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(

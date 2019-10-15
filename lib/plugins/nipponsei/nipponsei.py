@@ -5,10 +5,8 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
-import os
 import datetime
 import time
-import httplib2
 
 
 class NipponseiPlugin:
@@ -28,7 +26,7 @@ class NipponseiPlugin:
 
         results = self.api.find_elements(self.api.find_elements(
             tree.getRootElement(), "td", id="main")[0], "a", **{'class': 'download'})
-        api_notify_results_total_count(len(results))
+        self.api_notify_results_total_count(len(results))
         for i in range(len(results)):
             results[i] = results[i].parent.parent
 

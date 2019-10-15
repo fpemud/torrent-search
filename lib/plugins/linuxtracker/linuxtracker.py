@@ -6,9 +6,7 @@ import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import os
 import time
-import httplib2
 
 
 class linuxTRACKERPlugin:

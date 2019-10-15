@@ -2,7 +2,6 @@
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
 import libxml2
-import datetime
 import httplib2
 import urllib.request
 import urllib.parse
@@ -79,8 +78,8 @@ class BTSCENETorrentPlugin:
                                 filename = data[:j].rstrip().lstrip()
                                 filesize = data[j:].rstrip().lstrip()
                                 filelist.append({
-                                    "filename": fn,
-                                    "size": size,
+                                    "filename": filename,
+                                    "size": filesize,
                                 })
                     except:
                         pass
@@ -100,8 +99,8 @@ class BTSCENETorrentPlugin:
                         "size": size,
                         "seeders": seeders,
                         "leechers": leechers,
-                        "link": reflink,
-                        "magnet_link": magnet,
+                        "link": link,
+                        # "magnet_link": magnet,
                         "orig_link": link,
                         "bn_comments": nb_comments,
                         "filelist": filelist,

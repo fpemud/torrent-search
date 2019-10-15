@@ -6,10 +6,6 @@ import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import os
-import httplib2
-import time
-import http.client
 
 
 class isoHuntPlugin:

@@ -148,7 +148,7 @@ class Plugin(object):
     def search_status(self):
         return self._search_status
 
-    # FIXME should notify to application, like 
+    # FIXME should notify to application, like
     @property
     def results_total_count(self):
         self._results_total_count_lock.acquire()

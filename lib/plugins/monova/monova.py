@@ -3,8 +3,6 @@
 
 import libxml2
 import datetime
-import os
-import httplib2
 import urllib.request
 import urllib.parse
 import urllib.error

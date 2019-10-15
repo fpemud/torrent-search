@@ -7,7 +7,6 @@ import urllib.parse
 import urllib.error
 import libxml2
 import datetime
-import os
 import httplib2
 
 
@@ -110,7 +109,7 @@ class yourBITTORRENTTorrentPlugin:
                     "size": size,
                     "seeders": seeders,
                     "leechers": leechers,
-                    "link": reflink,
+                    "link": link,
                     "hashvalue": hashvalue,
                     "filelist": filelist,
                     "poster": poster,
