@@ -6,9 +6,7 @@ import urllib.request
 import urllib.parse
 import urllib.error
 import libxml2
-import time
 import datetime
-import os
 import httplib2
 import http.client
 
@@ -22,7 +20,7 @@ class SUMOTorrentPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://www.sumotorrent.com/searchResult.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         try:
@@ -256,4 +254,3 @@ class SUMOTorrentPlugin:
             resp, content = c.request(url, headers=headers)
             tree = libxml2.htmlParseDoc(content, "utf-8")
         return self.api.find_elements(tree.getRootElement(), "a", **{'class': 'dwld_links'})[0].prop('href')
-

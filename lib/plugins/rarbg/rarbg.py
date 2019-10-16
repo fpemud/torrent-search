@@ -8,7 +8,6 @@ import urllib.error
 import libxml2
 import datetime
 import time
-import os
 import httplib2
 
 
@@ -102,7 +101,7 @@ class RARBGTorrentPlugin:
     def load_filelist(self, result_id):
         return self._do_get_details(result_id, "filelist")
 
-    def load_comments(self, result_id)
+    def load_comments(self, result_id):
         return self._do_get_details(result_id, "comments")
 
     def _parseDate(self, data):
@@ -162,7 +161,7 @@ class RARBGTorrentPlugin:
 
         if which == "filelist":
             files_div = self.api.find_elements(tree.getRootElement(), "div", id="files")
-            filelist = TorrentSearch.Plugin.FileList()
+            filelist = []
             if len(files_div) == 1:
                 files_div = files_div[0]
                 for i in self.api.find_elements(files_div, "tr")[1:]:

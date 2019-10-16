@@ -9,7 +9,6 @@ import libxml2
 import os
 import datetime
 import time
-import httplib2
 
 
 class ThePirateBayTorrentPlugin:
@@ -157,7 +156,6 @@ class ThePirateBayTorrentPlugin:
                         del page_comments[-1]
         return res
 
-
     def _parse_date(self, data):
         try:  # Date this year ?
             res = time.strptime(data, "%m-%d %H:%M")
@@ -283,7 +281,7 @@ class ThePirateBayTorrentPlugin:
             comment, "div", **{'class': 'comment'})[0].getContent()
         return {
             "content": content,
-            "date": date,
+            "date": comment_date,
             "user_name": user_name,
             "user_url": user_url,
         }
