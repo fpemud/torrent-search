@@ -34,7 +34,7 @@ import htmltools
 
 class Plugin(object):
 
-    def __init__(self, app, id, path, param):
+    def __init__(self, app, path, param):
         # get metadata.xml file
         metadata_file = os.path.join(path, "metadata.xml")
         if not os.path.exists(metadata_file):
@@ -77,9 +77,7 @@ class Plugin(object):
                 child = child.next
 
         # plugin properties
-        if True:
-            assert id == metadata["id"]
-            self.ID = metadata["id"]
+        self.ID = metadata["id"]
         self.TITLE = metadata['title']
         self.VERSION = metadata["version"]
         self.AUTHOR = metadata["author"]
@@ -117,7 +115,7 @@ class Plugin(object):
 
         # static variables
         self._app = app                                                 # FIXME
-        self._credential = param.get("credential", None)
+        self._credential = None
         self._max_results_loaded = param.get("max_results_loaded", None)
 
         # status variables
@@ -156,6 +154,10 @@ class Plugin(object):
             return self._results_total_count
         finally:
             self._results_total_count_lock.release()
+
+    def set_credential(self, credential):
+        assert self.require_auth
+        self._credential = credential
 
     def search(self, pattern):
         # initialize variables

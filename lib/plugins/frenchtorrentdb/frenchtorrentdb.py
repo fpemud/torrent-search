@@ -280,8 +280,8 @@ class FrenchTorrentDBPlugin:
                     itemtree.getRootElement(), "div", id="mod_infos_menu")[0], "div")
                 date = ''
                 for j in divs:
-                    l = self.api.find_elements(j, "label")
-                    if l and l[0].getContent() == "Date d'ajout:":
+                    tl = self.api.find_elements(j, "label")
+                    if tl and tl[0].getContent() == "Date d'ajout:":
                         date = self.api.find_elements(
                             j, "span")[0].getContent()
                 if date:
@@ -294,8 +294,8 @@ class FrenchTorrentDBPlugin:
                     comments_div = self.api.find_elements(
                         itemtree.getRootElement(), "div", id="mod_comments_torrent")[0]
                     comments_list = []
-                    for l in self.api.find_elements(comments_div, "ul"):
-                        comments_list.insert(0, l)
+                    for tl in self.api.find_elements(comments_div, "ul"):
+                        comments_list.insert(0, tl)
                     for comment in comments_list:
                         username = self.api.find_elements(self.api.find_elements(
                             comment, "li", **{'class': 'username'})[0], "a")[0].getContent()

@@ -742,44 +742,6 @@ class SearchOptionsBox(Gtk.Expander):
         self._app.config["only_all_words"] = widget.get_active()
 
 
-class ConfirmPluginsDialog(Gtk.Dialog):
-    def __init__(self, app, plugins):
-        Gtk.Dialog.__init__(self, _("AUTH_REQUIRED_FOR_NEW_PLUGINS"), app)
-        self.add_button(Gtk.STOCK_OK, Gtk.ResponseType.OK)
-        hbox = Gtk.HBox()
-        self.add(hbox)
-        hbox.set_border_width(5)
-        hbox.set_spacing(10)
-        img = Gtk.Image()
-        img.set_from_stock(Gtk.STOCK_DIALOG_WARNING, Gtk.IconSize.DIALOG)
-        hbox.pack_start(img, False, False, 0)
-        vbox = Gtk.VBox()
-        hbox.pack_start(vbox, False, False, 0)
-        vbox.set_spacing(10)
-        l = Gtk.Label()
-        l.set_alignment(0, 0.5)
-        l.set_markup("<span size='large'><b>%s</b></span>" %
-                     _("SOME_NEW_PLUGINS_REQUIRE_AUTH"))
-        l.set_line_wrap(True)
-        vbox.pack_start(l, False, False, 0)
-        l = Gtk.Label(_("SELECT_ONES_TO_ENABLE"))
-        l.set_alignment(0, 0.5)
-        l.set_line_wrap(True)
-        vbox.pack_start(l, False, False, 0)
-        self.plugins_cb = {}
-        for i in plugins:
-            cb = Gtk.CheckButton(i.TITLE+" ("+i.WEBSITE_URL+")")
-            self.plugins_cb[i] = cb
-            vbox.pack_start(cb, False, False, 0)
-
-    def run(self):
-        self.show_all()
-        Gtk.Dialog.run(self)
-        for i in self.plugins_cb:
-            i.enabled = self.plugins_cb[i].get_active()
-        self.destroy()
-
-
 class TorrentInfosDialog(Gtk.Dialog):
     def __init__(self, app):
         Gtk.Dialog.__init__(self)
@@ -1198,30 +1160,16 @@ class Application(Gtk.Window):
                 path = os.path.join(constants.PATH_PLUGIN_DIR, i)
                 if os.path.isdir(path):
                     try:
-                        id = os.path.basename(path)
                         param = dict()
-                        param["credential"] = self.get_plugin_credentials(id)
                         if self.config["stop_search_when_nb_plugin_results_reaches_enabled"]:
                             param["max_results_loaded"] = self.config["stop_search_when_nb_plugin_results_reaches_value"]
-                        pobj = plugin.Plugin(self, id, path, param)
+                        pobj = plugin.Plugin(self, path, param)
+                        if pobj.require_auth:
+                            pobj.set_credential(self.get_plugin_credentials(pobj.ID))
                         self.search_plugins.append(pobj)
                     except exceptions.PluginException:
                         exc_class, exc, traceback = sys.exc_info()
                         exc.handle()
-
-        not_confirmed = []
-        for i in self.search_plugins:
-            if i.require_auth and i.ID not in self.config["confirmed_plugins"]:
-                not_confirmed.append(i)
-        if not_confirmed:
-            self.confirm_plugins(not_confirmed)
-
-    def confirm_plugins(self, plugins):
-        tl = self.config["confirmed_plugins"]
-        for i in plugins:
-            tl.append(i.ID)
-        self.config["confirmed_plugins"] = tl
-        ConfirmPluginsDialog(self, plugins).run()
 
     def add_result(self, plugin, result):
         if plugin not in self.search_plugins:

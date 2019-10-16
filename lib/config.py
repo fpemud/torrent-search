@@ -53,7 +53,6 @@ CONFIG_KEYS = {
     "check_plugins_updates": ("check_plugins_updates", "bool", True),
     "filter_duplicates": ("filter_duplicates", "bool", False),
     "converted_from_gconf": ("converted_from_gconf", "bool", False),
-    "confirmed_plugins": ("confirmed_plugins", "string_list", []),
     "after_date_enable": ("after_date_enable", "bool", False),
     "before_date_enable": ("before_date_enable", "bool", False),
     "after_date": ("after_date", "string", ""),

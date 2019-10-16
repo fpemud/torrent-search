@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<plugin id="000008_KickassTorrents" version="0.4.0">
+<plugin id="KickassTorrents" version="0.4.0">
   <title>KickassTorrents</title>
   <released_time>2013-09-10 20:46:59</released_time>
   <author>Gwendal Le Bihan &lt;gwendal.lebihan.dev@gmail.com&gt;</author>
