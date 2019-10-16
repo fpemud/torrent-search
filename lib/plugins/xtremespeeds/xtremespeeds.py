@@ -37,7 +37,7 @@ class xtremespeedsPlugin:
         api_notify_one_result = param["notify-one-result"]
 
         http = httplib2.Http()
-        if href == None:
+        if href is None:
             href = "http://xtremespeeds.net/browse.php"
             headers = {'Content-type': 'application/x-www-form-urlencoded',
                        'Cookie': self.api.get_login_cookie, "User-Agent": "Python-httplib2/$Rev$"}

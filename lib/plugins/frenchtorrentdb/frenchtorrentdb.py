@@ -205,10 +205,10 @@ class FrenchTorrentDBPlugin:
                 pix = im2.getpixel((y, x))
                 if pix != 255:
                     inletter = True
-            if foundletter == False and inletter == True:
+            if not foundletter and inletter:
                 foundletter = True
                 start = y
-            if foundletter == True and inletter == False:
+            if foundletter and not inletter:
                 foundletter = False
                 end = y
                 letters.append((start, end))
@@ -249,7 +249,7 @@ class FrenchTorrentDBPlugin:
         results_table = self.api.find_elements(
             tree.getRootElement(), "div", **{'class': 'DataGrid'})[0]
         lines = self.api.find_elements(results_table, "ul")
-        if year == None:
+        if year is None:
             year = int(time.strftime("%Y"))
         for i in range(len(lines)):
             try:
@@ -308,7 +308,7 @@ class FrenchTorrentDBPlugin:
                                 d = d[k+2:]
                                 comment_date, comment_year, comment_prev_month = self._parseDate(
                                     d, comment_year, comment_prev_month)
-                            if line.prop('class') == None:
+                            if line.prop('class') is None:
                                 comment_txt += line.getContent()+"n"
                         comments.append({
                             "content": comment_txt[:-1],

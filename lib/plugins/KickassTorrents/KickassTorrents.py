@@ -18,7 +18,7 @@ class KickassTorrentsPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "https://kickass.to/usearch/%s/" % urllib.parse.quote(
                 pattern)
         c = httplib2.Http()

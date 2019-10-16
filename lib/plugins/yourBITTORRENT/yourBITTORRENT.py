@@ -30,7 +30,7 @@ class yourBITTORRENTTorrentPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://www.yourbittorrent.com/?q=" + \
                 urllib.parse.quote_plus(pattern)
         c = httplib2.Http()

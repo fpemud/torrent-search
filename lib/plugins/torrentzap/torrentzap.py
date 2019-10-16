@@ -29,7 +29,7 @@ class TorrentzapPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://www.torrentzap.com/search.php?q=" + \
                 urllib.parse.quote_plus(pattern)
         c = httplib2.Http()

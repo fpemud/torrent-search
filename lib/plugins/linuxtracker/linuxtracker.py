@@ -18,7 +18,7 @@ class linuxTRACKERPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://linuxtracker.org/index.php?page=torrents&search=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
@@ -35,8 +35,8 @@ class linuxTRACKERPlugin:
         restable = self.api.find_elements(
             self.api.find_elements(
                 tree.getRootElement(), "form", name="deltorrent")[0].parent,
-                "table",
-                **{'class': 'lista'})[0]
+            "table",
+            **{'class': 'lista'})[0]
         lines = self.api.find_elements(restable, "tr", 1)[1:]
         for i in lines:
             try:

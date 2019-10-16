@@ -35,7 +35,7 @@ class Torrent411Plugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://www.torrent411.com/search/" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)

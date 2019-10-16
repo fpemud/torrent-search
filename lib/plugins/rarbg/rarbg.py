@@ -20,7 +20,7 @@ class RARBGTorrentPlugin:
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href == None:
+        if href is None:
             href = "http://rarbg.com/torrents.php?search=" + \
                 urllib.parse.quote_plus(pattern)
         resp, content = self.api.http_queue_request(href)
