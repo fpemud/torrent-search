@@ -147,10 +147,6 @@ class _GeneralPreferencesPage(Gtk.VBox):
         f.add(vbox)
         vbox.set_border_width(5)
         vbox.set_spacing(10)
-        self.check_plugins_updates = Gtk.CheckButton(_("CHECK_PLUGINS_UPDATES"))
-        vbox.pack_start(self.check_plugins_updates, False, False, 0)
-        self.check_plugins_updates.set_active(app.config["check_plugins_updates"])
-        self.check_plugins_updates.connect("toggled", self.on_check_plugins_updates_toggled)
         b = Gtk.Button(_("CHECK_NOW"))
         img = Gtk.Image()
         img.set_from_stock(Gtk.STOCK_REFRESH, Gtk.IconSize.BUTTON)
@@ -190,9 +186,6 @@ class _GeneralPreferencesPage(Gtk.VBox):
 
     def on_stop_search_when_nb_results_reaches_nb_changed(self, widget):
         self._app.config["stop_search_when_nb_results_reaches_value"] = int(widget.get_value())
-
-    def on_check_plugins_updates_toggled(self, widget):
-        self._app.config["check_plugins_updates"] = widget.get_active()
 
     def on_hide_zero_seeders_toggled(self, widget):
         self._app.config["hide_zero_seeders"] = widget.get_active()

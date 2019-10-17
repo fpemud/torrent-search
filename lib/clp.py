@@ -33,5 +33,3 @@ class OptionParser(optparse.OptionParser):
                                dest="show_version", help=_("HELP_SHOW_VERSION"))
         basic_group.add_option("--search", "-s", dest="search_pattern",
                                default="", help=_("RUN_SEARCH_ON_STARTUP"))
-        basic_group.add_option("--no-plugins-check", dest="no_plugins_check",
-                               action="store_true", help=_("HELP_NO_PLUGIN_CHECK"))

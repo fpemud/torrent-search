@@ -1330,8 +1330,6 @@ class Application(Gtk.Window):
         self._http_queue.start()
         self.show_all()
         self.check_config()
-        if self.config["check_plugins_updates"] and not self.options.no_plugins_check:
-            self.check_plugin_updates()
         self.preferences_dialog = wnd_preference.PreferencesDialog(self)
         if self.options.search_pattern:
             self.run_search(self.options.search_pattern)

@@ -118,14 +118,17 @@ class Plugin(object):
         self._credential = None
         self._max_results_loaded = param.get("max_results_loaded", None)
 
-        # status variables
+        # login status
         self._login_status = None
         self._login_cookie = None
+
+        # search status
         self._search_status = None
 
         # search results total count
         self._results_total_count_lock = threading.Lock()
         self._results_total_count = None
+        self._results_total_count_changed = None
 
         # loaded search result
         self._results_tmp_queue_lock = threading.Lock()
@@ -165,6 +168,7 @@ class Plugin(object):
         self._login_cookie = None
         self._search_status = constants.SEARCH_STATUS_WORKING
         self._results_total_count = 0
+        self._results_total_count_changed = False
         self._results_tmp_queue = []
         self._results_loaded = 0
 
@@ -202,6 +206,15 @@ class Plugin(object):
         if self._login_status == constants.LOGIN_STATUS_FAILED:
             self._app.notify_plugin_login_failed(self)
 
+        # send result total count to application
+        self._results_total_count_lock.acquire()
+        try:
+            if self._results_total_count_changed:
+                # notify application
+                self._results_total_count_changed = False
+        finally:
+            self._results_total_count_lock.release()
+
         # send all results in temporary queue to application
         self._results_tmp_queue_lock.acquire()
         try:
@@ -221,6 +234,7 @@ class Plugin(object):
             self._login_cookie = None
             self._search_status = None
             self._results_total_count = None
+            self._results_total_count_changed = None
             self._results_tmp_queue = None
             self._results_loaded = None
             return False
@@ -232,6 +246,7 @@ class Plugin(object):
         self._results_total_count_lock.acquire()
         try:
             self._results_total_count = value
+            self._results_total_count_changed = True
         finally:
             self._results_total_count_lock.release()
 

@@ -50,7 +50,6 @@ CONFIG_KEYS = {
     "download_manager_width": ("download_manager_width", "int", 450),
     "search_options_expanded": ("search_options_expanded", "bool", False),
     "max_sim_downloads": ("max_sim_downloads", "int", 3),
-    "check_plugins_updates": ("check_plugins_updates", "bool", True),
     "filter_duplicates": ("filter_duplicates", "bool", False),
     "converted_from_gconf": ("converted_from_gconf", "bool", False),
     "after_date_enable": ("after_date_enable", "bool", False),
