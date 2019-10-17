@@ -396,7 +396,7 @@ def add_result(self, result)
             self._parse_result(result)
          except:
             pass
-         if self.stop_search: # See note below
+         if self.api.stop_search: # See note below
             return
             </programlisting>
             <important><para>You can see that we make a test to know whether we should stop the search. This is important : in case a new search in run in the application, all plugins should stop the previous search in order to limit bandwidth and processor usage.</para></important>
@@ -436,7 +436,7 @@ def add_result(self, result)
             self._parse_result(result)
          except:
             pass
-         if self.stop_search:
+         if self.api.stop_search:
             return
             
       maindiv = TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", id="main-content")[0]
@@ -531,7 +531,7 @@ def add_result(self, result)
                self._parse_result(result)
             except:
                pass
-            if self.stop_search:
+            if self.api.stop_search:
                return
                
          maindiv = TorrentSearch.htmltools.find_elements(tree.getRootElement(), "div", id="main-content")[0]

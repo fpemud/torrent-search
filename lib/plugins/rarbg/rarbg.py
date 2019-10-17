@@ -21,32 +21,38 @@ class RARBGTorrentPlugin:
         api_notify_one_result = param["notify-one-result"]
 
         if href is None:
-            href = "http://rarbg.com/torrents.php?search=" + \
-                urllib.parse.quote_plus(pattern)
-        resp, content = self.api.http_queue_request(href)
-        tree = libxml2.htmlParseDoc(content, "utf-8")
-        try:
-            div = self.api.find_elements(
-                tree.getRootElement(), "div", **{'class': 'wp-pagenavi'})[0]
-            data = self.api.find_elements(div, "a")[-1].getContent()
-            i = len(data)-1
-            while data[i] in "0123456789":
-                i -= 1
-            api_notify_results_total_count(eval(data[i+1:]))
-        except:
-            pass
+            href = "https://rarbgprx.org/torrents.php?search=" + urllib.parse.quote_plus(pattern)
 
-        cats = self.api.find_elements(
-            tree.getRootElement(), "select", name="category")[0]
+        self.api.log("start")
+        resp, content = httplib2.Http().request(href)
+        content = content.decode("utf-8")
+        tree = libxml2.htmlParseDoc(content, "utf-8")
+
+        self.api.log("start 2")
+        if True:
+            div = self.api.find_elements(tree.getRootElement(), "div", id="pager_links")[0]
+            btag = self.api.find_elements(div, "b")[0]
+            curPage = int(btag.getContent())
+
+            itemListOfCurPage = self.api.find_elements(tree.getRootElement(), "tr", **{'class': 'lista2'})
+            curPageCount = len(itemListOfCurPage)
+
+            cur_total_count = (curPage - 1) * 25 + curPageCount
+            api_notify_results_total_count(cur_total_count)
+
+        self.api.log("start 3 " + cur_total_count)
+
         categories = {}
-        for i in self.api.find_elements(cats, "option"):
-            categories[i.prop('value')] = i.getContent()
-        lines = self.api.find_elements(
-            tree.getRootElement(), "tr", **{'class': 'lista2'})
+        for cat in self.api.find_elements(tree.getRootElement(), "input", name="category[]"):
+            atag = self.api.find_elements(cat, "a")[0]
+            categories[cat.prop('value')] = atag.getContent()
+
+        self.api.log("start 4" + str(categories))
+
+        lines = self.api.find_elements(tree.getRootElement(), "tr", **{'class': 'lista2'})
         for i in lines:
             try:
-                cat, link, date, size, seeders, leechers, comments, c = self.api.find_elements(
-                    i, "td")
+                cat, link, date, size, seeders, leechers, comments, c = self.api.find_elements(i, "td")
                 cat = self.api.find_elements(cat, "a")[0].prop('href')
                 j = cat.index('=')
                 cat = cat[j+1:]
@@ -79,10 +85,12 @@ class RARBGTorrentPlugin:
                 })
             except:
                 pass
-            if self.stop_search:
+            if self.api.stop_search:
                 return
 
-        if not self.stop_search:
+        self.api.log("start 5")
+
+        if not self.api.stop_search:
             try:
                 div = self.api.find_elements(
                     tree.getRootElement(), "div", **{'class': 'wp-pagenavi'})[0]
@@ -94,6 +102,8 @@ class RARBGTorrentPlugin:
             except:
                 pass
         del tree
+
+        self.api.log("start 6")
 
     def load_poster(self, result_id):
         return self._do_get_details(result_id, "poster")

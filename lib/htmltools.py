@@ -23,9 +23,15 @@ import re
 
 def find_elements(node, elname=None, maxdepth=-1, **params):
     res = []
+    print(node.name)
+    print(elname)
     if elname is None or node.name == elname:
         add = True
         for i in params:
+            print(i)
+            print(node.prop(i))
+            print(params[i])
+
             if node.prop(i) != params[i]:
                 add = False
                 break

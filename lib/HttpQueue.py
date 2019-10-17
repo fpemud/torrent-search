@@ -8,6 +8,7 @@ import _thread
 
 
 class HttpQueueClient(object):
+
     def __init__(self, queue):
         self._queue = queue
         self._client = httplib2.Http()
@@ -81,6 +82,7 @@ class HttpQueueClient(object):
 
 
 class HttpQueue(object):
+
     def __init__(self, nb_clients=10):
         self._clients = []
         for i in range(nb_clients):
@@ -94,14 +96,6 @@ class HttpQueue(object):
         self._results = {}
         self._results_lock = threading.Lock()          # FIXME
         self._requests_locks = {}
-
-    def _do_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
-        if not self._running:
-            return
-        self._queue_lock.acquire()
-        self._queue.append((uri, method, body, headers,
-                            redirections, connection_type))
-        self._queue_lock.release()
 
     def request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
         self._request_id_lock.acquire()
@@ -135,6 +129,14 @@ class HttpQueue(object):
             GObject.source_remove(self._timer)
         self._timer = None
         self._running = False
+
+    def _do_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
+        if not self._running:
+            return
+        self._queue_lock.acquire()
+        self._queue.append((uri, method, body, headers,
+                            redirections, connection_type))
+        self._queue_lock.release()
 
     def _check_queue(self):
         self._queue_lock.acquire()

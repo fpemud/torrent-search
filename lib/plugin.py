@@ -20,6 +20,7 @@
 
 import os
 import imp
+import logging
 import libxml2
 import threading
 import urllib.error
@@ -118,6 +119,9 @@ class Plugin(object):
         self._credential = None
         self._max_results_loaded = param.get("max_results_loaded", None)
 
+        # logger
+        self._logger = logging.getLogger(self.ID)
+
         # login status
         self._login_status = None
         self._login_cookie = None
@@ -184,12 +188,16 @@ class Plugin(object):
     def _do_search(self, pattern):
         try:
             if self.require_auth:
-                self._login_cookie = self._obj.try_login()
-                if self._login_cookie is None:
+                if self._credential is None:
                     self._login_status = constants.LOGIN_STATUS_FAILED
                     self._search_status = constants.SEARCH_STATUS_FAILED
                     return
-            self._login_status = constants.LOGIN_STATUS_OK
+                self._login_cookie = self._obj.try_login()
+                while self._login_cookie is None:
+                    self._login_status = constants.LOGIN_STATUS_FAILED
+                    self._search_status = constants.SEARCH_STATUS_FAILED
+                    return
+                self._login_status = constants.LOGIN_STATUS_OK
 
             param = {
                 "notify-results-total-count": self.__notify_results_total_count,
@@ -198,7 +206,8 @@ class Plugin(object):
             self._obj.run_search(pattern, param)
 
             self._search_status = constants.SEARCH_STATUS_OK
-        except:
+        except Exception as e:
+            self._logger.error(str(e), exc_info=True, stack_info=True)
             self._search_status = constants.SEARCH_STATUS_FAILED
 
     def _check_results(self):
@@ -284,6 +293,9 @@ class _PluginApi:
 
     def get_login_cookie(self):
         return self.parent._login_cookie
+
+    def log(self, msg):
+        self.parent._logger.warn(msg)
 
     # FIXME
     @property
