@@ -1185,8 +1185,7 @@ class Application(Gtk.Window):
                     exact_total = False
                 else:
                     if self.config["stop_search_when_nb_plugin_results_reaches_enabled"]:
-                        n = min(
-                            n, self.config["stop_search_when_nb_plugin_results_reaches_value"])
+                        n = min(n, self.config["stop_search_when_nb_plugin_results_reaches_value"])
                     try:
                         total += n
                     except:

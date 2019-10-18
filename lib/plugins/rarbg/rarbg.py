@@ -26,6 +26,7 @@ class RARBGTorrentPlugin:
         self.api.log("start")
         resp, content = httplib2.Http().request(href)
         content = content.decode("utf-8")
+        print(content)
         tree = libxml2.htmlParseDoc(content, "utf-8")
 
         self.api.log("start 2")
