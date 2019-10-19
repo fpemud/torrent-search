@@ -23,7 +23,7 @@ class RARBGTorrentPlugin:
             assert href is None
 
             options = W_OPTIONS()
-    #        options.add_argument('--headless')
+            options.add_argument('--headless')
 
             driver = W_FIREFOX(options=options)
 
