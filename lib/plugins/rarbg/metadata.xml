@@ -6,8 +6,8 @@
   <filename>rarbg.py</filename>
   <classname>RARBGTorrentPlugin</classname>
   <download_url>http://torrent-search.sourceforge.net/download-plugin/000006_rarbg/0.52/</download_url>
-  <website_url>http://rarbg.com/</website_url>
-  <icon_url>http://rarbg.com/favicon.ico</icon_url>
+  <website_url>https://rarbgprx.org</website_url>
+  <icon_url>https://rarbgprx.org/favicon.ico</icon_url>
   <require_auth>false</require_auth>
   <default_disable>false</default_disable>
 </plugin>

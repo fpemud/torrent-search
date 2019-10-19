@@ -1,110 +1,141 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8; tab-width: 4; indent-tabs-mode: t -*-
 
-
-import urllib.request
-import urllib.parse
-import urllib.error
-import libxml2
-import datetime
 import time
-import httplib2
+import urllib.parse
+import selenium
+from selenium.webdriver import Firefox as W_FIREFOX
+from selenium.webdriver.firefox.options import Options as W_OPTIONS
+from selenium.webdriver.support.wait import WebDriverWait as W_WAIT
 
 
 class RARBGTorrentPlugin:
 
     def __init__(self, api):
+        self.WEBSITE_URL = "https://rarbgprx.org"
         self.api = api
 
-    def run_search(self, pattern, param, page=1, href=None):
+    def run_search(self, pattern, param, driver=None, href=None):
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
 
-        if href is None:
-            href = "https://rarbgprx.org/torrents.php?search=" + urllib.parse.quote_plus(pattern)
+        if driver is None:
+            assert href is None
 
-        self.api.log("start")
-        resp, content = httplib2.Http().request(href)
-        content = content.decode("utf-8")
-        print(content)
-        tree = libxml2.htmlParseDoc(content, "utf-8")
+            options = W_OPTIONS()
+    #        options.add_argument('--headless')
 
-        self.api.log("start 2")
+            driver = W_FIREFOX(options=options)
+
+            # load a dummy page so that we can set cookies before we load the main page, selenium sucks
+            driver.get(self.WEBSITE_URL + "/index10.html")
+            driver.add_cookie({"name": "skt", "value": "na5cocrnzk"})
+            driver.add_cookie({"name": "gaDts48g", "value": "q8h5pp9t"})
+            driver.add_cookie({"name": "aby", "value": "2"})
+            driver.add_cookie({"name": "ppu_main_9ef78edf998c4df1e1636c9a474d9f47", "value": "1"})
+            driver.add_cookie({"name": "ppu_sub_9ef78edf998c4df1e1636c9a474d9f47", "value": "1"})
+            driver.add_cookie({"name": "expla", "value": "1"})
+
+            # do search
+            driver.get(self.WEBSITE_URL + "/torrents.php?search=" + urllib.parse.quote_plus(pattern))
+        else:
+            driver.navigate().to(self.WEBSITE_URL + url)
+
+        # click fullscreen ads and close popup window
+        while True:
+            wh = driver.current_window_handle
+            action = selenium.webdriver.common.action_chains.ActionChains(driver)
+            action.move_by_offset(1, 1)     # move cursor from default (0,0)
+            action.click()
+            action.perform()
+            if not _seleniumClosePopupIfExists(driver, wh):
+                break
+
+        # get categories
+        categories = {}
+        driver.find_element_by_id("shadvbutton").click()            # make categories visible
+        for cat in driver.find_elements_by_xpath("//input[@name='category[]']"):
+            atag = cat.find_element_by_xpath("following-sibling::*[1]")
+            W_WAIT(driver, 60).until(lambda x: atag.text != "")
+            categories[cat.get_attribute('value')] = atag.text
+        print(categories)
+
+        # get results total count
         if True:
-            div = self.api.find_elements(tree.getRootElement(), "div", id="pager_links")[0]
-            btag = self.api.find_elements(div, "b")[0]
-            curPage = int(btag.getContent())
+            div = driver.find_element_by_xpath("//div[@id='pager_links']")
+            btag = div.find_element_by_tag_name("b")
+            curPage = int(btag.text)
 
-            itemListOfCurPage = self.api.find_elements(tree.getRootElement(), "tr", **{'class': 'lista2'})
-            curPageCount = len(itemListOfCurPage)
+            itemList = driver.find_elements_by_xpath("//tr[@class='lista2']")
+            curPageCount = len(itemList)
 
             cur_total_count = (curPage - 1) * 25 + curPageCount
             api_notify_results_total_count(cur_total_count)
+        print(cur_total_count)
 
-        self.api.log("start 3 " + cur_total_count)
+        # get results
+        for item in driver.find_elements_by_xpath("//tr[@class='lista2']"):
+            ilist = item.find_elements_by_tag_name("td")
+            assert len(ilist) == 8
+            cat = ilist[0]
+            link = ilist[1]
+            date = ilist[2]
+            size = ilist[3]
+            seeders = ilist[4]
+            leechers = ilist[5]
+            comments = ilist[6]
+            c = ilist[7]
 
-        categories = {}
-        for cat in self.api.find_elements(tree.getRootElement(), "input", name="category[]"):
-            atag = self.api.find_elements(cat, "a")[0]
-            categories[cat.prop('value')] = atag.getContent()
+            print(cat.text)
+            print(link.text)
+            print(date.text)
+            print(size.text)
+            print(seeders.text)
+            print(leechers.text)
+            print(comments.text)
+            print(c.text)
 
-        self.api.log("start 4" + str(categories))
-
-        lines = self.api.find_elements(tree.getRootElement(), "tr", **{'class': 'lista2'})
-        for i in lines:
-            try:
-                cat, link, date, size, seeders, leechers, comments, c = self.api.find_elements(i, "td")
-                cat = self.api.find_elements(cat, "a")[0].prop('href')
-                j = cat.index('=')
-                cat = cat[j+1:]
-                if cat in categories:
-                    cat = categories[cat]
-                else:
-                    cat = ""
-                cat = self._parseCat(cat)
-                link = self.api.find_elements(link, "a")[0]
-                label = link.getContent()
-                link = urllib.basejoin(href, link.prop('href'))
-                hashvalue = link.split('/')[-2]
-                date = self._parseDate(date.getContent())
-                size = size.getContent()
-                seeders = eval(seeders.getContent())
-                leechers = eval(leechers.getContent())
-                nb_comments = eval(comments.getContent())
-
-                api_notify_one_result({
-                    "id": reflink + " " + label,
-                    "label": label,
-                    "date": date,
-                    "size": size,
-                    "seeders": seeders,
-                    "leechers": leechers,
-                    "link": link,
-                    "hashvalue": hashvalue,
-                    "category": cat,
-                    "nb_comments": nb_comments,
-                })
-            except:
-                pass
             if self.api.stop_search:
                 return
 
-        self.api.log("start 5")
+        #     cat = cat.find_element_by_tag_name("a").get_attribute('href')
+        #     j = cat.index('=')
+        #     cat = cat[j+1:]
+        #     if cat in categories:
+        #         cat = categories[cat]
+        #     else:
+        #         cat = ""
+        #     cat = self._parseCat(cat)
+        #     link = self.api.find_elements(link, "a")[0]
+        #     label = link.getContent()
+        #     link = urllib.basejoin(href, link.prop('href'))
+        #     hashvalue = link.split('/')[-2]
+        #     date = self._parseDate(date.getContent())
+        #     size = size.getContent()
+        #     seeders = eval(seeders.getContent())
+        #     leechers = eval(leechers.getContent())
+        #     nb_comments = eval(comments.getContent())
 
-        if not self.api.stop_search:
-            try:
-                div = self.api.find_elements(
-                    tree.getRootElement(), "div", **{'class': 'wp-pagenavi'})[0]
-                cspan = self.api.find_elements(
-                    div, "span", **{"class": "current"})[0]
-                a = cspan.next.__next__
-                if a.name == "a":
-                    self.run_search(pattern, param, 0, urllib.basejoin(href, a.prop('href')))
-            except:
-                pass
-        del tree
+        #     api_notify_one_result({
+        #         "id": reflink + " " + label,
+        #         "label": label,
+        #         "date": date,
+        #         "size": size,
+        #         "seeders": seeders,
+        #         "leechers": leechers,
+        #         "link": link,
+        #         "hashvalue": hashvalue,
+        #         "category": cat,
+        #         "nb_comments": nb_comments,
+        #     })
 
-        self.api.log("start 6")
+        # next page
+        div = driver.find_element_by_xpath("//div[@id='pager_links']")
+        btag = div.find_element_by_tag_name("b")
+        atag = btag.find_element_by_xpath("following-sibling::*[1]")
+        if atag is not None:
+            href = atag.get_attribute('href').replace(self.WEBSITE_URL, "")     # it's really sucks that selenium auto converts relative href in html to absolute url!
+            self.run_search(pattern, param, driver, href)
 
     def load_poster(self, result_id):
         return self._do_get_details(result_id, "poster")
@@ -175,8 +206,8 @@ class RARBGTorrentPlugin:
             filelist = []
             if len(files_div) == 1:
                 files_div = files_div[0]
-                for i in self.api.find_elements(files_div, "tr")[1:]:
-                    filename, size = self.api.find_elements(i, "td")
+                for item in self.api.find_elements(files_div, "tr")[1:]:
+                    filename, size = self.api.find_elements(item, "td")
                     filename = filename.getContent()
                     size = size.getContent()
                     filelist.append({
@@ -194,9 +225,9 @@ class RARBGTorrentPlugin:
                     while node.name != "table":
                         node = node.__next__
                     comments_lines = self.api.find_elements(node, "tr")
-                    for i in range(len(comments_lines)/2):
+                    for item in range(len(comments_lines)/2):
                         username, date = self.api.find_elements(
-                            comments_lines[2*i], "td")
+                            comments_lines[2*item], "td")
                         username = username.getContent()
                         try:
                             date_str = date.getContent()
@@ -225,7 +256,7 @@ class RARBGTorrentPlugin:
                             date = None
 
                         content = self.api.find_elements(
-                            comments_lines[2*i+1], "td")[1].getContent()
+                            comments_lines[2*item+1], "td")[1].getContent()
 
                         comments.append({
                             "content": content,
@@ -235,3 +266,53 @@ class RARBGTorrentPlugin:
             except:
                 pass
             return comments
+
+
+        # def _cond_threat_defence(drv):
+        #     return drv.current_url == "https://rarbgprx.org/threat_defence.php?defence=nojc" and \
+        #            drv.find_element_by_link_text("Click here") is not None
+
+        # def _cond_normal(drv):
+        #     return drv.current_url.startswith("https://rarbgprx.org/torrents.php?r=69298267")
+
+        # W_WAIT(driver, 60).until(lambda x: _cond_threat_defence(x) or _cond_normal(x))
+        # if _cond_threat_defence(driver):
+        #     time.sleep(1.0)
+        #     driver.find_element_by_link_text("Click here").click()
+
+        #     W_WAIT(driver, 10).until(lambda x: x.find_element_by_id("solve_string") is not None and x.find_element_by_xpath("//img[start-with(@src,'/threat_captcha.php')]") is not None)
+
+        #     time.sleep(1.0)
+        #     driver.find_element_by_id("solve_string").send_keys("123456")
+
+        # elif _cond_normal(driver):
+        #     pass
+        # else:
+        #     assert False
+
+        # return
+
+
+
+def _seleniumClosePopupIfExists(driver, originalWindowHandle):
+    """len(driver.window_handles) must be 1 before calling this function"""
+
+    # wait popup window comes up
+    try:
+        W = selenium.webdriver.support.wait.WebDriverWait
+        W(driver, 1).until(lambda x: len(x.window_handles) > 1)
+    except selenium.common.exceptions.TimeoutException:
+        # no popup, do nothing
+        return False
+
+    # swith to it and close
+    # selenium should support close speicifed window...
+    handles = list(driver.window_handles)
+    handles.remove(originalWindowHandle)
+    driver.switch_to.window(handles[0])
+    driver.close()
+
+    # switch back to original window
+    driver.switch_to.window(originalWindowHandle)
+
+    return True
