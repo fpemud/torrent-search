@@ -206,7 +206,7 @@ class PluginsUpdatesChecker(Gtk.Dialog):
                     tree.setRootElement(root)
                     root.setProp("id", i["id"])
                     root.setProp("version", i["version"])
-                    for j in ["title", "released_time", "author", "filename", "classname", "download_url", "WEBSITE_URL", "icon_url", "require_auth", "default_disable"]:
+                    for j in ["title", "released_time", "author", "filename", "classname", "download_url", "WEBSITE_URL", "icon_url", "require_auth"]:
                         if j in i:
                             root.newTextChild(None, j, i[j])
                     tree.saveFormatFileEnc(metafile, "utf-8", True)

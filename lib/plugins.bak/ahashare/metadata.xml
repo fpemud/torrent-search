@@ -9,5 +9,4 @@
   <website_url>http://www.ahashare.com/</website_url>
   <icon_url>http://www.ahashare.com/images/favicon.ico</icon_url>
   <require_auth>false</require_auth>
-  <default_disable>false</default_disable>
 </plugin>

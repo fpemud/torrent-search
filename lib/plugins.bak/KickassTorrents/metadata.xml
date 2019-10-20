@@ -9,5 +9,4 @@
   <website_url>https://kickass.to/</website_url>
   <icon_url>https://kickass.to/favicon.ico</icon_url>
   <require_auth>false</require_auth>
-  <default_disable>false</default_disable>
 </plugin>

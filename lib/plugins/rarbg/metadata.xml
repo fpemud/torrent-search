@@ -9,5 +9,5 @@
   <website_url>https://rarbgprx.org</website_url>
   <icon_url>https://rarbgprx.org/favicon.ico</icon_url>
   <require_auth>false</require_auth>
-  <default_disable>false</default_disable>
+  <require_selenium>true</require_selenium>
 </plugin>

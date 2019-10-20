@@ -9,5 +9,4 @@
   <website_url>http://1337x.org/</website_url>
   <icon_url>http://1337x.org/favicon.ico</icon_url>
   <require_auth>false</require_auth>
-  <default_disable>false</default_disable>
 </plugin> 

@@ -10,4 +10,4 @@
 <!ELEMENT website_url (#PCDATA)>
 <!ELEMENT icon_url (#PCDATA)>
 <!ELEMENT require_auth (#PCDATA)>
-<!ELEMENT default_disable (#PCDATA)>
+<!ELEMENT require_selenium (#PCDATA)>

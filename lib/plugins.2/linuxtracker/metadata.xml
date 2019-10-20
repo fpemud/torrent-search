@@ -9,5 +9,4 @@
   <website_url>http://linuxtracker.org/</website_url>
   <icon_url>http://linuxtracker.org/favicon.ico</icon_url>
   <require_auth>false</require_auth>
-  <default_disable>false</default_disable>
 </plugin>

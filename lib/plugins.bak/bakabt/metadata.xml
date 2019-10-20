@@ -9,5 +9,4 @@
   <website_url>http://www.bakabt.com/</website_url>
   <icon_url>http://www.bakabt.com/favicon.ico</icon_url>
   <require_auth>true</require_auth>
-  <default_disable>true</default_disable>
 </plugin>

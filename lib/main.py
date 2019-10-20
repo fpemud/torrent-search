@@ -1317,12 +1317,6 @@ class Application(Gtk.Window):
             for i in self.search_plugins:
                 old_plugin_ids.append(i.ID)
             self.load_search_plugins()
-            for i in self.search_plugins:
-                if i.default_disable and i.ID not in old_plugin_ids:
-                    # TODO: Add notification dialog about default disabled plugins
-                    print("debug")
-                    if i.ID not in self.config["disabled_plugins"]:
-                        self.config["disabled_plugins"].append(i.ID)
 
     def run(self):
         GObject.threads_init()

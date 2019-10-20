@@ -9,5 +9,4 @@
   <website_url>http://www2.frenchtorrentdb.com/</website_url>
   <icon_url>http://www2.frenchtorrentdb.com/themes/images/favicon.png</icon_url>
   <require_auth>true</require_auth>
-  <default_disable>true</default_disable>
 </plugin>

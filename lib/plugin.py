@@ -26,6 +26,7 @@ import threading
 import urllib.error
 import urllib.parse
 import urllib.request
+import selenium
 import gi
 gi.require_version('Gtk', '3.0')
 from gi.repository import GObject
@@ -38,6 +39,12 @@ import htmltools
 class Plugin(object):
 
     def __init__(self, app, path, param):
+        self.param = param
+        if "max_results_loaded" not in self.param:
+            self.param["max_results_loaded"] = None
+        if "debug" not in self.param:
+            self.param["debug"] = False
+
         # get metadata.xml file
         metadata_file = os.path.join(path, "metadata.xml")
         if not os.path.exists(metadata_file):
@@ -68,13 +75,13 @@ class Plugin(object):
             metadata["version"] = root.prop("version")
             metadata["icon_url"] = None
             metadata["require_auth"] = False
-            metadata["default_disable"] = False
+            metadata["require_selenium"] = False
             child = root.children
             while child:
                 if child.name == "require_auth":
                     metadata["require_auth"] = (child.getContent() == "true")
-                elif child.name == "default_disable":
-                    metadata["default_disable"] = (child.getContent() == "true")
+                elif child.name == "require_selenium":
+                    metadata["require_selenium"] = (child.getContent() == "true")
                 elif child.type == "element":
                     metadata[child.name] = child.getContent()
                 child = child.next
@@ -93,8 +100,6 @@ class Plugin(object):
             else:
                 self.ICON_FILENAME = None
         self.WEBSITE_URL = metadata["website_url"]
-        self.require_auth = metadata["require_auth"]            # FIXME
-        self.default_disable = metadata["default_disable"]      # FIXME
 
         # create real plugin object
         self._obj = None
@@ -114,22 +119,24 @@ class Plugin(object):
                 plugin_class = getattr(m, metadata["classname"])
             except:
                 raise exceptions.PluginSyntaxError(filename)
-            self._obj = plugin_class(_PluginApi(self))
+            self._obj = plugin_class()
 
         # static variables
         self._app = app                                                 # FIXME
-        self._credential = None
-        self._max_results_loaded = param.get("max_results_loaded", None)
+        self._require_auth = metadata["require_auth"]
+        self._require_selenium = metadata["require_selenium"]
 
         # logger
         self._logger = logging.getLogger(self.ID)
 
         # login status
+        self._credential = None
         self._login_status = None
         self._login_cookie = None
 
         # search status
         self._search_status = None
+        self._search_param = None
 
         # search results total count
         self._results_total_count_lock = threading.Lock()
@@ -165,7 +172,8 @@ class Plugin(object):
             self._results_total_count_lock.release()
 
     def set_credential(self, credential):
-        assert self.require_auth
+        assert self._require_auth
+        assert self._login_status is None
         self._credential = credential
 
     def search(self, pattern):
@@ -189,26 +197,44 @@ class Plugin(object):
 
     def _do_search(self, pattern):
         try:
-            if self.require_auth:
+            # initialize search param
+            self._search_param = dict()
+            if self._require_selenium:
+                options = selenium.webdriver.firefox.options.Options()
+                if self.param["debug"]:
+                    options.add_argument('--headless')
+                self._search_param["selenium-driver"] = selenium.webdriver.Firefox(options=options)
+            self._search_param["log"] = self.__log
+            self._search_param["get-credential"] = self.__get_credential
+            self._search_param["get-login-cookie"] = self.__get_login_cookie
+            self._search_param["is-stopping"] = self.__is_stopping
+            self._search_param["notify-results-total-count"] = self.__notify_results_total_count
+            self._search_param["notify-one-result"] = self.__notify_one_result
+
+            # FIXME
+            self._search_param["find-elements"] = htmltools.find_elements
+            self._search_param["parse-cookie"] = htmltools.parse_cookie
+
+            # do login
+            if self._require_auth:
                 if self._credential is None:
                     self._login_status = constants.LOGIN_STATUS_FAILED
                     self._search_status = constants.SEARCH_STATUS_FAILED
                     return
-                self._login_cookie = self._obj.try_login()
+                self._login_cookie = self._obj.try_login(self._search_param)
                 while self._login_cookie is None:
                     self._login_status = constants.LOGIN_STATUS_FAILED
                     self._search_status = constants.SEARCH_STATUS_FAILED
                     return
                 self._login_status = constants.LOGIN_STATUS_OK
 
-            param = {
-                "notify-results-total-count": self.__notify_results_total_count,
-                "notify-one-result": self.__notify_one_result,
-            }
-            self._obj.run_search(pattern, param)
+            # do search
+            self._obj.run_search(self._search_param, pattern)
 
+            # search finished
             self._search_status = constants.SEARCH_STATUS_OK
         except Exception as e:
+            # search failed
             self._logger.error(str(e), exc_info=True, stack_info=True)
             self._search_status = constants.SEARCH_STATUS_FAILED
 
@@ -244,6 +270,9 @@ class Plugin(object):
             self._login_status = None
             self._login_cookie = None
             self._search_status = None
+            if True:
+                self._search_param["selenium-driver"].close()
+                self._search_param = None
             self._results_total_count = None
             self._results_total_count_changed = None
             self._results_tmp_queue = None
@@ -251,6 +280,20 @@ class Plugin(object):
             return False
 
         return True
+
+    def __log(self, msg):
+        self._logger.warn(msg)
+
+    def __get_credential(self):
+        assert self._require_auth
+        return self._credential
+
+    def __get_login_cookie(self):
+        assert self._require_auth
+        return self.parent._login_cookie
+
+    def __is_stopping(self):
+        return self._search_status == constants.SEARCH_STATUS_STOPPING
 
     def __notify_results_total_count(self, value):
         assert type(value) == int
@@ -274,35 +317,8 @@ class Plugin(object):
 
         # check if we have enough results
         self._results_loaded += 1
-        if self._max_results_loaded is not None and self._results_loaded >= self._max_results_loaded:
+        if self.param["max_results_loaded"] is not None and self._results_loaded >= self.param["max_results_loaded"]:
             self._search_status = constants.SEARCH_STATUS_STOPPING
-
-
-# FIXME
-class _PluginApi:
-
-    def __init__(self, parent):
-        self.parent = parent
-        self.find_elements = htmltools.find_elements
-        self.parse_cookie = htmltools.parse_cookie
-
-    def http_queue_request(self, uri, method='GET', body=None, headers=None, redirections=5, connection_type=None):
-        return self.parent._app.http_queue_request(uri, method, body, headers, redirections, connection_type)
-
-    def get_credential(self):
-        assert self.parent.require_auth
-        return self.parent._credential
-
-    def get_login_cookie(self):
-        return self.parent._login_cookie
-
-    def log(self, msg):
-        self.parent._logger.warn(msg)
-
-    # FIXME
-    @property
-    def stop_search(self):
-        return self.parent._search_status == constants.SEARCH_STATUS_STOPPING
 
 
 class _PluginResult(object):

@@ -9,5 +9,4 @@
   <website_url>http://www.torrent411.com/</website_url>
   <icon_url>http://www.torrent411.com/favicon.ico</icon_url>
   <require_auth>true</require_auth>
-  <default_disable>false</default_disable>
 </plugin>

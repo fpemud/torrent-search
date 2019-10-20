@@ -4,29 +4,21 @@
 import time
 import urllib.parse
 import selenium
-from selenium.webdriver import Firefox as W_FIREFOX
-from selenium.webdriver.firefox.options import Options as W_OPTIONS
-from selenium.webdriver.support.wait import WebDriverWait as W_WAIT
+from selenium.webdriver.support import wait as swait
 
 
 class RARBGTorrentPlugin:
 
-    def __init__(self, api):
+    def __init__(self):
         self.WEBSITE_URL = "https://rarbgprx.org"
-        self.api = api
 
-    def run_search(self, pattern, param, driver=None, href=None):
+    def run_search(self, param, pattern, href=None):
+        driver = param["selenium-driver"]
         api_notify_results_total_count = param["notify-results-total-count"]
         api_notify_one_result = param["notify-one-result"]
+        api_is_stopping = param["is-stopping"]
 
-        if driver is None:
-            assert href is None
-
-            options = W_OPTIONS()
-            options.add_argument('--headless')
-
-            driver = W_FIREFOX(options=options)
-
+        if href is None:
             # load a dummy page so that we can set cookies before we load the main page, selenium sucks
             driver.get(self.WEBSITE_URL + "/index10.html")
             driver.add_cookie({"name": "skt", "value": "na5cocrnzk"})
@@ -39,7 +31,8 @@ class RARBGTorrentPlugin:
             # do search
             driver.get(self.WEBSITE_URL + "/torrents.php?search=" + urllib.parse.quote_plus(pattern))
         else:
-            driver.navigate().to(self.WEBSITE_URL + url)
+            # continue search
+            driver.navigate().to(self.WEBSITE_URL + href)
 
         # click fullscreen ads and close popup window
         while True:
@@ -56,7 +49,7 @@ class RARBGTorrentPlugin:
         driver.find_element_by_id("shadvbutton").click()            # make categories visible
         for cat in driver.find_elements_by_xpath("//input[@name='category[]']"):
             atag = cat.find_element_by_xpath("following-sibling::*[1]")
-            W_WAIT(driver, 60).until(lambda x: atag.text != "")
+            swait.WebDriverWait(driver, 60).until(lambda x: atag.text != "")
             categories[cat.get_attribute('value')] = atag.text
         print(categories)
 
@@ -95,7 +88,7 @@ class RARBGTorrentPlugin:
             print(comments.text)
             print(c.text)
 
-            if self.api.stop_search:
+            if api_is_stopping():
                 return
 
         #     cat = cat.find_element_by_tag_name("a").get_attribute('href')
@@ -135,7 +128,7 @@ class RARBGTorrentPlugin:
         atag = btag.find_element_by_xpath("following-sibling::*[1]")
         if atag is not None:
             href = atag.get_attribute('href').replace(self.WEBSITE_URL, "")     # it's really sucks that selenium auto converts relative href in html to absolute url!
-            self.run_search(pattern, param, driver, href)
+            self.run_search(param, pattern, href)
 
     def load_poster(self, result_id):
         return self._do_get_details(result_id, "poster")
