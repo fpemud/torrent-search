@@ -1,4 +1,4 @@
-<!ELEMENT plugin (title, released_time, author, filename, classname, download_url, website_url, icon_url?, require_auth?, default_disable?)>
+<!ELEMENT plugin (title, released_time, author, filename, classname, download_url, website_url, icon_url?, require_auth?, require_selenium?)>
    <!ATTLIST plugin id CDATA #REQUIRED>
    <!ATTLIST plugin version CDATA #REQUIRED>
 <!ELEMENT released_time (#PCDATA)>

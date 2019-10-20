@@ -32,7 +32,7 @@ class RARBGTorrentPlugin:
             driver.get(self.WEBSITE_URL + "/torrents.php?search=" + urllib.parse.quote_plus(pattern))
         else:
             # continue search
-            driver.navigate().to(self.WEBSITE_URL + href)
+            driver.get(self.WEBSITE_URL + href)
 
         # click fullscreen ads and close popup window
         while True:

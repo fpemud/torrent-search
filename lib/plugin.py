@@ -151,6 +151,10 @@ class Plugin(object):
         self._results_loaded = None     # only used in working thread, no lock needed
 
     @property
+    def require_auth(self):
+        return self._require_auth
+
+    @property
     def login_status(self):
         return self._login_status
 
@@ -162,7 +166,7 @@ class Plugin(object):
     def search_status(self):
         return self._search_status
 
-    # FIXME should notify to application, like
+    # FIXME should notify to application, like one result
     @property
     def results_total_count(self):
         self._results_total_count_lock.acquire()

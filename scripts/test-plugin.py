@@ -46,7 +46,7 @@ if len(sys.argv) < 3:
 
 pluginDir = sys.argv[1]
 searchPattern = sys.argv[2]
-pobj = plugin.Plugin(FakeApp(), pluginDir, {})
+pobj = plugin.Plugin(FakeApp(), pluginDir, {"debug": True})
 if pobj.require_auth:
     if len(sys.argv) >= 5:
         pobj.set_credential(sys.argv[3], sys.argv[4])
