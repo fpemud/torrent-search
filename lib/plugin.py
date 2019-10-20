@@ -275,7 +275,7 @@ class Plugin(object):
             self._login_cookie = None
             self._search_status = None
             if True:
-                self._search_param["selenium-driver"].close()
+                self._search_param["selenium-driver"].quit()
                 self._search_param = None
             self._results_total_count = None
             self._results_total_count_changed = None

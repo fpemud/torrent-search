@@ -122,16 +122,20 @@ class RARBGTorrentPlugin:
         #         "nb_comments": nb_comments,
         #     })
 
-        # next page
-        div = driver.find_element_by_xpath("//div[@id='pager_links']")
-        btag = div.find_element_by_tag_name("b")
-        try:
-            atag = btag.find_element_by_xpath("following-sibling::*[1]")
+        # get href for next page
+        href = None
+        if True:
+            div = driver.find_element_by_xpath("//div[@id='pager_links']")
+            btag = div.find_element_by_tag_name("b")
+            try:
+                atag = btag.find_element_by_xpath("following-sibling::*[1]")
+            except selenium.common.exceptions.NoSuchElementException:
+                # it's the last page
+                return
             href = atag.get_attribute('href').replace(self.WEBSITE_URL, "")     # it's really sucks that selenium auto converts relative href in html to absolute url!
-            self.run_search(param, pattern, href)
-        except selenium.common.exceptions.NoSuchElementException:
-            # it's the last page
-            pass
+
+        # goto next page
+        self.run_search(param, pattern, href)
 
     def load_poster(self, result_id):
         return self._do_get_details(result_id, "poster")
