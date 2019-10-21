@@ -25,7 +25,7 @@ import gettext
 import tempfile
 sys.path.append("/usr/lib64/torrent-search")
 import clp
-from main import Application
+from wnd_main import Application
 from DBusHandler import *
 
 
@@ -43,6 +43,6 @@ if __name__ == '__main__':
         exit(1)
     bus = init_dbus()
     if not try_dbus_connection(bus, options.search_pattern):
-        app = Application(options)
+        app = MainWindow(options)
         open_dbus_controller(bus, app)
         app.run()

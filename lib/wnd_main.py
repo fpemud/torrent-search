@@ -911,6 +911,17 @@ class TorrentDetailsLoadingDialog(Gtk.Window):
         self.pb.pulse()
 
 
+class MainWindow(Gtk.Window):
+
+    def __init__(self, options):
+        path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
+
+        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
+
+        self._builder = Gtk.Builder()
+        self._builder.add_from_file(os.path.join(path, "wnd_main.ui"))
+
+
 class Application(Gtk.Window):
 
     def __init__(self, options):

@@ -70,6 +70,7 @@ class RARBGTorrentPlugin:
         for item in driver.find_elements_by_xpath("//tr[@class='lista2']"):
             ilist = item.find_elements_by_tag_name("td")
             assert len(ilist) == 8
+
             cat = ilist[0]
             link = ilist[1]
             date = ilist[2]
@@ -79,48 +80,32 @@ class RARBGTorrentPlugin:
             comments = ilist[6]
             c = ilist[7]
 
-            print(cat.text)
-            print(link.text)
-            print(date.text)
-            print(size.text)
-            print(seeders.text)
-            print(leechers.text)
-            print(comments.text)
-            print(c.text)
+            cat = cat.find_element_by_tag_name("a").get_attribute('href')
+            j = cat.index('=')
+            cat = cat[j+1:]
+            if cat in categories:
+                cat = categories[cat]
+            else:
+                cat = ""
+            cat = self._parseCat(cat)
+
+            atag = link.find_element_by_tag_name("a")
+
+            api_notify_one_result({
+                "id": reflink + " " + label,
+                "label": atag.text,
+                "date": self._parseDate(date.text),
+                "size": size.text,
+                "seeders": seeders.text,
+                "leechers": leechers.text,
+                "link": atag.get_attribute("href"),
+                "hashvalue": atag.get_attribute("href").split("/")[-2],
+                "category": cat,
+                "nb_comments": comments.text,
+            })
 
             if api_is_stopping():
                 return
-
-        #     cat = cat.find_element_by_tag_name("a").get_attribute('href')
-        #     j = cat.index('=')
-        #     cat = cat[j+1:]
-        #     if cat in categories:
-        #         cat = categories[cat]
-        #     else:
-        #         cat = ""
-        #     cat = self._parseCat(cat)
-        #     link = self.api.find_elements(link, "a")[0]
-        #     label = link.getContent()
-        #     link = urllib.basejoin(href, link.prop('href'))
-        #     hashvalue = link.split('/')[-2]
-        #     date = self._parseDate(date.getContent())
-        #     size = size.getContent()
-        #     seeders = eval(seeders.getContent())
-        #     leechers = eval(leechers.getContent())
-        #     nb_comments = eval(comments.getContent())
-
-        #     api_notify_one_result({
-        #         "id": reflink + " " + label,
-        #         "label": label,
-        #         "date": date,
-        #         "size": size,
-        #         "seeders": seeders,
-        #         "leechers": leechers,
-        #         "link": link,
-        #         "hashvalue": hashvalue,
-        #         "category": cat,
-        #         "nb_comments": nb_comments,
-        #     })
 
         # get href for next page
         href = None
@@ -316,3 +301,23 @@ def _seleniumClosePopupIfExists(driver, originalWindowHandle):
     driver.switch_to.window(originalWindowHandle)
 
     return True
+
+
+
+
+# cat = cat.find_element_by_tag_name("a").get_attribute('href')
+# j = cat.index('=')
+# cat = cat[j+1:]
+# if cat in categories:
+#     cat = categories[cat]
+# else:
+#     cat = ""
+# cat = self._parseCat(cat)
+# link = self.api.find_elements(link, "a")[0]
+# label = link.getContent()
+# link = urllib.basejoin(href, link.prop('href'))
+# hashvalue = link.split('/')[-2]
+# size = size.getContent()
+# seeders = eval(seeders.getContent())
+# leechers = eval(leechers.getContent())
+# nb_comments = eval(comments.getContent())
