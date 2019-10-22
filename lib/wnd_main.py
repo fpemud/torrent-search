@@ -911,17 +911,6 @@ class TorrentDetailsLoadingDialog(Gtk.Window):
         self.pb.pulse()
 
 
-class MainWindow(Gtk.Window):
-
-    def __init__(self, options):
-        path = os.path.abspath(os.path.join(os.path.dirname(__file__), ".."))
-
-        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
-
-        self._builder = Gtk.Builder()
-        self._builder.add_from_file(os.path.join(path, "wnd_main.ui"))
-
-
 class Application(Gtk.Window):
 
     def __init__(self, options):
@@ -1399,3 +1388,33 @@ class Application(Gtk.Window):
                         pass
             except:
                 pass
+
+
+class MainWindow(Gtk.Window):
+
+    def __init__(self, options):
+        Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
+
+        self._builder = Gtk.Builder()
+        self._builder.add_from_file(os.path.join(os.path.dirname(__file__), "wnd_main.ui"))
+
+        self._mainVBox = self._builder.get_object("main-vbox")
+        self.add(self._mainVBox)
+
+        self._titleImage = self._builder.get_object("title-image")
+        self._titleImage.set_property("halign", Gtk.Align.CENTER)       # FIXME: glade doesn't support setting this property
+        self._titleImage.set_property("valign", Gtk.Align.CENTER)       # FIXME: glade doesn't support setting this property
+
+        self._searchBox = self._builder.get_object("search-box")
+        self._searchBox.set_property("halign", Gtk.Align.CENTER)        # FIXME: glade doesn't support setting this property
+        self._searchBox.set_property("valign", Gtk.Align.CENTER)        # FIXME: glade doesn't support setting this property
+
+
+
+    def _switchUiMode(mode):
+        if mode == "init":
+            pass
+        elif mode == "result":
+            pass
+        else:
+            assert False

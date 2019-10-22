@@ -23,9 +23,12 @@ import os
 import sys
 import gettext
 import tempfile
+import gi
+gi.require_version('Gtk', '3.0')
+from gi.repository import Gtk
 sys.path.append("/usr/lib64/torrent-search")
 import clp
-from wnd_main import Application
+import wnd_main
 from DBusHandler import *
 
 
@@ -43,6 +46,7 @@ if __name__ == '__main__':
         exit(1)
     bus = init_dbus()
     if not try_dbus_connection(bus, options.search_pattern):
-        app = MainWindow(options)
+        app = wnd_main.MainWindow(options)
+        app.show_all()
+        Gtk.main()
         open_dbus_controller(bus, app)
-        app.run()
