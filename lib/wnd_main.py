@@ -1395,26 +1395,50 @@ class MainWindow(Gtk.Window):
     def __init__(self, options):
         Gtk.Window.__init__(self, Gtk.WindowType.TOPLEVEL)
 
+        # import from glade file
         self._builder = Gtk.Builder()
         self._builder.add_from_file(os.path.join(os.path.dirname(__file__), "wnd_main.ui"))
 
+        # widgets
+        self._root = self._builder.get_object("root-widget")
         self._mainVBox = self._builder.get_object("main-vbox")
-        self.add(self._mainVBox)
-
         self._titleImage = self._builder.get_object("title-image")
-        self._titleImage.set_property("halign", Gtk.Align.CENTER)       # FIXME: glade doesn't support setting this property
-        self._titleImage.set_property("valign", Gtk.Align.CENTER)       # FIXME: glade doesn't support setting this property
-
         self._searchBox = self._builder.get_object("search-box")
-        self._searchBox.set_property("halign", Gtk.Align.CENTER)        # FIXME: glade doesn't support setting this property
-        self._searchBox.set_property("valign", Gtk.Align.CENTER)        # FIXME: glade doesn't support setting this property
+        self._resultFrame = self._builder.get_object("result-frame")
+        self.add(self._root)
 
+        # FIXME: glade does not support these properties, sending good wish to their team
+        self._mainVBox.set_property("valign", Gtk.Align.CENTER)
+        self._searchBox.set_property("halign", Gtk.Align.CENTER)
 
+        # connect signals
+        pass
 
-    def _switchUiMode(mode):
+        # initialization
+        self._switchUiMode("init")
+
+    def _switchUiMode(self, mode):
         if mode == "init":
-            pass
+            # so that self._searchBox is vertically centered
+            titleImageHeight = self._titleImage.get_property("pixbuf").get_height()
+            self._resultFrame.set_property("height_request", titleImageHeight)
         elif mode == "result":
             pass
         else:
             assert False
+
+
+class ResultBox(Gtk.VBox):
+
+    def __init__(self, data):
+        Gtk.VBox.__init__(self)
+
+        self._name = Gtk.Label()
+        self._name.set_property("halign", Gtk.Align.FILL)
+        self._name.set_markup("<b>%s</b>" % (data["label"]))
+
+        self._detail = Gtk.Frame()
+        self._detail.set_propert("height_request", 100)
+
+        self.add(self._name)
+        self.add(self._detail)
