@@ -1404,6 +1404,8 @@ class MainWindow(Gtk.Window):
         self._mainVBox = self._builder.get_object("main-vbox")
         self._titleImage = self._builder.get_object("title-image")
         self._searchBox = self._builder.get_object("search-box")
+        self._searchEntry = self._builder.get_object("search-entry")
+        self._searchButton = self._builder.get_object("search-button")
         self._resultFrame = self._builder.get_object("result-frame")
         self.add(self._root)
 
@@ -1412,10 +1414,47 @@ class MainWindow(Gtk.Window):
         self._searchBox.set_property("halign", Gtk.Align.CENTER)
 
         # connect signals
-        pass
+        self._searchButton.connect('clicked', lambda w: self.on_search_button_clicked())
+        self._searchEntry.connect('activate', lambda w: self.on_search_button_clicked())
 
         # initialization
         self._switchUiMode("init")
+
+    # FIXME: Warning about huge resource usage in case of short search term
+    def on_search_button_clicked(self):
+        # get and process search pattern
+        pattern = self._searchEntry.get_text()
+        while "  " in pattern:
+            pattern = pattern.replace("  ", " ")
+        pattern = pattern.lower()
+
+        self.stop_search(self.search_plugins)
+        self.searchbar.stop_button.set_sensitive(True)
+        plugins = []
+        for i in self.search_plugins:
+            if i.ID not in self.config["disabled_plugins"]:
+                plugins.append(i)
+        if not plugins:
+            self.error_mesg(_("NO_PLUGINS_ENABLED"), _("CHECK_CONFIG"))
+            return
+        self.plugins_count = len(plugins)
+        self.search_pattern = pattern
+        self.results_widget.clear()
+        self.search_results_label.set_markup(
+            "<b>%s</b>" % _("SEARCH_RESULTS_INIT"))
+        self.set_title("%s - %s - %s" %
+                       (informations.APPNAME, pattern, _("SEARCH_RUNNING")))
+        self.nb_plugins_search_finished = 0
+        for i in plugins:
+            i.search(pattern)
+        self._search_id += 1
+
+
+
+
+
+        self._app.run_search(pattern)
+        self._searchEntry.grab_focus()
 
     def _switchUiMode(self, mode):
         if mode == "init":
